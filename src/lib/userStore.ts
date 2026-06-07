@@ -24,7 +24,11 @@ function readJsonUsers(): StoredUser[] {
 }
 
 function writeJsonUsers(users: StoredUser[]) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2), "utf-8");
+  } catch {
+    // Silently fail on read-only filesystem (Vercel)
+  }
 }
 
 // ── Public API ──
@@ -114,22 +118,25 @@ export async function verifyPassword(plain: string, hash: string): Promise<boole
 }
 
 export function seedAdmin() {
-  const adminEmail = process.env.ADMIN_EMAIL;
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminEmail || !adminPassword) return;
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminEmail || !adminPassword) return;
 
-  // seed JSON fallback
-  const users = readJsonUsers();
-  if (!users.some((u) => u.email === adminEmail)) {
-    users.push({
-      id: "admin",
-      email: adminEmail,
-      name: "Admin Za",
-      password: bcrypt.hashSync(adminPassword, 10),
-      role: "admin",
-      createdAt: new Date().toISOString(),
-    });
-    writeJsonUsers(users);
+    const users = readJsonUsers();
+    if (!users.some((u) => u.email === adminEmail)) {
+      users.push({
+        id: "admin",
+        email: adminEmail,
+        name: "Admin Za",
+        password: bcrypt.hashSync(adminPassword, 10),
+        role: "admin",
+        createdAt: new Date().toISOString(),
+      });
+      writeJsonUsers(users);
+    }
+  } catch {
+    // Silently fail on read-only filesystem (Vercel)
   }
 }
 
