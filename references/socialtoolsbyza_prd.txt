@@ -1,0 +1,61 @@
+# SocialToolsByZa PRD - UI/UX DESIGN & INTERFACE
+**Project Name:** SocialToolsByZa  
+**Design System/Style:** Neo-Brutalisme / Comic Book Pop Art Style  
+
+## 1. FILOSOFI DESAIN: THE "KICK-ASS" COMIC BOOK LOOK
+Tujuan utama dari UI/UX SocialToolsByZa adalah mendobrak desain web modern yang monoton (serba minimalis dan clean) dengan mengadopsi gaya **Neo-Brutalisme**. Desain ini terinspirasi dari layout komik barat/manga retro dengan garis-garis tegas, kontras tinggi, bayangan geometris tanpa blur, serta tipografi yang berani (*loud typography*).
+
+---
+
+## 2. PANDUAN WARNA & TIPOGRAFI (PALETTE & FONTS)
+
+### A. Palet Warna (High-Contrast Pop Art)
+Semua warna wajib menggunakan warna saturasi tinggi (*saturated/desaturated pop tones*) dengan kontras maksimal terhadap warna hitam.
+
+- **Primary Comic Yellow:** `#FACC15` (`bg-yellow-400`) - Digunakan untuk aksen utama, header hero, dan tombol aksi krusial.
+- **Secondary Cyan Splash:** `#06B6D4` (`bg-cyan-500`) - Digunakan untuk panel developer utility (JSON, Markdown).
+- **Accent Comic Pink:** `#EC4899` (`bg-pink-500`) - Digunakan untuk panel konverter gambar/PDF dan downloaders.
+- **Base Background:** `#FFFFFF` atau abu-abu komik sangat muda `#F3F4F6` (`bg-gray-100`) untuk menjaga kontras teks utama.
+- **Ink Black (The Border):** `#000000` (`border-black`, `text-black`) - Warna mutlak untuk semua border, outline, dan teks utama.
+
+### B. Aturan Tipografi
+- **Headings (H1, H2, H3):** Harus menggunakan font sans-serif yang sangat tebal, padat, dan berkarakter. Sangat direkomendasikan menggunakan font Google seperti **'Bangers'**, **'Impact'**, atau font lokal bawaan dengan utility `font-black` (Tailwind).
+- **Body Text:** Menggunakan font sans-serif standar yang bersih (seperti Inter atau Arial) dengan weight reguler hingga semi-bold (`font-medium`) agar instruksi tools tetap mudah dibaca.
+
+---
+
+## 3. KARAKTERISTIK VISUAL UTAMA KOMPONEN (TAILWIND UTILITIES)
+
+Semua komponen di dalam web wajib mematuhi 3 hukum utama Neo-Brutalisme Komik:
+
+1. **The Comic Border:** Setiap box panel, input field, tombol, and card wajib memiliki border hitam pekat setebal 4px.
+   * *Tailwind:* `border-4 border-black`
+2. **The Hard Shadow:** Dilarang keras menggunakan bayangan halus (`box-shadow` dengan blur). Bayangan harus berupa blok warna hitam tegas dengan offset miring.
+   * *Tailwind:* `shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]`
+3. **The Comic Hover Effect:** Saat elemen interaktif (tombol/card) di-hover, posisinya bergeser sedikit ke arah bayangan, memberikan efek seolah-olah tombol tersebut amblas ditekan fisik.
+   * *Tailwind:* `hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all`
+
+---
+
+## 4. STRUKTUR LAYOUT (THE COMIC GRID PANEL)
+
+### A. Hero Section (Halaman Utama Atas)
+- Didesain seperti sampul buku komik. 
+- Berisi judul besar **"SOCIAL TOOLS BY ZA!!"** di dalam bubble teks atau box miring dengan background kuning menyala.
+- Sub-headline dibuat kasual, merepresentasikan anak IT Semester 6 (Contoh: *"Alat tempur kuliah, ngoding, dan ngonten terlengkap buat bertahan hidup sampai lulus!"*).
+
+### B. Main Dashboard: Comic Panel Grid
+Layout utama berbentuk layout grid asimetris yang menyerupai potongan panel halaman komik. Masing-masing fitur dibungkus ke dalam satu panel card tunggal:
+- **Ukuran Grid:** Menggunakan `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`. Beberapa panel fitur utama (seperti Video Downloader atau Markdown Previewer) bisa dibuat lebih lebar (`md:col-span-2`) untuk memberikan dinamika visual ala komik.
+- **Comic Visual Accents:** Di pojok atas setiap panel card, tambahkan badge kecil berwarna kontras yang bertuliskan teks ala komik efek suara, contoh:
+  - Tool Downloader: Badge bertuliskan **"BOOM!"**
+  - Tool Developer: Badge bertuliskan **"ZAP!"** atau **"CODE!"**
+  - Tool PDF/Gambar: Badge bertuliskan **"POW!"** atau **"CONVERT!"**
+
+### C. Input & Form Component
+- Kolom input untuk memasukkan URL (TikTok/YouTube) atau upload file menggunakan background putih dengan font tebal.
+- Placeholder teks dibuat interaktif dan jenaka khas mahasiswa TI (Contoh input JSON: `{"status": "stres_semester_6", "tugas": "banyak"}`).
+
+### D. Footer: Social Media Corner (The Bio-Link Panel)
+- Panel penutup di bagian paling bawah yang didesain menyerupai kolom "Surat Pembaca" atau profil komikus di bagian akhir buku komik.
+- Menyusun logo/tautan media sosial (Instagram, Threads, LinkedIn, Kaggle, WhatsApp) di dalam lingkaran-lingkaran ber-border hitam tebal (`border-4 border-black rounded-full`) yang berjejer rapi.

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,400..900;1,400..900&amp;family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-fixed": "#3e0022",
+                      "on-tertiary-container": "#ad0768",
+                      "surface-tint": "#735c00",
+                      "secondary": "#00687a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f3f4f6",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed": "#231b00",
+                      "secondary-container": "#57dffe",
+                      "background": "#f8f9fb",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#ffe083",
+                      "on-secondary-fixed-variant": "#004e5c",
+                      "surface-bright": "#f8f9fb",
+                      "on-primary-container": "#6c5700",
+                      "on-tertiary-fixed-variant": "#8c0053",
+                      "surface-container-highest": "#e1e2e4",
+                      "inverse-surface": "#2e3132",
+                      "on-secondary-fixed": "#001f26",
+                      "on-error": "#ffffff",
+                      "on-surface-variant": "#4d4632",
+                      "primary-container": "#facc15",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#ffbfd6",
+                      "tertiary": "#b4136d",
+                      "surface-container": "#edeef0",
+                      "secondary-fixed-dim": "#4cd7f6",
+                      "surface": "#f8f9fb",
+                      "primary-fixed-dim": "#eec200",
+                      "inverse-on-surface": "#f0f1f3",
+                      "surface-dim": "#d9dadc",
+                      "secondary-fixed": "#acedff",
+                      "primary": "#735c00",
+                      "on-background": "#191c1e",
+                      "outline": "#7f7660",
+                      "surface-container-high": "#e7e8ea",
+                      "inverse-primary": "#eec200",
+                      "on-surface": "#191c1e",
+                      "on-primary-fixed-variant": "#574500",
+                      "on-secondary-container": "#006172",
+                      "tertiary-fixed-dim": "#ffb0cd",
+                      "on-secondary": "#ffffff",
+                      "surface-variant": "#e1e2e4",
+                      "tertiary-fixed": "#ffd9e4",
+                      "outline-variant": "#d1c6ab"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "48px",
+                      "gutter": "24px",
+                      "base": "8px",
+                      "border-width": "4px",
+                      "margin-mobile": "16px",
+                      "shadow-offset": "5px"
+              },
+              "fontFamily": {
+                      "display-xl": ["Anybody"],
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Anybody"],
+                      "headline-md": ["Anybody"],
+                      "headline-lg": ["Anybody"],
+                      "body-md": ["Inter"],
+                      "label-bold": ["Inter"]
+              },
+              "fontSize": {
+                      "display-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "900"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "900"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "800"}],
+                      "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "900"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "label-bold": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .comic-shadow {
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+        }
+        .neo-hover:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px 0px rgba(0,0,0,1);
+        }
+        .neo-active:active {
+            transform: translate(3px, 3px);
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+        }
+        .dashed-border {
+            border: 4px dashed black;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-tertiary-container selection:text-on-tertiary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background border-b-border-width border-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]">
+<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-7xl mx-auto">
+<div class="font-display-xl text-headline-md-mobile md:text-headline-md uppercase italic bg-primary-container text-on-primary-container px-4 py-2 border-border-width border-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+                SOCIAL TOOLS BY ZA!!
+            </div>
+<div class="hidden md:flex items-center gap-gutter">
+<a class="text-on-tertiary-container font-bold border-b-border-width border-tertiary-container uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all" href="#">Tools</a>
+<a class="text-on-surface font-label-bold uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all" href="#">Features</a>
+<a class="text-on-surface font-label-bold uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all" href="#">Showcase</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:block font-label-bold text-on-surface hover:text-primary transition-colors">LOGIN</button>
+<button class="bg-secondary-container text-on-secondary-container border-border-width border-black px-6 py-2 font-label-bold uppercase comic-shadow neo-hover neo-active">
+                    GET STARTED
+                </button>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-16 flex flex-col items-center text-center">
+<div class="relative inline-block mb-8">
+<div class="bg-primary-container border-border-width border-black p-8 md:p-12 comic-shadow rotate-1 transform-gpu">
+<h1 class="font-display-xl text-headline-lg-mobile md:text-display-xl text-on-primary-container uppercase leading-none">
+                        ULTIMATE SURVIVAL KIT!!
+                    </h1>
+</div>
+<div class="absolute -bottom-6 left-12 w-10 h-10 bg-primary-container border-r-border-width border-b-border-width border-black rotate-45 z-[-1] comic-shadow"></div>
+</div>
+<p class="max-w-2xl font-headline-md text-headline-md text-on-surface-variant leading-relaxed">
+                Empat alat sakti buat naklukin tugas kuliah dan kerjaan tanpa keringat dingin!
+            </p>
+</section>
+<!-- Tool Panels Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+<!-- Tool 1: PDF to Word -->
+<div class="relative bg-tertiary-container border-border-width border-black p-8 comic-shadow neo-hover flex flex-col h-full -rotate-1">
+<div class="absolute -top-6 -right-4 bg-tertiary text-on-tertiary font-display-xl text-headline-md px-6 py-2 border-border-width border-black comic-shadow rotate-12 z-10">
+                    CONVERT!
+                </div>
+<h3 class="font-display-xl text-headline-lg uppercase italic mb-4">PDF to Word</h3>
+<div class="flex-grow flex flex-col gap-6">
+<div class="dashed-border bg-white p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-surface-variant transition-colors group">
+<span class="material-symbols-outlined text-6xl text-tertiary mb-2 group-hover:scale-110 transition-transform" data-icon="cloud_upload">cloud_upload</span>
+<p class="font-label-bold uppercase">Drop PDF Here or Click to Browse</p>
+</div>
+<button class="w-full bg-tertiary text-white border-border-width border-black py-4 font-display-xl uppercase comic-shadow neo-active text-xl">
+                        Transform to Word
+                    </button>
+</div>
+</div>
+<!-- Tool 2: Picture to PDF -->
+<div class="relative bg-secondary-container border-border-width border-black p-8 comic-shadow neo-hover flex flex-col h-full rotate-1">
+<div class="absolute -top-6 -left-4 bg-secondary text-on-secondary font-display-xl text-headline-md px-6 py-2 border-border-width border-black comic-shadow -rotate-6 z-10">
+                    ZIP!
+                </div>
+<h3 class="font-display-xl text-headline-lg uppercase italic mb-4">Picture to PDF</h3>
+<div class="flex-grow flex flex-col gap-6">
+<div class="bg-white border-border-width border-black p-4">
+<input class="hidden" id="pic-upload" multiple="" type="file"/>
+<label class="cursor-pointer font-label-bold uppercase flex items-center justify-between border-b-2 border-black pb-2 mb-4" for="pic-upload">
+                            Select Multi-Files <span class="material-symbols-outlined" data-icon="add_a_photo">add_a_photo</span>
+</label>
+<div class="grid grid-cols-3 gap-2">
+<div class="aspect-square bg-surface-variant border-2 border-black relative overflow-hidden">
+<img alt="preview" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida/AP1WRLvOqs7zaxtVRsZUL3Fww6H-ArSISYJ2knjeZO7VN137ISgKSN06RbgqKlOZV9rIMvGqvhZmoSFLewOZaJqBBpg-XOIvJYRKatzha89LH0ZXx2cMau7eqKcZA1fdl9b-u2TsvMujNJeVlczvYEjCMZ271dtMSLt6D5FyIg2ppzT_yOOfqA6wwX_ZL-pTwmNZwgFsUCcLCOI8-fijrhv_9dMeV58-jBZnUprae7_5mQ4qbKfYOFFP6Tbe28A7"/>
+</div>
+<div class="aspect-square bg-surface-variant border-2 border-black relative overflow-hidden">
+<img alt="preview" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida/AP1WRLsYaugXOQrI9wGfvzZEr6JtKyRPNiQLKDELQFOxZcgskdb1ReB0H50sRibDShPyXgESESwgmVVatfIiZhEz5T5Flhu3fVCkn1kiu2Q0cF7GrxElqqNfL8dKZVY5MXD3HxAA-FCsXX7pxleeOGkHSwM9ydJtKkY7DsuUVtl-Ca5ooBBTFyD1-YIbIaWfvfBvRrAJbKFL_WsUsLvBWJD3hweI7HDAhR7EVAwkLKezTmFoxBBY-5PscSnevUjc"/>
+</div>
+<div class="aspect-square bg-surface-variant border-2 border-black flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-secondary text-white border-border-width border-black py-4 font-display-xl uppercase comic-shadow neo-active text-xl">
+                        Generate PDF
+                    </button>
+</div>
+</div>
+<!-- Tool 3: OCR Picture to Text -->
+<div class="relative bg-primary-container border-border-width border-black p-8 comic-shadow neo-hover flex flex-col h-full md:rotate-1">
+<div class="absolute -top-6 -right-4 bg-on-primary-container text-primary-container font-display-xl text-headline-md px-6 py-2 border-border-width border-black comic-shadow rotate-3 z-10">
+                    SCAN!
+                </div>
+<h3 class="font-display-xl text-headline-lg uppercase italic mb-4">OCR Picture to Text</h3>
+<div class="flex-grow flex flex-col md:flex-row gap-4 h-full min-h-[300px]">
+<div class="flex-1 dashed-border bg-white flex flex-col items-center justify-center p-4">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="image">image</span>
+<p class="text-xs font-bold uppercase text-center">Upload Image to Scan</p>
+</div>
+<div class="flex-1 bg-white border-border-width border-black relative">
+<textarea class="w-full h-full p-3 resize-none border-none focus:ring-0 font-body-md text-sm" placeholder="Text results will appear here..."></textarea>
+</div>
+</div>
+<button class="mt-6 w-full bg-on-primary-container text-white border-border-width border-black py-4 font-display-xl uppercase comic-shadow neo-active text-xl">
+                    Copy Text
+                </button>
+</div>
+<!-- Tool 4: Jurnal Finder (Col Span 2) -->
+<div class="md:col-span-2 relative bg-surface-container border-border-width border-black p-8 comic-shadow neo-hover flex flex-col">
+<div class="absolute -top-6 -left-4 bg-on-background text-background font-display-xl text-headline-md px-6 py-2 border-border-width border-black comic-shadow rotate-1 z-10">
+                    SEARCH!
+                </div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div class="flex-grow">
+<h3 class="font-display-xl text-headline-lg uppercase italic mb-4">Jurnal Finder</h3>
+<div class="relative">
+<input class="w-full bg-white border-border-width border-black p-5 font-headline-md text-xl comic-shadow focus:ring-0 focus:translate-x-[2px] transition-all" placeholder="Enter keywords (e.g., Quantum Physics)..." type="text"/>
+</div>
+</div>
+<button class="bg-primary-container text-on-primary-container border-border-width border-black px-10 py-5 font-display-xl uppercase comic-shadow neo-hover neo-active text-xl whitespace-nowrap">
+                        Cari Jurnal
+                    </button>
+</div>
+<!-- Comic Strip Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="bg-white border-border-width border-black p-4 rotate-1 comic-shadow hover:rotate-0 transition-transform">
+<div class="h-3 bg-secondary-container mb-3 border-b-2 border-black"></div>
+<h4 class="font-label-bold text-xs mb-2 uppercase">Nature Vol. 582</h4>
+<p class="text-[10px] leading-tight">Advanced methodology in neural network architecture...</p>
+</div>
+<div class="bg-white border-border-width border-black p-4 -rotate-2 comic-shadow hover:rotate-0 transition-transform">
+<div class="h-3 bg-tertiary-container mb-3 border-b-2 border-black"></div>
+<h4 class="font-label-bold text-xs mb-2 uppercase">IEEE Access 2023</h4>
+<p class="text-[10px] leading-tight">Blockchain scalability for IoT devices in agriculture...</p>
+</div>
+<div class="bg-white border-border-width border-black p-4 rotate-1 comic-shadow hover:rotate-0 transition-transform">
+<div class="h-3 bg-primary-fixed mb-3 border-b-2 border-black"></div>
+<h4 class="font-label-bold text-xs mb-2 uppercase">Sci-Direct #09</h4>
+<p class="text-[10px] leading-tight">Sustainable energy storage through salt batteries...</p>
+</div>
+<div class="bg-white border-border-width border-black p-4 rotate-2 comic-shadow hover:rotate-0 transition-transform">
+<div class="h-3 bg-secondary mb-3 border-b-2 border-black"></div>
+<h4 class="font-label-bold text-xs mb-2 uppercase">ACM Journals</h4>
+<p class="text-[10px] leading-tight">Ethics of AI in modern software development...</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Newsletter Section -->
+<section class="mt-24 bg-secondary border-border-width border-black p-12 comic-shadow flex flex-col md:flex-row items-center justify-between gap-8 rotate-1">
+<div class="md:w-1/2">
+<h2 class="font-display-xl text-headline-lg text-white uppercase leading-tight mb-4">Gak Mau Ketinggalan Update?</h2>
+<p class="text-secondary-fixed font-body-lg">Join 10.000+ mahasiswa dan konten kreator yang udah pakai Social Tools buat survive!</p>
+</div>
+<div class="md:w-1/2 w-full flex flex-col sm:flex-row gap-4">
+<input class="flex-grow bg-white border-border-width border-black p-4 font-body-md focus:ring-0 focus:outline-none focus:bg-primary-fixed-dim transition-all comic-shadow" placeholder="Email kamu di sini..." type="email"/>
+<button class="bg-primary-container text-on-primary-container border-border-width border-black px-8 py-4 font-label-bold uppercase comic-shadow neo-hover neo-active">SUBSCRIBE!</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest border-t-border-width border-black">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-12 max-w-7xl mx-auto gap-gutter">
+<div class="font-display-xl text-headline-md text-on-surface italic">
+                SOCIAL TOOLS BY ZA!!
+            </div>
+<div class="flex gap-8">
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Terms</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Contact</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Support</a>
+</div>
+<div class="text-body-md text-on-surface text-center md:text-right">
+                LETTER TO THE EDITOR: © 2024 ZA PRODUCTIONS
+            </div>
+</div>
+</footer>
+<script>
+        // Random tilt for cards on load
+        document.querySelectorAll('.neo-hover').forEach(card => {
+            const currentRotation = card.classList.contains('rotate-1') ? 1 : (card.classList.contains('-rotate-1') ? -1 : 0);
+            const extraTilt = (Math.random() - 0.5) * 1.5;
+            card.style.transform = `rotate(${currentRotation + extraTilt}deg)`;
+        });
+
+        // Interactive hover management
+        document.querySelectorAll('.neo-hover').forEach(card => {
+            const originalTransform = card.style.transform;
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = `${originalTransform} translate(-3px, -3px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = originalTransform;
+            });
+        });
+    </script>
+</body></html>

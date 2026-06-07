@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    --comic-border-color: #000;
+  }
+  html { -webkit-tap-highlight-color: transparent; }
+}
+
+@layer components {
+  .comic-shadow {
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+  }
+  .comic-shadow-sm {
+    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+  }
+  .comic-shadow-lg {
+    box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+  }
+  .comic-border {
+    border: 3px solid black;
+  }
+  .comic-btn {
+    will-change: transform;
+    @apply comic-border font-display uppercase tracking-wider px-5 py-3 comic-shadow cursor-pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  @media (hover: hover) {
+    .comic-btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1);
+    }
+  }
+  .comic-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none !important;
+  }
+  .comic-panel {
+    @apply comic-border p-3 sm:p-4 md:p-5 comic-shadow flex flex-col h-full;
+  }
+  .comic-badge {
+    @apply absolute -top-3 px-3 py-1 comic-border comic-shadow font-display font-black uppercase text-[11px] sm:text-sm;
+  }
+  .dashed-border {
+    border: 3px dashed black;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .comic-btn:hover {
+    transform: none !important;
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1) !important;
+  }
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f3f4f6; border-left: 2px solid black; }
+::-webkit-scrollbar-thumb { background: black; }

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SocialToolsByZa - Video Downloader</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,400..900;1,400..900&amp;family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#3e0022",
+                        "on-tertiary-container": "#ad0768",
+                        "surface-tint": "#735c00",
+                        "secondary": "#00687a",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f3f4f6",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#231b00",
+                        "secondary-container": "#57dffe",
+                        "background": "#f8f9fb",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#ffe083",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "surface-bright": "#f8f9fb",
+                        "on-primary-container": "#6c5700",
+                        "on-tertiary-fixed-variant": "#8c0053",
+                        "surface-container-highest": "#e1e2e4",
+                        "inverse-surface": "#2e3132",
+                        "on-secondary-fixed": "#001f26",
+                        "on-error": "#ffffff",
+                        "on-surface-variant": "#4d4632",
+                        "primary-container": "#facc15",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#ffbfd6",
+                        "tertiary": "#b4136d",
+                        "surface-container": "#edeef0",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "surface": "#f8f9fb",
+                        "primary-fixed-dim": "#eec200",
+                        "inverse-on-surface": "#f0f1f3",
+                        "surface-dim": "#d9dadc",
+                        "secondary-fixed": "#acedff",
+                        "primary": "#735c00",
+                        "on-background": "#191c1e",
+                        "outline": "#7f7660",
+                        "surface-container-high": "#e7e8ea",
+                        "inverse-primary": "#eec200",
+                        "on-surface": "#191c1e",
+                        "on-primary-fixed-variant": "#574500",
+                        "on-secondary-container": "#006172",
+                        "tertiary-fixed-dim": "#ffb0cd",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e1e2e4",
+                        "tertiary-fixed": "#ffd9e4",
+                        "outline-variant": "#d1c6ab",
+                        "comic-pink": "#EC4899",
+                        "comic-cyan": "#06B6D4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "48px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "border-width": "4px",
+                        "margin-mobile": "16px",
+                        "shadow-offset": "5px"
+                    },
+                    "fontFamily": {
+                        "display-xl": ["Anybody"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Anybody"],
+                        "headline-md": ["Anybody"],
+                        "headline-lg": ["Anybody"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "900"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "900"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "800"}],
+                        "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "900"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "label-bold": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        .brutalist-shadow {
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+        }
+        .brutalist-shadow-hover:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+        }
+        .brutalist-shadow-active:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+        }
+        .starburst {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-background border-b-border-width border-black sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-7xl mx-auto">
+<div class="font-display-xl text-headline-md-mobile md:text-headline-md uppercase italic bg-primary-container text-on-primary-container px-4 py-2 border-border-width border-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+                SOCIAL TOOLS BY ZA!!
+            </div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-on-tertiary-container font-bold border-b-border-width border-tertiary-container font-label-bold uppercase transition-all" href="#">Tools</a>
+<a class="text-on-surface font-label-bold uppercase hover:text-primary transition-all" href="#">Features</a>
+<a class="text-on-surface font-label-bold uppercase hover:text-primary transition-all" href="#">Showcase</a>
+</nav>
+<div class="flex gap-4">
+<button class="hidden md:block font-label-bold text-on-surface uppercase px-4 py-2 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">LOGIN</button>
+<button class="bg-primary-container text-on-primary-container font-label-bold uppercase border-border-width border-black px-6 py-2 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all">
+                    GET STARTED
+                </button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-12 relative overflow-hidden">
+<!-- Hero Section -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center mb-24">
+<div class="lg:col-span-7 relative">
+<!-- Starburst Badge -->
+<div class="absolute -top-12 -left-8 md:-left-12 z-10 animate-bounce">
+<div class="bg-comic-pink text-white font-display-xl text-headline-md border-border-width border-black p-6 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] rotate-12 flex items-center justify-center">
+                        BOOM!
+                    </div>
+</div>
+<h1 class="font-display-xl text-headline-lg-mobile md:text-display-xl uppercase mb-6 leading-none">
+                    VIDEO <span class="bg-comic-cyan px-2 border-4 border-black inline-block -rotate-1">DOWNLOADER</span>
+</h1>
+<p class="font-body-lg text-body-lg mb-8 max-w-xl">
+                    Grab your favorite TikToks, Reels, and YouTube shorts without the junk. No watermarks, no hassle, just pure content for your edits or late-night scrolling. 
+                </p>
+<!-- Input Area -->
+<div class="flex flex-col md:flex-row gap-0 group">
+<input class="flex-grow bg-white border-border-width border-black p-6 font-label-bold text-lg focus:outline-none focus:bg-primary-fixed transition-colors shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] md:shadow-none" placeholder="PASTE YOUR VIDEO LINK HERE..." type="text"/>
+<button class="bg-primary-container text-on-primary-container font-display-xl text-headline-md border-border-width border-black px-8 py-4 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all uppercase whitespace-nowrap">
+                        DOWNLOAD NOW
+                    </button>
+</div>
+<div class="mt-6 flex items-center gap-4 text-on-surface-variant italic">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-bold">FREE FOREVER FOR STUDENTS &amp; CREATORS</span>
+</div>
+</div>
+<div class="lg:col-span-5 hidden lg:block">
+<div class="border-border-width border-black p-4 bg-white shadow-[12px_12px_0px_0px_rgba(6,182,212,1)] rotate-3">
+<img alt="Preview" class="w-full h-auto border-border-width border-black" data-alt="A highly stylized, vibrant neo-brutalist digital illustration showing a hand holding a modern smartphone. The screen displays a viral video interface with bold cyan and pink interface elements. The background is a mix of geometric halftone patterns and sharp comic book action lines in yellow and white. The lighting is high-contrast and dramatic, creating a playful, high-energy creator aesthetic." src="https://lh3.googleusercontent.com/aida/AP1WRLvM4UDBRKsEvGLBzxQGQmgJksdBdbRWTqze-glkckBvwMWKb9XSrr8J-bOHgt9ms5sUC7MHdmqEve4c_IcTt1C8ycNm_92_ZSGttLun866gpLPQCQiQBsMvu-ZYz-7ux5khrENlLbH6jYoUnETYZAahrWmnF4_uR3wluUVLT5q5YlPdGRwfFq1jl63njLzIbMCgDJQNuGNY8UftBm0lgT0WWydxK3A5xsIqIkQ0Kr8n5roNbAD_ZNtZv7Uv"/>
+</div>
+</div>
+</section>
+<!-- Instructions / Bento Grid -->
+<section class="mb-24">
+<h2 class="font-display-xl text-headline-lg uppercase mb-12 text-center underline decoration-comic-cyan decoration-8 underline-offset-8">HOW TO WIN</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Step 1 -->
+<div class="bg-white border-border-width border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4">
+<div class="bg-comic-cyan w-16 h-16 border-border-width border-black flex items-center justify-center font-display-xl text-headline-md">1</div>
+<h3 class="font-display-xl text-headline-md uppercase">COPY LINK</h3>
+<p class="font-body-md">Find that fire video on TikTok or YT. Hit share and snag that URL. It's that easy, fam.</p>
+</div>
+<!-- Step 2 -->
+<div class="bg-comic-pink text-white border-border-width border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4 -rotate-1">
+<div class="bg-white text-black w-16 h-16 border-border-width border-black flex items-center justify-center font-display-xl text-headline-md">2</div>
+<h3 class="font-display-xl text-headline-md uppercase">PASTE IT</h3>
+<p class="font-body-md">Drop that link into our big yellow box up there. We don't judge your taste in cat videos.</p>
+</div>
+<!-- Step 3 -->
+<div class="bg-primary-container border-border-width border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col gap-4 rotate-1">
+<div class="bg-comic-cyan text-white w-16 h-16 border-border-width border-black flex items-center justify-center font-display-xl text-headline-md">3</div>
+<h3 class="font-display-xl text-headline-md uppercase">SAVE IT</h3>
+<p class="font-body-md">Hit download and BOOM! The video is yours to keep forever. Watermark free!</p>
+</div>
+</div>
+</section>
+<!-- Feature Showcase -->
+<section class="bg-secondary-container border-border-width border-black p-12 mb-24 relative overflow-hidden">
+<div class="absolute -right-20 -bottom-20 opacity-20">
+<span class="material-symbols-outlined text-[300px]" data-icon="download">download</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div>
+<h2 class="font-display-xl text-headline-lg uppercase mb-6 leading-tight">WHY WE'RE BETTER THAN YOUR EX</h2>
+<ul class="space-y-6">
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-comic-pink font-bold" data-icon="bolt">bolt</span>
+<div>
+<h4 class="font-label-bold uppercase text-lg">SPEED OF LIGHT</h4>
+<p class="font-body-md">Our servers are faster than you rushing to finish an essay at 3 AM.</p>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-comic-pink font-bold" data-icon="visibility_off">visibility_off</span>
+<div>
+<h4 class="font-label-bold uppercase text-lg">NO WATERMARKS</h4>
+<p class="font-body-md">Clean videos only. No annoying logos floating around your screen.</p>
+</div>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-comic-pink font-bold" data-icon="devices">devices</span>
+<div>
+<h4 class="font-label-bold uppercase text-lg">ALL DEVICES</h4>
+<p class="font-body-md">Works on your iPhone, Android, or that crusty laptop in the library.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="relative">
+<div class="border-border-width border-black overflow-hidden shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+<img alt="Creator vibes" class="w-full grayscale hover:grayscale-0 transition-all duration-500" data-alt="A gritty, high-contrast black and white photograph of a creative workspace with colorful cyan and yellow stickers scattered on a desk. A high-end professional camera sits next to a glowing tablet showing video editing software. The mood is industrial and raw, lit by a single harsh overhead spotlight that emphasizes textures and deep shadows. The composition is dynamic and slightly tilted." src="https://lh3.googleusercontent.com/aida/AP1WRLuBaMvUxL-Rg78WTkcrw9ofX5odOGr0shYBrooPUuj0iAEE2kwO1OFWbKRURn-tMng7LQzxoVztCd1mcr8Kwpmlhu_g5TOjh4RXEi54jT1XlMe15mEDTBE3NoBjWHYritnxy1rmUU6bkRuSVa5y4K2Tl3L57bQF5jBF3r5-dtUZ-b7chJ9mCSicznWCnpHb2Tf6jitT23SQ9o6VX4nbWkt0_zWZJXkzhv-VQkVTkT4gghrjDktY1WcqLi0"/>
+</div>
+<div class="absolute -bottom-6 -left-6 bg-white border-4 border-black p-4 font-display-xl text-headline-md italic -rotate-3">
+                        NO CAP!
+                    </div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="text-center py-20 bg-background border-4 border-black border-dashed">
+<h2 class="font-display-xl text-headline-lg uppercase mb-8">READY TO BECOME A CONTENT GOD?</h2>
+<button class="bg-comic-pink text-white font-display-xl text-headline-md border-border-width border-black px-12 py-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all uppercase">
+                START DOWNLOADING
+            </button>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest border-t-border-width border-black">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-12 max-w-7xl mx-auto gap-gutter">
+<div class="flex flex-col gap-4">
+<div class="font-display-xl text-headline-md text-on-surface italic uppercase">
+                    SOCIAL TOOLS BY ZA!!
+                </div>
+<p class="font-body-md max-w-sm">LETTER TO THE EDITOR: © 2024 ZA PRODUCTIONS. STAY COOL, STAY CREATIVE.</p>
+</div>
+<div class="flex flex-wrap gap-8 justify-center">
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Terms</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Contact</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Support</a>
+</div>
+<div class="flex gap-4">
+<a class="w-12 h-12 border-2 border-black flex items-center justify-center hover:bg-comic-cyan transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</a>
+<a class="w-12 h-12 border-2 border-black flex items-center justify-center hover:bg-comic-pink transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</a>
+</div>
+</div>
+</footer>
+<!-- FAB (Suppressed on this specific focused tool page as per UX guidelines, but added invisible hook if needed) -->
+<script>
+        // Micro-interactions for the download button
+        const downloadBtn = document.querySelector('button.bg-primary-container');
+        if(downloadBtn) {
+            downloadBtn.addEventListener('mousedown', () => {
+                downloadBtn.style.transform = 'translate(4px, 4px)';
+                downloadBtn.style.boxShadow = '0px 0px 0px 0px rgba(0,0,0,1)';
+            });
+            downloadBtn.addEventListener('mouseup', () => {
+                downloadBtn.style.transform = 'translate(2px, 2px)';
+                downloadBtn.style.boxShadow = '3px 3px 0px 0px rgba(0,0,0,1)';
+            });
+        }
+
+        // Simple URL validation coloring
+        const urlInput = document.querySelector('input[type="text"]');
+        if(urlInput) {
+            urlInput.addEventListener('input', (e) => {
+                if(e.target.value.includes('http')) {
+                    urlInput.style.backgroundColor = '#acedff'; // Light Cyan
+                } else {
+                    urlInput.style.backgroundColor = '#ffffff';
+                }
+            });
+        }
+    </script>
+</body></html>

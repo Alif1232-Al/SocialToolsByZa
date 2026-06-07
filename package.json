@@ -1,0 +1,48 @@
+{
+  "name": "socialtoolsbyza",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "pdf-to-word",
+    "tiktok-downloader",
+    "ocr",
+    "osint",
+    "dorking",
+    "social-tools"
+  ],
+  "author": "Za Productions",
+  "license": "ISC",
+  "description": "Social tools collection: TikTok downloader, remove BG, PDF to Word, OCR, OSINT dorking, and more",
+  "dependencies": {
+    "@imgly/background-removal": "^1.7.0",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.107.0",
+    "bcryptjs": "^3.0.3",
+    "docx": "^9.7.1",
+    "jose": "^6.2.3",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.17.0",
+    "marked": "^18.0.5",
+    "next": "^14.2.35",
+    "pdf-parse": "^2.4.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^25.9.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3"
+  }
+}

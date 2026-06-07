@@ -1,0 +1,29 @@
+ERROR REQUIREMENTS SYSTEM 
+[✓] 
+Create /features page with all 10 feature details
+[✓] 
+Create /showcase page with tool demos
+[✓] 
+Update Header nav links to point to actual pages using Next.js Link
+[✓] 
+Enhance PDF to Word - better UX, progress, validation
+[•] 
+Build & verify everything compiles
+Thinking: Let me check if the new pages need CSS for the markdown previewer styles. Also, the features and showcase pages might use ComicPanel or components. Let me build and check.
+# Build to verify all changes
+$ cd "C:\Users\alifa\Downloads\SocialToolsByZa"; npx next build 2>&1
+▲ Next.js 14.2.35
+   Creating an optimized production build ...
+npx : uncaughtException [Error: EPERM: operation not permitted, open 
+'C:\Users\alifa\Downloads\SocialToolsByZa\.next\trace'] {
+At line:1 char:48
++ cd "C:\Users\alifa\Downloads\SocialToolsByZa"; npx next build 2>&1
++                                                ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (uncaughtExcepti....next\trace'] {:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+…
+Click to expand
+Thinking: EPERM error - the .next directory might be locked by a previous process. Let me clean it and try again.
+Clean and rebuild
+$ Remove-Item -LiteralPath "C:\Users\alifa\Downloads\SocialToolsByZa\.next" -Recurse -Force -ErrorAction SilentlyContinue; cd "C:\Users\alifa\Downloads\SocialToolsByZa"; npx next build 2>&1
+▲ Next.js 14.2.35

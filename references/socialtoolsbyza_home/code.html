@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,400..900;1,400..900&amp;family=Inter:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-fixed": "#3e0022",
+                      "on-tertiary-container": "#ad0768",
+                      "surface-tint": "#735c00",
+                      "secondary": "#00687a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f3f4f6",
+                      "error-container": "#ffdad6",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed": "#231b00",
+                      "secondary-container": "#57dffe",
+                      "background": "#f8f9fb",
+                      "on-error-container": "#93000a",
+                      "primary-fixed": "#ffe083",
+                      "on-secondary-fixed-variant": "#004e5c",
+                      "surface-bright": "#f8f9fb",
+                      "on-primary-container": "#6c5700",
+                      "on-tertiary-fixed-variant": "#8c0053",
+                      "surface-container-highest": "#e1e2e4",
+                      "inverse-surface": "#2e3132",
+                      "on-secondary-fixed": "#001f26",
+                      "on-error": "#ffffff",
+                      "on-surface-variant": "#4d4632",
+                      "primary-container": "#facc15",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#ffbfd6",
+                      "tertiary": "#b4136d",
+                      "surface-container": "#edeef0",
+                      "secondary-fixed-dim": "#4cd7f6",
+                      "surface": "#f8f9fb",
+                      "primary-fixed-dim": "#eec200",
+                      "inverse-on-surface": "#f0f1f3",
+                      "surface-dim": "#d9dadc",
+                      "secondary-fixed": "#acedff",
+                      "primary": "#735c00",
+                      "on-background": "#191c1e",
+                      "outline": "#7f7660",
+                      "surface-container-high": "#e7e8ea",
+                      "inverse-primary": "#eec200",
+                      "on-surface": "#191c1e",
+                      "on-primary-fixed-variant": "#574500",
+                      "on-secondary-container": "#006172",
+                      "tertiary-fixed-dim": "#ffb0cd",
+                      "on-secondary": "#ffffff",
+                      "surface-variant": "#e1e2e4",
+                      "tertiary-fixed": "#ffd9e4",
+                      "outline-variant": "#d1c6ab"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "48px",
+                      "gutter": "24px",
+                      "base": "8px",
+                      "border-width": "4px",
+                      "margin-mobile": "16px",
+                      "shadow-offset": "5px"
+              },
+              "fontFamily": {
+                      "display-xl": ["Anybody"],
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Anybody"],
+                      "headline-md": ["Anybody"],
+                      "headline-lg": ["Anybody"],
+                      "body-md": ["Inter"],
+                      "label-bold": ["Inter"]
+              },
+              "fontSize": {
+                      "display-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "900"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "900"}],
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "800"}],
+                      "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "900"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "label-bold": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .comic-shadow {
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+        }
+        .comic-shadow-active {
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+        }
+        .starburst {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        /* Custom Hover Transitions for Neo-Brutalism */
+        .neo-hover:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px 0px rgba(0,0,0,1);
+        }
+        .neo-active:active {
+            transform: translate(3px, 3px);
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+        }
+        .comic-bubble-tail {
+            position: absolute;
+            bottom: -20px;
+            left: 50px;
+            width: 40px;
+            height: 40px;
+            background: #facc15;
+            border-right: 4px solid black;
+            border-bottom: 4px solid black;
+            transform: skewY(45deg);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-tertiary-container selection:text-on-tertiary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background border-b-border-width border-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)]">
+<nav class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-7xl mx-auto">
+<div class="font-display-xl text-headline-md-mobile md:text-headline-md uppercase italic bg-primary-container text-on-primary-container px-4 py-2 border-border-width border-black shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] -rotate-2">
+                SOCIAL TOOLS BY ZA!!
+            </div>
+<div class="hidden md:flex items-center gap-gutter">
+<a class="text-on-tertiary-container font-bold border-b-border-width border-tertiary-container uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all" href="#">Tools</a>
+<a class="text-on-surface font-label-bold uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all" href="#">Features</a>
+<a class="text-on-surface font-label-bold uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all" href="#">Showcase</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:block font-label-bold text-on-surface hover:text-primary transition-colors">LOGIN</button>
+<button class="bg-secondary-container text-on-secondary-container border-border-width border-black px-6 py-2 font-label-bold uppercase comic-shadow neo-hover neo-active">
+                    GET STARTED
+                </button>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<!-- Hero Section -->
+<section class="mb-20 flex flex-col items-center text-center">
+<div class="relative inline-block mb-8">
+<div class="bg-primary-container border-border-width border-black p-8 md:p-12 comic-shadow rotate-1 transform-gpu">
+<h1 class="font-display-xl text-headline-lg-mobile md:text-display-xl text-on-primary-container uppercase leading-none">
+                        SOCIAL TOOLS BY ZA!!
+                    </h1>
+</div>
+<!-- Comic Bubble Tail Effect -->
+<div class="absolute -bottom-6 left-12 w-10 h-10 bg-primary-container border-r-border-width border-b-border-width border-black rotate-45 z-[-1] comic-shadow"></div>
+</div>
+<p class="max-w-2xl font-headline-md text-headline-md text-on-surface-variant leading-relaxed">
+                Alat tempur kuliah, ngoding, dan ngonten terlengkap buat bertahan hidup sampai lulus!
+            </p>
+</section>
+<!-- Main Grid: Comic Panels -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Video Downloader Card -->
+<div class="group relative bg-surface-container-lowest border-border-width border-black p-6 comic-shadow neo-hover neo-active flex flex-col h-full">
+<div class="absolute -top-4 -right-4 bg-secondary-container text-on-secondary-container font-display-xl text-headline-md px-4 py-2 border-border-width border-black comic-shadow rotate-12 z-10">
+                    BOOM!
+                </div>
+<div class="mb-6 h-48 w-full border-border-width border-black bg-secondary overflow-hidden relative">
+<img alt="Video Downloader" class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-500" data-alt="A high-contrast neo-brutalist graphic of a digital video interface with bold black outlines and vibrant cyan and yellow colors. The scene shows stylized playback controls and floating pixels in a comic book aesthetic. The lighting is flat and intense, with hard black shadows defining every shape, creating an energetic social media tool vibe." src="https://lh3.googleusercontent.com/aida/AP1WRLtE8ayYwLIUuj3WUBG0Z_ug2vJZHeQsTX2FxcQWVQ_HEd_-VVuYVx8lJSGKiXIE2LytHo_5sI1blD7HeVw0zWqDlt98NmdKttCpZ4nAbaOOWpUb0tPyy7eBI9TYJv1IzgZi3tvIgbxOcHNd1RiyyIDQjuGScQDVHmEcmTVCuV8nlO5QV51kQRd1tHD8nHRGvP6mZa-SspypCUUvJjH87pXX5xkr85RrvCVf4GkKYvmIGsk3krB8a5dOuEA"/>
+</div>
+<h3 class="font-headline-md text-headline-md mb-2 uppercase italic">Video Downloader</h3>
+<p class="font-body-md text-on-surface-variant mb-6 flex-grow">Sedot video dari platform manapun tanpa watermark. Sat set langsung dapet!</p>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-primary" data-icon="download">download</span>
+<span class="font-label-bold uppercase">1.2M Downloads</span>
+</div>
+</div>
+<!-- Markdown Previewer Card -->
+<div class="group relative bg-surface-container-lowest border-border-width border-black p-6 comic-shadow neo-hover neo-active flex flex-col h-full md:translate-y-4">
+<div class="absolute -top-4 -left-4 bg-tertiary text-on-tertiary font-display-xl text-headline-md px-4 py-2 border-border-width border-black comic-shadow -rotate-6 z-10">
+                    ZAP!
+                </div>
+<div class="mb-6 h-48 w-full border-border-width border-black bg-tertiary-container overflow-hidden relative">
+<img alt="Markdown Previewer" class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-500" data-alt="A stylized computer code editor interface rendered in a bold neo-brutalist comic book style. Strong black borders outline blocks of code in vibrant pink and purple tones. The atmosphere is tech-focused and creative, using high-energy visual metaphors like lightning bolts and geometric fragments in a light mode setting." src="https://lh3.googleusercontent.com/aida/AP1WRLsKrWuzsS2W8NkvcNjN7CH0Yi3Y3Ev2j1yw99-uaccw8YRY0V29rvUuTx5QWHnV9l_e_C3BwoH0DVFLD0pDuffJnrafmfJzivIXrZBE79y5eQq6QbULwYgp3GhMOWVDawmuN-OePYpB4sV8oyf76qx4gzKMWRg253-AIo78PufTVzEV3c8Bb9UegtV7E_wiIxSHmCQwlaksa1zhnS4ckuUtHz_zLq9Yvp75__Msip4GsTQznfbwdFqhvRvq"/>
+</div>
+<h3 class="font-headline-md text-headline-md mb-2 uppercase italic">Markdown Previewer</h3>
+<p class="font-body-md text-on-surface-variant mb-6 flex-grow">Tulis catatan kuliah pakai MD, liat hasilnya real-time. Auto rapih, auto A!</p>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-tertiary" data-icon="edit_note">edit_note</span>
+<span class="font-label-bold uppercase">Open Source</span>
+</div>
+</div>
+<!-- Image Converter Card -->
+<div class="group relative bg-surface-container-lowest border-border-width border-black p-6 comic-shadow neo-hover neo-active flex flex-col h-full">
+<div class="absolute -top-4 -right-4 bg-primary-container text-on-primary-container font-display-xl text-headline-md px-4 py-2 border-border-width border-black comic-shadow rotate-6 z-10">
+                    POW!
+                </div>
+<div class="mb-6 h-48 w-full border-border-width border-black bg-primary-fixed overflow-hidden relative">
+<img alt="Image Converter" class="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-500" data-alt="Abstract graphic representation of file conversion using bold neo-brutalist shapes and pop-art comic elements. Bright yellow background with heavy black ink strokes depicting arrows and transform symbols. The style is aggressive and tactile, suggesting speed and mechanical efficiency in a modern creative workflow." src="https://lh3.googleusercontent.com/aida/AP1WRLsxHd9tCPD-_Cw3dERBiMAXiH27_y2r9P-i4l1USsyrABdP6wc46WdYDFXkEiqRrlFTAViPACXkJNSzq-EJJbjDe29BSfg92WSyrzdfSZkgcWhNCRYVfI82Q9k8IRpGQic4UmqVZ3dl6U0sB-RMqtpf31BWQjz_Vo1apbzvU2vTTJbQCP9gm63xU3oPA7oadxAk_FIPE2xHoeMI_EAA1dTCrplkRCvizJ-WeYk0JlUshaw8f2VeZJC23oyD"/>
+</div>
+<h3 class="font-headline-md text-headline-md mb-2 uppercase italic">Image Converter</h3>
+<p class="font-body-md text-on-surface-variant mb-6 flex-grow">WebP ke PNG? JPG ke PDF? Hajar semua format file gambar kamu di sini.</p>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-primary" data-icon="transform">transform</span>
+<span class="font-label-bold uppercase">All Formats</span>
+</div>
+</div>
+<!-- JSON Formatter Card (Spans 2 columns on desktop) -->
+<div class="md:col-span-2 group relative bg-surface-container-lowest border-border-width border-black p-8 comic-shadow neo-hover neo-active flex flex-col md:flex-row gap-8">
+<div class="absolute -top-4 -left-4 bg-on-background text-background font-display-xl text-headline-md px-6 py-2 border-border-width border-black comic-shadow rotate-2 z-10">
+                    CODE!
+                </div>
+<div class="w-full md:w-1/2 h-64 border-border-width border-black bg-surface-variant overflow-hidden relative">
+<img alt="JSON Formatter" class="w-full h-full object-cover grayscale contrast-150 hover:grayscale-0 transition-all duration-500" data-alt="Detailed macro shot of complex code syntax on a screen, reimagined in a neo-brutalist aesthetic with intense black shadows and bright yellow highlights. The visual style mimics a printed comic book page with halftone patterns and sharp geometric divisions. The mood is focused and industrious, perfectly suited for a developer tool dashboard." src="https://lh3.googleusercontent.com/aida/AP1WRLut4bmfgGA8zFvn3nK2ccl3ZJkVjYBzpBbdjTM5LSYbyr8XJMCKAFsTFGid8qxdlEOBj_RIn4_CzeC3umpoc2Z7BrtZw4l2nKrJciBH-Nb4ILmniUjv_2NB0RYMKpY4O11sRE5za0opZYv1pZBhgPR6rhoSB4yLptqQIuX-eHzOIW-AEF73GuHlFWjif4_31IAwfU7a-bWFuqOMChV1QMT4TTlnNKvvRQL2Jem0eUYzpnmxirHbyYLryGk-"/>
+</div>
+<div class="w-full md:w-1/2 flex flex-col justify-center">
+<h3 class="font-headline-md text-headline-lg mb-4 uppercase italic">JSON Formatter &amp; Validator</h3>
+<p class="font-body-lg text-on-surface-variant mb-8">Data berantakan bikin pusing? Rapihin JSON kamu biar enak dibaca pas debugging atau bikin dokumentasi API.</p>
+<button class="bg-primary-container text-on-primary-container border-border-width border-black px-8 py-4 font-label-bold uppercase comic-shadow neo-hover neo-active w-fit">
+                        RAPINKAN SEKARANG
+                    </button>
+</div>
+</div>
+<!-- Stats/Mini Panel -->
+<div class="bg-tertiary-container border-border-width border-black p-8 comic-shadow flex flex-col items-center justify-center text-center -rotate-1">
+<span class="material-symbols-outlined text-on-tertiary-container text-[64px]" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<div class="font-display-xl text-headline-lg text-on-tertiary-container">99%</div>
+<div class="font-label-bold uppercase text-on-tertiary-fixed">Uptime Kecepatan Cahaya</div>
+</div>
+</div>
+<!-- Newsletter / Call to Action -->
+<section class="mt-24 bg-secondary border-border-width border-black p-12 comic-shadow flex flex-col md:flex-row items-center justify-between gap-8 rotate-1">
+<div class="md:w-1/2">
+<h2 class="font-display-xl text-headline-lg text-white uppercase leading-tight mb-4">Gak Mau Ketinggalan Update?</h2>
+<p class="text-secondary-fixed font-body-lg">Join 10.000+ mahasiswa dan konten kreator yang udah pakai Social Tools buat survive!</p>
+</div>
+<div class="md:w-1/2 w-full flex flex-col sm:flex-row gap-4">
+<input class="flex-grow bg-white border-border-width border-black p-4 font-body-md focus:ring-0 focus:outline-none focus:bg-primary-fixed-dim transition-all comic-shadow" placeholder="Email kamu di sini..." type="email"/>
+<button class="bg-primary-container text-on-primary-container border-border-width border-black px-8 py-4 font-label-bold uppercase comic-shadow neo-hover neo-active">SUBSCRIBE!</button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-highest border-t-border-width border-black">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-12 max-w-7xl mx-auto gap-gutter">
+<div class="font-display-xl text-headline-md text-on-surface italic">
+                SOCIAL TOOLS BY ZA!!
+            </div>
+<div class="flex gap-8">
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Terms</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Contact</a>
+<a class="text-on-surface-variant font-label-bold uppercase hover:text-primary transition-colors" href="#">Support</a>
+</div>
+<div class="text-body-md text-on-surface text-center md:text-right">
+                LETTER TO THE EDITOR: © 2024 ZA PRODUCTIONS
+            </div>
+</div>
+</footer>
+<script>
+        // Micro-interaction: Randomly tilt cards slightly on load for extra brutalism
+        document.querySelectorAll('.neo-hover').forEach(card => {
+            if(!card.classList.contains('rotate-1') && !card.classList.contains('-rotate-1')) {
+                const tilt = (Math.random() - 0.5) * 2;
+                card.style.transform = `rotate(${tilt}deg)`;
+            }
+        });
+
+        // Hover effect reset logic to maintain tilt while hovering
+        document.querySelectorAll('.neo-hover').forEach(card => {
+            const originalTransform = card.style.transform;
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = `${originalTransform} translate(-2px, -2px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = originalTransform;
+            });
+        });
+    </script>
+</body></html>
