@@ -60,6 +60,7 @@ function getPlatformIcon(platform: string): string {
 export default function LinktreeGenerator() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const photoImgRef = useRef<HTMLImageElement | null>(null);
   const [name, setName] = useState("");
   const [links, setLinks] = useState<LinkItem[]>([
     { id: nextId(), label: "Instagram", url: "" },
@@ -67,6 +68,7 @@ export default function LinktreeGenerator() {
   ]);
   const [downloading, setDownloading] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoReady, setPhotoReady] = useState(0);
 
   const updateLink = (id: string, field: "label" | "url", value: string) =>
     setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
@@ -82,9 +84,24 @@ export default function LinktreeGenerator() {
     reader.readAsDataURL(file);
   };
 
+  useEffect(() => {
+    if (!photo) {
+      photoImgRef.current = null;
+      setPhotoReady((n) => n + 1);
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      photoImgRef.current = img;
+      setPhotoReady((n) => n + 1);
+    };
+    img.src = photo;
+  }, [photo]);
+
   const renderCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    if (photo && !photoImgRef.current) return;
     const ctx = canvas.getContext("2d")!;
     const size = 500;
 
@@ -123,15 +140,11 @@ export default function LinktreeGenerator() {
     ctx.closePath();
     ctx.clip();
 
-    if (photo) {
-      const img = new Image();
-      img.src = photo;
-      const minSize = avatarR * 2;
-      const sx = img.naturalWidth > img.naturalHeight
-        ? (img.naturalWidth - img.naturalHeight) / 2 : 0;
-      const sy = img.naturalHeight > img.naturalWidth
-        ? (img.naturalHeight - img.naturalWidth) / 2 : 0;
+    if (photo && photoImgRef.current) {
+      const img = photoImgRef.current;
       const s = Math.min(img.naturalWidth, img.naturalHeight);
+      const sx = (img.naturalWidth - s) / 2;
+      const sy = (img.naturalHeight - s) / 2;
       ctx.drawImage(img, sx, sy, s, s, size / 2 - avatarR, y, avatarR * 2, avatarR * 2);
     } else {
       ctx.fillStyle = "#111";
@@ -219,7 +232,7 @@ export default function LinktreeGenerator() {
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
     ctx.fillText("socialtoolsbyza", size / 2, size - 10);
-  }, [name, links, photo]);
+  }, [name, links, photo, photoReady]);
 
   useEffect(() => { renderCanvas(); }, [renderCanvas]);
 
