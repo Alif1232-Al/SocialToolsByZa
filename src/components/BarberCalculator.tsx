@@ -19,7 +19,8 @@ export default function BarberCalculator() {
   const grandTotal = totalDewasa + totalAnak + totalSemir;
   const owner = grandTotal * OWNER_SHARE;
   const employeeGross = grandTotal * EMPLOYEE_SHARE;
-  const employeeNet = Math.max(0, employeeGross - uangMakan);
+  const employeeGet = employeeGross + uangMakan;
+  const ownerGet = owner - uangMakan;
   const totalCustomers = dewasa + anak + semir;
   const hasResult = totalCustomers > 0;
 
@@ -86,7 +87,7 @@ export default function BarberCalculator() {
             </div>
 
             <div className="text-center">
-              <p className="font-body text-xs text-gray-500 uppercase tracking-wider">Pembagian 60:40</p>
+              <p className="font-body text-xs text-gray-500 uppercase tracking-wider">Bagi Hasil 60:40</p>
             </div>
 
             <div className="flex gap-3">
@@ -100,14 +101,17 @@ export default function BarberCalculator() {
               </div>
             </div>
 
-            <div className="bg-orange-50 border-2 border-orange-300 p-3 text-center">
-              <p className="font-body text-[10px] uppercase tracking-widest text-orange-700">Potongan Uang Makan</p>
-              <p className="font-display text-lg font-black text-orange-700">-{uangMakan}k</p>
-              <div className="border-t border-orange-300 mt-2 pt-2 flex justify-between text-sm">
-                <span className="font-body font-bold">Owner Terima</span>
-                <span className="font-display font-black">{owner}k</span>
-                <span className="font-body font-bold">Karyawan Terima</span>
-                <span className="font-display font-black">{employeeNet}k</span>
+            <div className="bg-orange-50 border-2 border-orange-300 p-3">
+              <p className="font-body text-[10px] uppercase tracking-widest text-orange-700 text-center">+ Uang Makan {uangMakan}k (Karyawan)</p>
+              <div className="mt-2 space-y-1">
+                <div className="flex justify-between text-sm border-b border-orange-200 pb-1">
+                  <span className="font-body font-bold">Owner (60% - {uangMakan}k)</span>
+                  <span className="font-display font-black">{ownerGet}k</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="font-body font-bold">Karyawan (40% + {uangMakan}k)</span>
+                  <span className="font-display font-black">{employeeGet}k</span>
+                </div>
               </div>
             </div>
           </div>
