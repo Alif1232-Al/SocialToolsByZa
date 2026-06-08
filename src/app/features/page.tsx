@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import {
   Download, Sparkles, FileText, Scan, Search, Image, Music,
   Braces, Terminal, MessageCircle, Link, Scissors, ArrowRight, Check, Star
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Features",
+  description: "Lihat semua fitur SocialToolsByZa: TikTok Downloader, Remove Background, PDF to Word, OCR, Jurnal Finder, dan banyak lagi!",
+};
 
 const features = [
   {

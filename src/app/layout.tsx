@@ -5,8 +5,28 @@ import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/AuthContext";
 
 export const metadata: Metadata = {
-  title: "SocialToolsByZa!! - Alat Tempur Mahasiswa IT",
-  description: "Alat tempur kuliah, ngoding, dan ngonten terlengkap buat bertahan hidup sampai lulus!",
+  title: {
+    default: "SocialToolsByZa!! - Alat Tempur Mahasiswa IT",
+    template: "%s | SocialToolsByZa",
+  },
+  description: "Alat tempur kuliah, ngoding, dan ngonten terlengkap buat bertahan hidup sampai lulus! TikTok Downloader, PDF to Word, Remove Background, OCR, Jurnal Finder, dan banyak lagi.",
+  keywords: ["social tools", "tiktok downloader", "pdf to word", "remove background", "ocr", "jurnal finder", "alat mahasiswa", "ngoding tools", "gen z tools"],
+  authors: [{ name: "SocialToolsByZa" }],
+  openGraph: {
+    title: "SocialToolsByZa!! - Alat Tempur Mahasiswa IT",
+    description: "9+ alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Gratis!",
+    url: "https://socialtoolsbyza.vercel.app",
+    siteName: "SocialToolsByZa",
+    locale: "id_ID",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  verification: {
+    google: "YOUR_GOOGLE_VERIFICATION_CODE",
+  },
   icons: {
     icon: "/favicon.svg",
     apple: "/favicon.svg",

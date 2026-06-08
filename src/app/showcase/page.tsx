@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import {
   Download, Sparkles, FileText, Scan, Search, Image, Music,
   Braces, Terminal, Star, ArrowRight, ExternalLink, Link, Scissors
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Showcase",
+  description: "Lihat demo cara pakai setiap tools di SocialToolsByZa. Ikuti langkah-langkahnya!",
+};
 
 const demos = [
   {
