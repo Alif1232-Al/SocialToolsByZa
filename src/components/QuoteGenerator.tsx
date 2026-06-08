@@ -61,8 +61,8 @@ export default function QuoteGenerator() {
     const canvas = canvasRef.current;
     if (!canvas || !text.trim()) return;
     const ctx = canvas.getContext("2d")!;
-    const size = 600;
-    const wrapWidth = 520;
+    const size = 500;
+    const wrapWidth = 270;
 
     canvas.width = size;
     canvas.height = size;
