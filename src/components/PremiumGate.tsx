@@ -55,7 +55,7 @@ export default function PremiumGate({ children, title }: PremiumGateProps) {
   }
 
   if (user) {
-    return <>{children}</>;
+    return <div className="h-full flex flex-col">{children}</div>;
   }
 
   return <Locked title={title} />;
