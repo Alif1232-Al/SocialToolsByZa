@@ -1,6 +1,6 @@
 "use client";
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Link, Plus, Trash2, Download } from "lucide-react";
+import { Link, Plus, Trash2, Download, Camera } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
@@ -23,6 +23,14 @@ const PLATFORMS = [
   "Facebook", "Threads", "Snapchat", "Discord", "Spotify",
 ];
 
+const PLATFORM_ICONS: Record<string, string> = {
+  instagram: "📸", tiktok: "🎵", youtube: "▶️",
+  "twitter / x": "🐦", linkedin: "💼", whatsapp: "💬",
+  telegram: "✈️", github: "💻", website: "🌐",
+  shopee: "🛒", facebook: "👍", threads: "🧵",
+  snapchat: "👻", discord: "🎮", spotify: "🎧",
+};
+
 type LinkItem = { id: string; label: string; url: string };
 
 let idCounter = 0;
@@ -42,21 +50,37 @@ function getPlatformColor(platform: string): string {
   return "#333";
 }
 
+function getPlatformIcon(platform: string): string {
+  for (const [key, val] of Object.entries(PLATFORM_ICONS)) {
+    if (platform.toLowerCase().includes(key)) return val;
+  }
+  return "🔗";
+}
+
 export default function LinktreeGenerator() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [links, setLinks] = useState<LinkItem[]>([
     { id: nextId(), label: "Instagram", url: "" },
     { id: nextId(), label: "TikTok", url: "" },
   ]);
   const [downloading, setDownloading] = useState(false);
+  const [photo, setPhoto] = useState<string | null>(null);
 
   const updateLink = (id: string, field: "label" | "url", value: string) =>
     setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
 
   const addLink = () => setLinks((prev) => [...prev, { id: nextId(), label: "Website", url: "" }]);
-
   const removeLink = (id: string) => setLinks((prev) => prev.filter((l) => l.id !== id));
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setPhoto(reader.result as string);
+    reader.readAsDataURL(file);
+  };
 
   const renderCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -67,85 +91,126 @@ export default function LinktreeGenerator() {
     canvas.width = size;
     canvas.height = size;
 
-    ctx.fillStyle = "#fafafa";
+    const grad = ctx.createLinearGradient(0, 0, size, size);
+    grad.addColorStop(0, "#fdf2f8");
+    grad.addColorStop(0.5, "#fce7f3");
+    grad.addColorStop(1, "#fef3c7");
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, size, size);
 
-    const margin = 30;
+    const margin = 32;
     const contentW = size - margin * 2;
-    let y = margin + 10;
+    let y = margin + 8;
 
     ctx.textAlign = "center";
 
     const displayName = name.trim() || "yourname";
-    const initial = displayName[0].toUpperCase();
-    const avatarR = 30;
+    const avatarR = 36;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(size / 2, y + avatarR, avatarR + 3, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff";
+    ctx.shadowColor = "rgba(0,0,0,0.15)";
+    ctx.shadowBlur = 10;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    ctx.save();
     ctx.beginPath();
     ctx.arc(size / 2, y + avatarR, avatarR, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+
+    if (photo) {
+      const img = new Image();
+      img.src = photo;
+      const minSize = avatarR * 2;
+      const sx = img.naturalWidth > img.naturalHeight
+        ? (img.naturalWidth - img.naturalHeight) / 2 : 0;
+      const sy = img.naturalHeight > img.naturalWidth
+        ? (img.naturalHeight - img.naturalWidth) / 2 : 0;
+      const s = Math.min(img.naturalWidth, img.naturalHeight);
+      ctx.drawImage(img, sx, sy, s, s, size / 2 - avatarR, y, avatarR * 2, avatarR * 2);
+    } else {
+      ctx.fillStyle = "#111";
+      ctx.fillRect(size / 2 - avatarR, y, avatarR * 2, avatarR * 2);
+      ctx.fillStyle = "#fff";
+      ctx.font = 'bold 28px "Arial",sans-serif';
+      ctx.textBaseline = "middle";
+      ctx.fillText(displayName[0].toUpperCase(), size / 2, y + avatarR);
+    }
+    ctx.restore();
+
+    y += avatarR * 2 + 14;
+
     ctx.fillStyle = "#111";
-    ctx.fill();
-    ctx.fillStyle = "#fff";
     ctx.font = 'bold 24px "Arial",sans-serif';
     ctx.textBaseline = "middle";
-    ctx.fillText(initial, size / 2, y + avatarR);
-    y += avatarR * 2 + 12;
-
-    ctx.fillStyle = "#111";
-    ctx.font = 'bold 22px "Arial",sans-serif';
-    ctx.textBaseline = "middle";
     ctx.fillText(displayName, size / 2, y);
-    y += 34;
+    y += 32;
 
-    ctx.font = '13px "Arial",sans-serif';
-    ctx.fillStyle = "#888";
-    ctx.fillText("linktree", size / 2, y);
-    y += 24;
+    ctx.font = '12px "Arial",sans-serif';
+    ctx.fillStyle = "#999";
+    ctx.fillText(links.filter((l) => l.label.trim()).length + " links", size / 2, y);
+    y += 22;
 
     const btnH = 44;
     const btnGap = 10;
+    const btnRadius = 22;
 
     const visibleLinks = links.filter((l) => l.label.trim());
     const totalBtnH = visibleLinks.length * btnH + (visibleLinks.length - 1) * btnGap;
-    const availableSpace = size - y - margin - 20;
+    const availableSpace = size - y - margin - 24;
     let finalBtnH = btnH;
     if (totalBtnH > availableSpace) {
       finalBtnH = Math.floor((availableSpace - (visibleLinks.length - 1) * btnGap) / visibleLinks.length);
       finalBtnH = Math.max(28, finalBtnH);
     }
 
-    const btnRadius = 10;
     ctx.textBaseline = "middle";
 
     for (const link of visibleLinks) {
-      if (y + finalBtnH > size - margin) break;
+      if (y + finalBtnH > size - margin - 14) break;
       const color = getPlatformColor(link.label);
       const btnX = margin;
       const btnW = contentW;
 
-      ctx.shadowColor = "rgba(0,0,0,0.08)";
-      ctx.shadowBlur = 6;
+      ctx.shadowColor = "rgba(0,0,0,0.1)";
+      ctx.shadowBlur = 8;
       ctx.shadowOffsetX = 0;
-      ctx.shadowOffsetY = 2;
+      ctx.shadowOffsetY = 3;
 
       roundRect(ctx, btnX, y, btnW, finalBtnH, btnRadius);
       ctx.fillStyle = color;
       ctx.fill();
       ctx.shadowBlur = 0;
 
-      const fs = Math.min(15, Math.floor(finalBtnH * 0.38));
+      const fs = Math.min(14, Math.floor(finalBtnH * 0.4));
+      const icon = getPlatformIcon(link.label);
+      ctx.font = `${fs + 4}px "Arial",sans-serif`;
+      ctx.textAlign = "left";
+      ctx.fillText(icon, btnX + 14, y + finalBtnH / 2);
+
       ctx.font = `bold ${fs}px "Arial",sans-serif`;
       ctx.fillStyle = "#fff";
+      const labelX = btnX + 38;
       ctx.textAlign = "left";
-      ctx.fillText(link.label, btnX + 14, y + finalBtnH / 2);
+      ctx.fillText(link.label, labelX, y + finalBtnH / 2);
 
       if (link.url.trim()) {
-        ctx.font = `${fs - 2}px "Arial",sans-serif`;
-        ctx.fillStyle = "rgba(255,255,255,0.7)";
+        ctx.font = `${fs - 1}px "Arial",sans-serif`;
+        ctx.fillStyle = "rgba(255,255,255,0.65)";
         ctx.textAlign = "right";
         const displayUrl = link.url.replace(/^https?:\/\//, "").replace(/\/$/, "");
-        ctx.fillText(displayUrl, btnX + btnW - 14, y + finalBtnH / 2);
+        const maxUrlW = btnW - (link.label.length * fs * 0.55) - 80;
+        const truncated = ctx.measureText(displayUrl).width > maxUrlW
+          ? displayUrl.substring(0, Math.floor(maxUrlW / (fs * 0.5))) + ".."
+          : displayUrl;
+        ctx.fillText(truncated, btnX + btnW - 14, y + finalBtnH / 2);
       }
 
-      ctx.textAlign = "center";
       y += finalBtnH + btnGap;
     }
 
@@ -154,7 +219,7 @@ export default function LinktreeGenerator() {
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
     ctx.fillText("socialtoolsbyza", size / 2, size - 10);
-  }, [name, links]);
+  }, [name, links, photo]);
 
   useEffect(() => { renderCanvas(); }, [renderCanvas]);
 
@@ -175,7 +240,7 @@ export default function LinktreeGenerator() {
         <Link className="w-6 h-6" />Linktree Generator
       </h3>
       <p className="font-body text-body-md text-gray-600 mb-4">
-        Bikin linktree keren buat bio IG-mu. Tinggal masukin link, download, upload ke bio!
+        Bikin linktree aesthetic buat bio IG. Upload foto, tambah link, download!
       </p>
 
       <div className="flex flex-col gap-3">
@@ -186,6 +251,15 @@ export default function LinktreeGenerator() {
           placeholder="Nama kamu..."
         />
 
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          className="comic-btn bg-pink-500 text-white text-sm flex items-center justify-center gap-2 py-2"
+        >
+          <Camera className="w-4 h-4" />
+          {photo ? "GANTI FOTO" : "UPLOAD FOTO"}
+        </button>
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+
         <div className="max-h-[240px] overflow-y-auto space-y-2 pr-1">
           {links.map((l) => (
             <div key={l.id} className="flex gap-1 items-center">
@@ -195,7 +269,7 @@ export default function LinktreeGenerator() {
                 className="border-2 border-black p-2 font-body font-bold text-xs outline-none bg-white w-[110px] shrink-0"
               >
                 {PLATFORMS.map((p) => (
-                  <option key={p} value={p}>{p}</option>
+                  <option key={p} value={p}>{getPlatformIcon(p)} {p}</option>
                 ))}
               </select>
               <input
@@ -215,11 +289,9 @@ export default function LinktreeGenerator() {
           <Plus className="w-4 h-4" /> TAMBAH LINK
         </button>
 
-        <div className="flex gap-2">
-          <button onClick={handleDownload} disabled={downloading} className="comic-btn bg-black text-white flex-1 text-sm flex items-center justify-center gap-1 disabled:opacity-50">
-            <Download className="w-4 h-4" /> {downloading ? "..." : "DOWNLOAD"}
-          </button>
-        </div>
+        <button onClick={handleDownload} disabled={downloading} className="comic-btn bg-black text-white w-full text-sm flex items-center justify-center gap-1 disabled:opacity-50 py-2">
+          <Download className="w-4 h-4" /> {downloading ? "..." : "DOWNLOAD PNG"}
+        </button>
 
         <div className="flex justify-center">
           <canvas ref={canvasRef} className="w-full max-w-[380px] shadow-[4px_4px_0_#000]" />
