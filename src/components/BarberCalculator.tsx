@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Scissors, User, Baby, Palette, RefreshCw, Utensils, Download } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 
 const PRICES = { dewasa: 25, anak: 20, semir: 40 };
 const OWNER_SHARE = 0.6;
@@ -61,7 +61,7 @@ export default function BarberCalculator() {
       ["Semir Rambut", "40.000", semir.toString(), `${totalSemir}.000`],
     ];
 
-    (doc as any).autoTable({
+    const result = autoTable(doc, {
       startY: y,
       head: [["Layanan", "Harga", "Jumlah", "Total"]],
       body: rows,
@@ -79,7 +79,7 @@ export default function BarberCalculator() {
       margin: { left: 10, right: 10 },
     });
 
-    y = (doc as any).lastAutoTable.finalY + 16;
+    y = (result as any).lastAutoTable.finalY + 16;
 
     doc.setDrawColor(0);
     doc.setLineWidth(0.4);
