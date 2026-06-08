@@ -1,6 +1,6 @@
 import {
   Download, Sparkles, FileText, Scan, Search, Image, Music,
-  Braces, Terminal, MessageCircle, Quote, ArrowRight, Check, Star
+  Braces, Terminal, MessageCircle, Link, ArrowRight, Check, Star
 } from "lucide-react";
 
 const features = [
@@ -102,6 +102,15 @@ const features = [
     bgColor: "bg-white",
     desc: "Bikin quote kocak anak gen z buat story/feed IG. Random quote atau tulis sendiri, langsung jadi gambar!",
     highlights: ["30+ random quotes", "Editable text", "Download PNG"],
+  },
+  {
+    icon: Link,
+    title: "Linktree Generator",
+    badge: "TREE!",
+    badgeColor: "bg-green-500 text-white",
+    bgColor: "bg-white",
+    desc: "Buat linktree keren buat bio IG. Tambahin semua sosial media lo, tinggal download dan upload!",
+    highlights: ["15+ platforms", "Custom name", "Download PNG"],
   },
 ];
 

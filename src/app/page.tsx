@@ -13,6 +13,7 @@ const PictureToPdf = dynamic(() => import("@/components/PictureToPdf"), { ssr: f
 const JsonFormatter = dynamic(() => import("@/components/JsonFormatter"), { ssr: false });
 const MarkdownPreviewer = dynamic(() => import("@/components/MarkdownPreviewer"), { ssr: false });
 const QuoteGenerator = dynamic(() => import("@/components/QuoteGenerator"), { ssr: false });
+const LinktreeGenerator = dynamic(() => import("@/components/LinktreeGenerator"), { ssr: false });
 
 export default function Home() {
   return (
@@ -49,6 +50,9 @@ export default function Home() {
         </ErrorBoundary>
         <ErrorBoundary>
           <PremiumGate title="Quote Generator"><QuoteGenerator /></PremiumGate>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <PremiumGate title="Linktree Generator"><LinktreeGenerator /></PremiumGate>
         </ErrorBoundary>
       </div>
     </>
