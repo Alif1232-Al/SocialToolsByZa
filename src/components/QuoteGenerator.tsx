@@ -62,7 +62,7 @@ export default function QuoteGenerator() {
     if (!canvas || !text.trim()) return;
     const ctx = canvas.getContext("2d")!;
     const size = 500;
-    const wrapWidth = 270;
+    const wrapWidth = 500;
 
     canvas.width = size;
     canvas.height = size;
@@ -82,7 +82,7 @@ export default function QuoteGenerator() {
       if (w > maxW) maxW = w;
     }
 
-    let fs = Math.floor(120 * ((wrapWidth * 0.99) / maxW));
+    let fs = Math.floor(120 * (wrapWidth / maxW));
     fs = Math.max(28, fs);
 
     ctx.font = `900 ${fs}px "Inter","Arial Black",Impact,sans-serif`;
@@ -94,22 +94,6 @@ export default function QuoteGenerator() {
       } else {
         const wrapped = wrapText(ctx, line, wrapWidth);
         allLines.push(...wrapped);
-      }
-    }
-
-    if (allLines.length * (fs + fs * 0.12) > size * 0.98) {
-      const ratio = (size * 0.98) / (allLines.length * (fs + fs * 0.12));
-      fs = Math.floor(fs * ratio);
-      fs = Math.max(14, fs);
-      ctx.font = `900 ${fs}px "Inter","Arial Black",Impact,sans-serif`;
-      allLines.length = 0;
-      for (const line of rawLines) {
-        if (ctx.measureText(line).width <= wrapWidth) {
-          allLines.push(line);
-        } else {
-          const wrapped = wrapText(ctx, line, wrapWidth);
-          allLines.push(...wrapped);
-        }
       }
     }
 
