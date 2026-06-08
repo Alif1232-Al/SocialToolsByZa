@@ -47,6 +47,6 @@ export default class ErrorBoundary extends Component<Props, State> {
         )
       );
     }
-    return <div className="h-full flex flex-col">{this.props.children}</div>;
+    return <>{this.props.children}</>;
   }
 }

@@ -22,47 +22,45 @@ export default function Home() {
     <>
       <HeroSection />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-start">
-        <ErrorBoundary>
-          <PremiumGate title="Photobox Comic Studio"><Photobox /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="TikTok Downloader"><TikTokDownloader /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="Remove Background"><RemoveBackground /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="PDF to Word"><PdfToWord /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="OCR Picture to Text"><OcrPictureToText /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="Picture to PDF"><PictureToPdf /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="Dorking OSINT"><Dorking /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="JSON Formatter"><JsonFormatter /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="Markdown Previewer"><MarkdownPreviewer /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="Quote Generator"><QuoteGenerator /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="Linktree Generator"><LinktreeGenerator /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
-          <PremiumGate title="Barber Kalkulator"><BarberCalculator /></PremiumGate>
-        </ErrorBoundary>
-        <div className="md:col-span-full">
-          <ErrorBoundary>
-            <PremiumGate title="Jurnal Finder"><JurnalFinder /></PremiumGate>
-          </ErrorBoundary>
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Photobox Comic Studio"><Photobox /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="TikTok Downloader"><TikTokDownloader /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Remove Background"><RemoveBackground /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="PDF to Word"><PdfToWord /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="OCR Picture to Text"><OcrPictureToText /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Picture to PDF"><PictureToPdf /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Dorking OSINT"><Dorking /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="JSON Formatter"><JsonFormatter /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Markdown Previewer"><MarkdownPreviewer /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Quote Generator"><QuoteGenerator /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Linktree Generator"><LinktreeGenerator /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Barber Kalkulator"><BarberCalculator /></PremiumGate></ErrorBoundary>
+        </div>
+        <div className="break-inside-avoid">
+          <ErrorBoundary><PremiumGate title="Jurnal Finder"><JurnalFinder /></PremiumGate></ErrorBoundary>
         </div>
       </div>
     </>
