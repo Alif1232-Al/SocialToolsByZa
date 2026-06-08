@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "SocialToolsByZa!! - Alat Tempur Mahasiswa IT",
     description: "9+ alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Gratis!",
-    url: "https://socialtoolsbyza.vercel.app",
+    url: "https://social-tools-by-za.vercel.app",
     siteName: "SocialToolsByZa",
     locale: "id_ID",
     type: "website",
