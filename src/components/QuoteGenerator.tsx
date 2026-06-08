@@ -74,25 +74,31 @@ export default function QuoteGenerator() {
     ctx.fillRect(0, 0, size, size);
 
     const rawLines = splitLines(text.trim());
-    const maxRawLen = Math.max(...rawLines.map((l) => l.length));
-    const fs =
-      maxRawLen < 6 ? 100 : maxRawLen < 10 ? 80 : maxRawLen < 16 ? 62 : maxRawLen < 24 ? 50 : 40;
+    if (!rawLines.some((l) => l.trim())) return;
+
+    ctx.font = '900 120px "Inter","Arial Black",Impact,sans-serif';
+    let maxW = 0;
+    for (const line of rawLines) {
+      const w = ctx.measureText(line).width;
+      if (w > maxW) maxW = w;
+    }
+
+    let fs = Math.floor(120 * ((maxTextWidth * 0.88) / maxW));
+    fs = Math.min(180, Math.max(28, fs));
 
     ctx.font = `900 ${fs}px "Inter","Arial Black",Impact,sans-serif`;
 
     const allLines: string[] = [];
     for (const line of rawLines) {
-      if (ctx.measureText(line).width <= maxTextWidth && line) {
+      if (ctx.measureText(line).width <= maxTextWidth) {
         allLines.push(line);
-      } else if (line) {
+      } else {
         const wrapped = wrapText(ctx, line, maxTextWidth);
         allLines.push(...wrapped);
-      } else {
-        allLines.push("");
       }
     }
 
-    const lineSpacing = fs * 0.1;
+    const lineSpacing = fs * 0.12;
     const lineHeight = fs + lineSpacing;
     const totalTextHeight = allLines.length * lineHeight;
     const startY = (size - totalTextHeight) / 2 + lineHeight / 2;
