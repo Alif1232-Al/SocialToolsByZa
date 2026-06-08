@@ -50,18 +50,28 @@ function LinkContent() {
   const initial = displayName[0].toUpperCase();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-pink-100 to-amber-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-yellow-300 via-pink-300 to-cyan-300 flex items-center justify-center p-4">
+      <div className="absolute inset-0 opacity-20" style={{
+        backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)",
+        backgroundSize: "24px 24px",
+      }} />
+      <div className="absolute -top-16 -right-16 w-48 h-48 bg-pink-400 border-4 border-black rotate-12 opacity-30" />
+      <div className="absolute -bottom-12 -left-12 w-36 h-36 bg-yellow-400 border-4 border-black -rotate-6 opacity-30" />
+
+      <div className="relative w-full max-w-md z-10">
         <div className="flex flex-col items-center mb-6">
-          {photoData ? (
-            <img src={photoData} alt="" className="w-20 h-20 rounded-full object-cover shadow-lg border-4 border-white mb-4" />
-          ) : (
-            <div className="w-20 h-20 rounded-full bg-black text-white flex items-center justify-center text-3xl font-bold shadow-lg border-4 border-white mb-4">
-              {initial}
-            </div>
-          )}
-          <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
-          <p className="text-sm text-gray-500 mt-1">{links.length} links</p>
+          <div className="relative">
+            {photoData ? (
+              <img src={photoData} alt="" className="w-24 h-24 rounded-full object-cover border-4 border-black shadow-[4px_4px_0_#000]" />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-black text-white flex items-center justify-center text-4xl font-black border-4 border-black shadow-[4px_4px_0_#000]">
+                {initial}
+              </div>
+            )}
+            <div className="absolute -top-2 -right-2 w-7 h-7 bg-cyan-400 border-2 border-black rounded-full flex items-center justify-center text-xs font-bold">✦</div>
+          </div>
+          <h1 className="mt-4 text-3xl font-black uppercase italic text-black drop-shadow-[2px_2px_0_rgba(255,255,255,0.8)]">{displayName}</h1>
+          <p className="text-xs font-bold text-gray-700 mt-1 uppercase tracking-widest">{links.length} LINKS</p>
         </div>
 
         <div className="space-y-3">
@@ -71,8 +81,8 @@ function LinkContent() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 w-full px-5 py-3.5 rounded-full text-white font-semibold text-sm shadow-md hover:scale-[1.02] active:scale-[0.98] transition-transform"
-              style={{ backgroundColor: getColor(link.label) }}
+              className="flex items-center gap-3 w-full px-5 py-3.5 rounded-full text-white font-bold text-sm border-3 border-black shadow-[3px_3px_0_#000] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
+              style={{ backgroundColor: getColor(link.label), borderWidth: 3, borderStyle: "solid", borderColor: "#000" }}
             >
               <span className="text-lg">{getIcon(link.label)}</span>
               <span className="flex-1">{link.label}</span>
@@ -83,7 +93,7 @@ function LinkContent() {
           ))}
         </div>
 
-        <p className="text-center text-[10px] text-gray-400 mt-8">
+        <p className="text-center text-[10px] font-bold text-black opacity-40 mt-8 uppercase tracking-widest">
           socialtoolsbyza
         </p>
       </div>
@@ -94,8 +104,8 @@ function LinkContent() {
 export default function LinkPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-6 h-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-yellow-200">
+        <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin" />
       </div>
     }>
       <LinkContent />
