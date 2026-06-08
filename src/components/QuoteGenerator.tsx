@@ -85,7 +85,7 @@ export default function QuoteGenerator() {
     else if (maxChars <= 25) fs = 85;
     else fs = 65;
 
-    ctx.font = `900 ${fs}px "Arial Black",Impact,sans-serif`;
+    ctx.font = `${fs}px "Arial","Helvetica",sans-serif`;
 
     const allLines: string[] = [];
     for (const line of rawLines) {
@@ -98,14 +98,14 @@ export default function QuoteGenerator() {
     }
 
     let finalFs = fs;
-    const lineH = finalFs * 1.15;
+    const lineH = finalFs * 1.25;
     const totalH = allLines.length * lineH;
     if (totalH > size * 0.95) {
       const ratio = (size * 0.95) / totalH;
       finalFs = Math.floor(finalFs * ratio);
     }
 
-    ctx.font = `900 ${finalFs}px "Arial Black",Impact,sans-serif`;
+    ctx.font = `${finalFs}px "Arial","Helvetica",sans-serif`;
 
     const lineSpacing = finalFs * 0.15;
     const lineHeight = finalFs + lineSpacing;
