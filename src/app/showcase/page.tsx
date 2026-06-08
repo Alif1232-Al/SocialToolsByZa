@@ -85,6 +85,15 @@ const demos = [
     desc: "Tulis Markdown di kiri, lihat HTML preview real-time di kanan. Bisa print PDF juga!",
     steps: ["Tulis Markdown", "Preview real-time", "Copy HTML", "Print PDF"],
   },
+  {
+    icon: Sparkles,
+    title: "Quote Generator",
+    badge: "QUOTE!",
+    badgeColor: "bg-pink-500 text-white",
+    bgColor: "bg-white",
+    desc: "Bikin quote kocak anak gen z siap upload. Random quote langsung jadi gambar 1:1 buat story/feed IG!",
+    steps: ["Klik ACKAHIN! buat quote random", "Edit sendiri kalo mau", "Klik DOWNLOAD", "Upload ke story/feed"],
+  },
 ];
 
 export default function ShowcasePage() {

@@ -68,37 +68,54 @@ export default function QuoteGenerator() {
     const canvas = canvasRef.current;
     if (!canvas || !text.trim()) return;
     const ctx = canvas.getContext("2d")!;
-    const w = 600;
-    const padding = 40;
-    const borderSize = 6;
-    const maxTextWidth = w - padding * 2;
-    const fontSize = 34;
+    const size = 600;
+    const accentHeight = 8;
+    const watermarkSize = 11;
+    const padding = 48;
+    const maxTextWidth = size - padding * 2;
+    const fontSize = 38;
 
-    ctx.font = `900 ${fontSize}px "Inter","Arial Black",Impact,sans-serif`;
-    const lines = wrapText(ctx, text.trim(), maxTextWidth);
-    const lineHeight = fontSize * 1.4;
-    const textHeight = lines.length * lineHeight;
-    const totalHeight = Math.max(300, textHeight + padding * 2);
+    canvas.width = size;
+    canvas.height = size;
 
-    canvas.width = w;
-    canvas.height = totalHeight;
-
-    ctx.font = `900 ${fontSize}px "Inter","Arial Black",Impact,sans-serif`;
     ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
 
     ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, w, totalHeight);
+    ctx.fillRect(0, 0, size, size);
 
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = borderSize;
-    ctx.strokeRect(borderSize / 2, borderSize / 2, w - borderSize, totalHeight - borderSize);
+    const drawAccent = (y: number) => {
+      const grad = ctx.createLinearGradient(0, y, size, y);
+      grad.addColorStop(0, "#ec4899");
+      grad.addColorStop(0.5, "#06b6d4");
+      grad.addColorStop(1, "#ec4899");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, y, size, accentHeight);
+    };
 
-    ctx.fillStyle = "#000";
-    const startY = (totalHeight - textHeight) / 2;
+    const drawWatermark = () => {
+      ctx.font = `700 ${watermarkSize}px "Inter",Arial,sans-serif`;
+      ctx.fillStyle = "rgba(0,0,0,0.15)";
+      ctx.textBaseline = "bottom";
+      ctx.fillText("socialtoolsbyza", size / 2, size - 16);
+    };
+
+    drawAccent(0);
+    drawAccent(size - accentHeight);
+
+    ctx.font = `900 ${fontSize}px "Anybody","Arial Black",Impact,sans-serif`;
+    const lines = wrapText(ctx, text.trim(), maxTextWidth);
+    const lineHeight = fontSize * 1.35;
+    const textHeight = lines.length * lineHeight;
+    const contentArea = size - accentHeight * 2 - 40;
+    const startY = accentHeight + (contentArea - textHeight) / 2 + lineHeight / 2;
+
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#111";
     lines.forEach((line, i) => {
-      ctx.fillText(line, w / 2, startY + i * lineHeight + lineHeight / 2);
+      ctx.fillText(line, size / 2, startY + i * lineHeight);
     });
+
+    drawWatermark();
   }, [text]);
 
   useEffect(() => { renderCanvas(); }, [renderCanvas]);
@@ -139,7 +156,7 @@ export default function QuoteGenerator() {
           </button>
         </div>
         <div className="flex justify-center">
-          <canvas ref={canvasRef} className="w-full max-w-[600px] border-4 border-black" />
+          <canvas ref={canvasRef} className="w-full max-w-[500px] shadow-[4px_4px_0_#000]" />
         </div>
       </div>
     </ComicPanel>

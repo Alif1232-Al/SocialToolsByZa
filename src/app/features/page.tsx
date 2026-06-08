@@ -1,6 +1,6 @@
 import {
   Download, Sparkles, FileText, Scan, Search, Image, Music,
-  Braces, Terminal, MessageCircle, ArrowRight, Check, Star
+  Braces, Terminal, MessageCircle, Quote, ArrowRight, Check, Star
 } from "lucide-react";
 
 const features = [
@@ -93,6 +93,15 @@ const features = [
     bgColor: "bg-white",
     desc: "Temukan semua link sosial media: Instagram, Threads, LinkedIn, Kaggle, WhatsApp.",
     highlights: ["All links", "WhatsApp chat", "Connect easily"],
+  },
+  {
+    icon: Sparkles,
+    title: "Quote Generator",
+    badge: "QUOTE!",
+    badgeColor: "bg-pink-500 text-white",
+    bgColor: "bg-white",
+    desc: "Bikin quote kocak anak gen z buat story/feed IG. Random quote atau tulis sendiri, langsung jadi gambar!",
+    highlights: ["30+ random quotes", "Editable text", "Download PNG"],
   },
 ];
 
