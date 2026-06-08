@@ -7,7 +7,6 @@ const TikTokDownloader = dynamic(() => import("@/components/TikTokDownloader"), 
 const PdfToWord = dynamic(() => import("@/components/PdfToWord"), { ssr: false });
 const Photobox = dynamic(() => import("@/components/Photobox"), { ssr: false });
 const Dorking = dynamic(() => import("@/components/Dorking"), { ssr: false });
-const JurnalFinder = dynamic(() => import("@/components/JurnalFinder"), { ssr: false });
 const RemoveBackground = dynamic(() => import("@/components/RemoveBackground"), { ssr: false });
 const OcrPictureToText = dynamic(() => import("@/components/OcrPictureToText"), { ssr: false });
 const PictureToPdf = dynamic(() => import("@/components/PictureToPdf"), { ssr: false });
@@ -60,7 +59,15 @@ export default function Home() {
           <ErrorBoundary><PremiumGate title="Barber Kalkulator"><BarberCalculator /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid">
-          <ErrorBoundary><PremiumGate title="Jurnal Finder"><JurnalFinder /></PremiumGate></ErrorBoundary>
+          <a href="/jurnal" className="block comic-panel bg-gradient-to-br from-blue-400 via-cyan-300 to-teal-200 hover:scale-[1.02] transition-transform cursor-pointer group">
+            <div className="comic-badge -top-3 -right-3 rotate-12 bg-black text-white">FULL PAGE</div>
+            <div className="flex flex-col items-center justify-center text-center py-8 px-4">
+              <span className="text-4xl mb-2">🔍</span>
+              <h3 className="font-display text-headline-md uppercase italic group-hover:underline">Jurnal Finder</h3>
+              <p className="font-body text-body-md text-gray-700 mt-2">Cari jurnal akademik dari Google Scholar</p>
+              <span className="mt-3 comic-btn bg-black text-white text-xs !py-1.5 !px-4">BUKA →</span>
+            </div>
+          </a>
         </div>
       </div>
     </>

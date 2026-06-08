@@ -40,7 +40,7 @@
     box-shadow: none !important;
   }
   .comic-panel {
-    @apply comic-border p-3 sm:p-4 md:p-5 comic-shadow flex flex-col h-full;
+    @apply comic-border p-3 sm:p-4 md:p-5 comic-shadow flex flex-col;
   }
   .comic-badge {
     @apply absolute -top-3 px-3 py-1 comic-border comic-shadow font-display font-black uppercase text-[11px] sm:text-sm;
