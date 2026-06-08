@@ -5,7 +5,6 @@ import PremiumGate from "@/components/PremiumGate";
 
 const TikTokDownloader = dynamic(() => import("@/components/TikTokDownloader"), { ssr: false });
 const PdfToWord = dynamic(() => import("@/components/PdfToWord"), { ssr: false });
-const Photobox = dynamic(() => import("@/components/Photobox"), { ssr: false });
 const Dorking = dynamic(() => import("@/components/Dorking"), { ssr: false });
 const RemoveBackground = dynamic(() => import("@/components/RemoveBackground"), { ssr: false });
 const OcrPictureToText = dynamic(() => import("@/components/OcrPictureToText"), { ssr: false });
@@ -15,6 +14,7 @@ const QuoteGenerator = dynamic(() => import("@/components/QuoteGenerator"), { ss
 const BarberCalculator = dynamic(() => import("@/components/BarberCalculator"), { ssr: false });
 
 const subTools = [
+  { href: "/photobox", icon: "🎨", title: "Photobox Comic Studio", desc: "Upload foto, pilih layout & filter komik, download collage", bg: "from-purple-400 via-pink-300 to-yellow-200" },
   { href: "/jurnal", icon: "🔍", title: "Jurnal Finder", desc: "Cari jurnal akademik dari Google Scholar", bg: "from-blue-400 via-cyan-300 to-teal-200" },
   { href: "/markdown", icon: "📝", title: "Markdown Previewer", desc: "Tulis Markdown, lihat preview HTML real-time", bg: "from-yellow-300 via-orange-200 to-red-200" },
   { href: "/linktree", icon: "🔗", title: "Linktree Generator", desc: "Buat halaman linktree pribadi aesthetic", bg: "from-green-300 via-emerald-200 to-teal-200" },
@@ -26,9 +26,6 @@ export default function Home() {
       <HeroSection />
 
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
-        <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="Photobox Comic Studio"><Photobox /></PremiumGate></ErrorBoundary>
-        </div>
         <div className="break-inside-avoid mb-6">
           <ErrorBoundary><PremiumGate title="TikTok Downloader"><TikTokDownloader /></PremiumGate></ErrorBoundary>
         </div>
