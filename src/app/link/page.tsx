@@ -33,6 +33,7 @@ function getIcon(label: string) {
 function LinkContent() {
   const params = useSearchParams();
   const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
   const [links, setLinks] = useState<{ label: string; url: string }[]>([]);
   const [photoData, setPhotoData] = useState("");
   const [loading, setLoading] = useState(true);
@@ -46,6 +47,7 @@ function LinkContent() {
         .then((r) => r.json())
         .then((data) => {
           setName(data.name || "");
+          setBio(data.bio || "");
           setLinks(data.links || []);
           setPhotoData(data.photo || "");
         })
@@ -55,6 +57,7 @@ function LinkContent() {
       try {
         const data = JSON.parse(atob(raw));
         setName(data.name || "");
+        setBio(data.bio || "");
         setLinks(data.links || []);
         setPhotoData(data.photo || "");
       } catch {}
@@ -97,7 +100,8 @@ function LinkContent() {
             <div className="absolute -top-2 -right-2 w-7 h-7 bg-cyan-400 border-2 border-black rounded-full flex items-center justify-center text-xs font-bold">✦</div>
           </div>
           <h1 className="mt-4 text-3xl font-black uppercase italic text-black drop-shadow-[2px_2px_0_rgba(255,255,255,0.8)]">{displayName}</h1>
-          <p className="text-xs font-bold text-gray-700 mt-1 uppercase tracking-widest">{links.length} LINKS</p>
+          {bio && <p className="text-sm text-gray-700 mt-2 max-w-xs text-center">{bio}</p>}
+          <p className="text-xs font-bold text-gray-700 mt-2 uppercase tracking-widest">{links.length} LINKS</p>
         </div>
 
         <div className="space-y-3">
