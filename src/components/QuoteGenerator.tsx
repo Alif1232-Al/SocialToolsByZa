@@ -62,7 +62,6 @@ export default function QuoteGenerator() {
     if (!canvas || !text.trim()) return;
     const ctx = canvas.getContext("2d")!;
     const size = 500;
-    const wrapWidth = 500;
 
     canvas.width = size;
     canvas.height = size;
@@ -72,38 +71,48 @@ export default function QuoteGenerator() {
     ctx.fillStyle = "#fafafa";
     ctx.fillRect(0, 0, size, size);
 
-    const rawLines = splitLines(text.trim());
-    if (!rawLines.some((l) => l.trim())) return;
+    const rawLines = splitLines(text.trim()).filter((l) => l.trim());
+    if (!rawLines.length) return;
 
-    ctx.font = '900 120px "Inter","Arial Black",Impact,sans-serif';
-    let maxW = 0;
-    for (const line of rawLines) {
-      const w = ctx.measureText(line).width;
-      if (w > maxW) maxW = w;
-    }
+    const maxChars = Math.max(...rawLines.map((l) => l.length));
+    let fs;
+    if (maxChars <= 3) fs = 320;
+    else if (maxChars <= 5) fs = 260;
+    else if (maxChars <= 8) fs = 200;
+    else if (maxChars <= 12) fs = 150;
+    else if (maxChars <= 18) fs = 110;
+    else if (maxChars <= 25) fs = 85;
+    else fs = 65;
 
-    let fs = Math.floor(120 * (wrapWidth / maxW));
-    fs = Math.max(28, fs);
-
-    ctx.font = `900 ${fs}px "Inter","Arial Black",Impact,sans-serif`;
+    ctx.font = `900 ${fs}px "Arial Black",Impact,sans-serif`;
 
     const allLines: string[] = [];
     for (const line of rawLines) {
-      if (ctx.measureText(line).width <= wrapWidth) {
+      if (ctx.measureText(line).width <= size) {
         allLines.push(line);
       } else {
-        const wrapped = wrapText(ctx, line, wrapWidth);
+        const wrapped = wrapText(ctx, line, size - 10);
         allLines.push(...wrapped);
       }
     }
 
-    const lineSpacing = fs * 0.12;
-    const lineHeight = fs + lineSpacing;
+    let finalFs = fs;
+    const lineH = finalFs * 1.15;
+    const totalH = allLines.length * lineH;
+    if (totalH > size * 0.95) {
+      const ratio = (size * 0.95) / totalH;
+      finalFs = Math.floor(finalFs * ratio);
+    }
+
+    ctx.font = `900 ${finalFs}px "Arial Black",Impact,sans-serif`;
+
+    const lineSpacing = finalFs * 0.15;
+    const lineHeight = finalFs + lineSpacing;
     const totalTextHeight = allLines.length * lineHeight;
     const startY = (size - totalTextHeight) / 2 + lineHeight / 2;
 
-    ctx.shadowColor = "rgba(0,0,0,0.3)";
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = "rgba(0,0,0,0.35)";
+    ctx.shadowBlur = 8;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
     ctx.textBaseline = "middle";
