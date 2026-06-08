@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
+import ChatWelcomePopup from "@/components/ChatWelcomePopup";
 import { AuthProvider } from "@/lib/AuthContext";
 
 export const metadata: Metadata = {
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          <ChatWelcomePopup />
           <ChatBot />
         </AuthProvider>
       </body>

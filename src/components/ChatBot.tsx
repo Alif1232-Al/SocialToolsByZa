@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { MessageCircle, X, Send, Sparkles } from "lucide-react";
+import { QUICK_PROMPTS } from "@/lib/chat-knowledge";
 
 interface Msg {
   role: "user" | "assistant";
@@ -14,14 +15,20 @@ export default function ChatBot() {
   const [msgs, setMsgs] = useState<Msg[]>([{ role: "assistant", content: WELCOME }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPrompts, setShowPrompts] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("open-zabot", handler);
+    return () => window.removeEventListener("open-zabot", handler);
+  }, []);
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [msgs]);
 
-  const send = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
-    const text = input.trim();
+  const sendMessage = async (text: string) => {
+    if (!text.trim() || loading) return;
+    setShowPrompts(false);
     setInput("");
     setMsgs((p) => [...p, { role: "user", content: text }]);
     setLoading(true);
@@ -37,6 +44,11 @@ export default function ChatBot() {
       setMsgs((p) => [...p, { role: "assistant", content: "Wah error bro, coba lagi nanti!" }]);
     }
     setLoading(false);
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    sendMessage(input);
   };
 
   return (
@@ -81,6 +93,24 @@ export default function ChatBot() {
                   </div>
                 </div>
               ))}
+
+              {showPrompts && msgs.length === 1 && (
+                <div className="pt-1 space-y-1.5">
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center">Coba tanya:</p>
+                  <div className="flex flex-wrap gap-1.5 justify-center">
+                    {QUICK_PROMPTS.map((p, i) => (
+                      <button
+                        key={i}
+                        onClick={() => sendMessage(p.text)}
+                        className="text-[11px] border-2 border-black px-2.5 py-1 rounded-full bg-white hover:bg-yellow-200 transition-colors font-body font-medium"
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {loading && (
                 <div className="flex justify-start">
                   <div className="bg-gray-100 border-2 border-black px-3 py-2 rounded-tr-xl rounded-bl-xl rounded-br-xl">
@@ -91,7 +121,7 @@ export default function ChatBot() {
               <div ref={bottomRef} />
             </div>
 
-            <form onSubmit={send} className="border-t-4 border-black p-2.5 flex gap-2 bg-gray-50 shrink-0">
+            <form onSubmit={handleSubmit} className="border-t-4 border-black p-2.5 flex gap-2 bg-gray-50 shrink-0">
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
