@@ -32,7 +32,7 @@ export default function JsonFormatter() {
       <p className="font-body text-body-md text-gray-600 mb-4">
         Data berantakan? Rapihin JSON biar enak dibaca pas debugging!
       </p>
-      <div className="flex flex-col gap-3 flex-grow">
+      <div className="flex flex-col gap-3">
         <textarea
           value={state.input}
           onChange={onInputChange}
