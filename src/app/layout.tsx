@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ChatBot from "@/components/ChatBot";
 import { AuthProvider } from "@/lib/AuthContext";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   authors: [{ name: "SocialToolsByZa" }],
   openGraph: {
     title: "SocialToolsByZa!! - Alat Tempur Mahasiswa IT",
-    description: "9+ alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Gratis!",
+    description: "12+ alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Gratis!",
     url: "https://social-tools-by-za.vercel.app",
     siteName: "SocialToolsByZa",
     locale: "id_ID",
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          <ChatBot />
         </AuthProvider>
       </body>
     </html>

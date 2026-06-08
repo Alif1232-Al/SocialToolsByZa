@@ -37,6 +37,15 @@ const config: Config = {
         "comic-sm": "3px 3px 0px 0px rgba(0,0,0,1)",
         "comic-lg": "8px 8px 0px 0px rgba(0,0,0,1)",
       },
+      keyframes: {
+        slideUp: {
+          "0%": { transform: "translateY(30px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+      },
+      animation: {
+        slideUp: "slideUp 0.2s ease-out",
+      },
     },
   },
   plugins: [],
