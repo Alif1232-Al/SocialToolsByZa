@@ -3,7 +3,7 @@ interface Knowledge {
   response: string;
 }
 
-const features = [
+export const features = [
   {
     id: "tiktok",
     name: "TikTok Downloader",
