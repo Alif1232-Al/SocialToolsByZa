@@ -39,9 +39,6 @@ export default function Home() {
           <PremiumGate title="OCR Picture to Text"><OcrPictureToText /></PremiumGate>
         </ErrorBoundary>
         <ErrorBoundary>
-          <PremiumGate title="Jurnal Finder"><JurnalFinder /></PremiumGate>
-        </ErrorBoundary>
-        <ErrorBoundary>
           <PremiumGate title="Picture to PDF"><PictureToPdf /></PremiumGate>
         </ErrorBoundary>
         <ErrorBoundary>
@@ -62,6 +59,11 @@ export default function Home() {
         <ErrorBoundary>
           <PremiumGate title="Barber Kalkulator"><BarberCalculator /></PremiumGate>
         </ErrorBoundary>
+        <div className="md:col-span-full">
+          <ErrorBoundary>
+            <PremiumGate title="Jurnal Finder"><JurnalFinder /></PremiumGate>
+          </ErrorBoundary>
+        </div>
       </div>
     </>
   );
