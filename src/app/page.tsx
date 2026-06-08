@@ -61,7 +61,7 @@ export default function Home() {
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6 mt-2">
         {subTools.map((t) => (
           <div key={t.href} className="break-inside-avoid mb-6">
-            <a href={t.href} className={`block comic-panel bg-gradient-to-br ${t.bg} hover:scale-[1.02] transition-transform cursor-pointer group`}>
+            <a href={t.href} className={`block comic-panel bg-gradient-to-br ${t.bg} hover:-translate-y-1 transition-transform cursor-pointer group`}>
               <div className="comic-badge -top-3 -right-3 rotate-12 bg-black text-white">FULL PAGE</div>
               <div className="flex flex-col items-center justify-center text-center py-8 px-4">
                 <span className="text-4xl mb-2">{t.icon}</span>
