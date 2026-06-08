@@ -62,6 +62,7 @@ export default function QuoteGenerator() {
     if (!canvas || !text.trim()) return;
     const ctx = canvas.getContext("2d")!;
     const size = 500;
+    const wrapWidth = 380;
 
     canvas.width = size;
     canvas.height = size;
@@ -88,10 +89,10 @@ export default function QuoteGenerator() {
 
     const allLines: string[] = [];
     for (const line of rawLines) {
-      if (ctx.measureText(line).width <= size) {
+      if (ctx.measureText(line).width <= wrapWidth) {
         allLines.push(line);
       } else {
-        const wrapped = wrapText(ctx, line, size - 10);
+        const wrapped = wrapText(ctx, line, wrapWidth - 10);
         allLines.push(...wrapped);
       }
     }
