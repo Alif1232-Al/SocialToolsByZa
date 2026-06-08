@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { Scissors, User, Baby, Palette, RefreshCw, Utensils, Download } from "lucide-react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { Scissors, User, Baby, Palette, RefreshCw, Utensils, Download, ImageIcon } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import jsPDF from "jspdf";
 
@@ -33,6 +33,125 @@ export default function BarberCalculator() {
   const ownerGet = owner - uangMakan;
   const totalCustomers = dewasa + anak + semir;
   const hasResult = totalCustomers > 0;
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const renderCanvas = useCallback(() => {
+    const cvs = canvasRef.current;
+    if (!cvs || !hasResult) return;
+    const ctx = cvs.getContext("2d")!;
+    const sz = 500;
+    cvs.width = sz;
+    cvs.height = sz;
+
+    const grad = ctx.createLinearGradient(0, 0, sz, sz);
+    grad.addColorStop(0, "#fdf2f8");
+    grad.addColorStop(0.5, "#fce7f3");
+    grad.addColorStop(1, "#fef3c7");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, sz, sz);
+
+    ctx.textAlign = "center";
+
+    ctx.fillStyle = "#111";
+    ctx.font = '900 28px "Inter","Arial",sans-serif';
+    ctx.fillText("DEKA BARBER", sz / 2, 50);
+
+    ctx.font = '400 14px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#666";
+    ctx.fillText(date, sz / 2, 70);
+
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, 85);
+    ctx.lineTo(sz - 40, 85);
+    ctx.stroke();
+
+    const rows = [
+      ["Potong Dewasa", `${dewasa} × 25k`, `${totalDewasa}k`],
+      ["Potong Anak", `${anak} × 20k`, `${totalAnak}k`],
+      ["Semir Rambut", `${semir} × 40k`, `${totalSemir}k`],
+    ];
+    ctx.font = '400 14px "Inter","Arial",sans-serif';
+    let y = 115;
+    for (const r of rows) {
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#333";
+      ctx.fillText(r[0], 50, y);
+      ctx.textAlign = "center";
+      ctx.fillText(r[1], sz / 2, y);
+      ctx.textAlign = "right";
+      ctx.fillText(r[2], sz - 50, y);
+      y += 28;
+    }
+
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, y);
+    ctx.lineTo(sz - 40, y);
+    ctx.stroke();
+    y += 10;
+
+    ctx.textAlign = "left";
+    ctx.font = '700 16px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#111";
+    ctx.fillText("TOTAL", 50, y);
+    ctx.textAlign = "right";
+    ctx.fillText(`${grandTotal}k`, sz - 50, y);
+    y += 40;
+
+    ctx.textAlign = "center";
+    ctx.font = '700 12px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#555";
+    ctx.fillText("— BAGI HASIL 60 : 40 —", sz / 2, y);
+    y += 8;
+
+    const bx = 60;
+    const bw = sz - 120;
+    const by = y;
+    const bh = 80;
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    ctx.font = '700 12px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#111";
+    ctx.textAlign = "center";
+    ctx.fillText("Owner (60%)", bx + bw * 0.25, by + 18);
+    ctx.fillText("Karyawan (40%)", bx + bw * 0.75, by + 18);
+
+    ctx.font = '600 18px "Inter","Arial",sans-serif';
+    ctx.fillText(`${owner}k`, bx + bw * 0.25, by + 38);
+    ctx.fillText(`${employeeGross}k`, bx + bw * 0.75, by + 38);
+
+    ctx.font = '400 11px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#c00";
+    ctx.fillText(`- Uang Makan ${uangMakan}k`, bx + bw * 0.25, by + 53);
+    ctx.fillStyle = "#090";
+    ctx.fillText(`+ Uang Makan ${uangMakan}k`, bx + bw * 0.75, by + 53);
+
+    ctx.font = '700 20px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#111";
+    ctx.fillText(`${ownerGet}k`, bx + bw * 0.25, by + 73);
+    ctx.fillText(`${employeeGet}k`, bx + bw * 0.75, by + 73);
+
+    ctx.font = '400 10px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "rgba(0,0,0,0.15)";
+    ctx.fillText("socialtoolsbyza", sz / 2, sz - 15);
+  }, [hasResult, date, dewasa, anak, semir, uangMakan, grandTotal, totalDewasa, totalAnak, totalSemir, owner, employeeGross, employeeGet, ownerGet, totalCustomers]);
+
+  useEffect(() => { renderCanvas(); }, [renderCanvas]);
+
+  const handleDownloadPng = () => {
+    const cvs = canvasRef.current;
+    if (!cvs) return;
+    const link = document.createElement("a");
+    link.download = "deka-barber-preview.png";
+    link.href = cvs.toDataURL("image/png");
+    link.click();
+  };
 
   const exportPdf = () => {
     const doc = new jsPDF({ unit: "mm", format: "a4" });
@@ -200,10 +319,16 @@ export default function BarberCalculator() {
             <RefreshCw className="w-3.5 h-3.5" /> RESET
           </button>
           {hasResult && (
-            <button onClick={exportPdf}
-              className="comic-btn bg-black text-white flex-1 text-xs flex items-center justify-center gap-1 py-2">
-              <Download className="w-3.5 h-3.5" /> EXPORT PDF
-            </button>
+            <>
+              <button onClick={exportPdf}
+                className="comic-btn bg-black text-white flex-1 text-xs flex items-center justify-center gap-1 py-2">
+                <Download className="w-3.5 h-3.5" /> PDF
+              </button>
+              <button onClick={handleDownloadPng}
+                className="comic-btn bg-green-600 text-white flex-1 text-xs flex items-center justify-center gap-1 py-2">
+                <ImageIcon className="w-3.5 h-3.5" /> PNG
+              </button>
+            </>
           )}
         </div>
 
@@ -228,6 +353,12 @@ export default function BarberCalculator() {
                 <p className="font-display text-sm font-black border-t border-white/30 pt-1 mt-1">{employeeGet}k</p>
               </div>
             </div>
+          </div>
+        )}
+
+        {hasResult && (
+          <div className="flex justify-center">
+            <canvas ref={canvasRef} className="w-full max-w-[380px] border-4 border-black shadow-[4px_4px_0_#000]" />
           </div>
         )}
       </div>
