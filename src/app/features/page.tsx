@@ -11,6 +11,15 @@ export const metadata: Metadata = {
 
 const features = [
   {
+    icon: Image,
+    title: "Photobox Comic Studio",
+    badge: "BOOTH!",
+    badgeColor: "bg-purple-600 text-white",
+    bgColor: "bg-yellow-200",
+    desc: "Upload 1-6 foto, pilih layout komik, aplikasikan 12+ filter unik (Pop Art, Comic, Halftone, Sketch, dll), download hasilnya sebagai PNG.",
+    highlights: ["12+ efek filter", "6 layout grid", "Comic-style", "Canvas-based"],
+  },
+  {
     icon: Download,
     title: "TikTok Video Downloader",
     badge: "BOOM!",

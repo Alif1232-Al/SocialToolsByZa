@@ -5,6 +5,13 @@ interface Knowledge {
 
 export const features = [
   {
+    id: "photobox",
+    name: "Photobox Comic Studio",
+    desc: "Upload 1-6 foto, atur layout komik, pilih dari 12+ filter unik (Pop Art, Comic, Halftone, Sketch, dll) langsung di browser. Download hasil collage sebagai PNG.",
+    correct: "Upload foto dengan objek yang jelas. Pilih layout sesuai jumlah foto. Filter bisa diganti kapan aja.",
+    wrong: "Upload lebih dari 6 foto (max 6). Layout harus sesuai jumlah foto (misal 4 foto pake layout 2x2).",
+  },
+  {
     id: "tiktok",
     name: "TikTok Downloader",
     desc: "Download video TikTok tanpa watermark. Tinggal paste link TikTok, klik GRAB, langsung dapet videonya.",

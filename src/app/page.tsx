@@ -5,6 +5,7 @@ import PremiumGate from "@/components/PremiumGate";
 
 const TikTokDownloader = dynamic(() => import("@/components/TikTokDownloader"), { ssr: false });
 const PdfToWord = dynamic(() => import("@/components/PdfToWord"), { ssr: false });
+const Photobox = dynamic(() => import("@/components/Photobox"), { ssr: false });
 const Dorking = dynamic(() => import("@/components/Dorking"), { ssr: false });
 const JurnalFinder = dynamic(() => import("@/components/JurnalFinder"), { ssr: false });
 const RemoveBackground = dynamic(() => import("@/components/RemoveBackground"), { ssr: false });
@@ -22,6 +23,9 @@ export default function Home() {
       <HeroSection />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" style={{ contentVisibility: "auto" }}>
+        <ErrorBoundary>
+          <PremiumGate title="Photobox Comic Studio"><Photobox /></PremiumGate>
+        </ErrorBoundary>
         <ErrorBoundary>
           <PremiumGate title="TikTok Downloader"><TikTokDownloader /></PremiumGate>
         </ErrorBoundary>

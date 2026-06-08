@@ -11,6 +11,15 @@ export const metadata: Metadata = {
 
 const demos = [
   {
+    icon: Image,
+    title: "Photobox Comic Studio",
+    badge: "BOOTH!",
+    badgeColor: "bg-purple-600 text-white",
+    bgColor: "bg-yellow-200",
+    desc: "Upload 1-6 foto, atur layout, pilih filter keren, download collage komik siap upload.",
+    steps: ["Upload 1-6 foto", "Pilih layout grid", "Pilih efek filter unik", "Download PNG"],
+  },
+  {
     icon: Download,
     title: "TikTok Downloader",
     badge: "BOOM!",
