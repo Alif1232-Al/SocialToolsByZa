@@ -109,8 +109,8 @@ const demos = [
     badge: "HITUNG!",
     badgeColor: "bg-pink-500 text-white",
     bgColor: "bg-cyan-400",
-    desc: "Hitung pendapatan harian barber dengan sistem bagi hasil 60:40. Cukup isi jumlah pelanggan, langsung keluar hasilnya!",
-    steps: ["Isi jumlah potong dewasa", "Isi jumlah potong anak", "Isi jumlah semir", "Lihat hasil Owner & Karyawan"],
+    desc: "Hitung pendapatan harian barber dengan sistem bagi hasil 60:40. Bisa atur potongan uang makan karyawan!",
+    steps: ["Isi jumlah potong dewasa", "Isi jumlah potong anak", "Isi jumlah semir", "Atur uang makan, lihat hasil bersih"],
   },
 ];
 

@@ -118,8 +118,8 @@ const features = [
     badge: "HITUNG!",
     badgeColor: "bg-pink-500 text-white",
     bgColor: "bg-cyan-400",
-    desc: "Hitung pendapatan harian barber. Sistem bagi hasil 60:40 (Owner:Karyawan). Cepet tinggal isi jumlah pelanggan!",
-    highlights: ["Potong Dewasa 25k", "Potong Anak 20k", "Semir 40k"],
+    desc: "Hitung pendapatan harian barber. Sistem bagi hasil 60:40 + potong uang makan karyawan. Isi jumlah pelanggan, langsung keluar!",
+    highlights: ["Potong Dewasa 25k", "Potong Anak 20k", "Uang Makan 25k"],
   },
 ];
 
@@ -136,7 +136,7 @@ export default function FeaturesPage() {
           <div className="absolute -bottom-5 left-12 w-10 h-10 bg-pink-500 border-r-4 border-b-4 border-black rotate-45 z-[-1] comic-shadow"></div>
         </div>
         <p className="max-w-2xl font-body text-body-lg text-gray-600">
-          12 alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Satu web, semua beres!
+          13 alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Satu web, semua beres!
         </p>
       </section>
 
