@@ -62,7 +62,7 @@ export default function QuoteGenerator() {
     if (!canvas || !text.trim()) return;
     const ctx = canvas.getContext("2d")!;
     const size = 600;
-    const padding = 44;
+    const padding = 30;
     const maxTextWidth = size - padding * 2;
 
     canvas.width = size;
@@ -70,12 +70,13 @@ export default function QuoteGenerator() {
 
     ctx.textAlign = "center";
 
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#fafafa";
     ctx.fillRect(0, 0, size, size);
 
     const rawLines = splitLines(text.trim());
     const maxRawLen = Math.max(...rawLines.map((l) => l.length));
-    const fs = maxRawLen < 12 ? 52 : maxRawLen < 20 ? 44 : maxRawLen < 30 ? 36 : 30;
+    const fs =
+      maxRawLen < 6 ? 100 : maxRawLen < 10 ? 80 : maxRawLen < 16 ? 62 : maxRawLen < 24 ? 50 : 40;
 
     ctx.font = `900 ${fs}px "Inter","Arial Black",Impact,sans-serif`;
 
@@ -91,13 +92,17 @@ export default function QuoteGenerator() {
       }
     }
 
-    const lineSpacing = fs * 0.2;
+    const lineSpacing = fs * 0.1;
     const lineHeight = fs + lineSpacing;
     const totalTextHeight = allLines.length * lineHeight;
     const startY = (size - totalTextHeight) / 2 + lineHeight / 2;
 
+    ctx.shadowColor = "rgba(0,0,0,0.2)";
+    ctx.shadowBlur = 3;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#111";
+    ctx.fillStyle = "#000";
     let cy = startY;
     for (const line of allLines) {
       if (line) {
@@ -105,6 +110,7 @@ export default function QuoteGenerator() {
       }
       cy += lineHeight;
     }
+    ctx.shadowBlur = 0;
   }, [text]);
 
   useEffect(() => { renderCanvas(); }, [renderCanvas]);
