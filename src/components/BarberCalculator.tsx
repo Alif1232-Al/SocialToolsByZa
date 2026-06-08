@@ -36,24 +36,29 @@ export default function BarberCalculator() {
 
   const exportPdf = () => {
     const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const pw = doc.internal.pageSize.getWidth();
     let y = 20;
 
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.text("DEKA BARBER", 105, y, { align: "center" });
+    doc.setFontSize(20);
+    doc.text("DEKA BARBER", pw / 2, y, { align: "center" });
     y += 8;
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text(date, 105, y, { align: "center" });
+    doc.text(date, pw / 2, y, { align: "center" });
     y += 6;
 
     doc.setDrawColor(0);
-    doc.setLineWidth(0.8);
-    doc.line(10, y, 200, y);
+    doc.setLineWidth(0.5);
+    doc.line(15, y, pw - 15, y);
     y += 8;
 
-    const colW = [60, 35, 35, 40];
+    const ml = 15;
+    const mr = 15;
+    const tw = pw - ml - mr;
+    const colW = [tw * 0.38, tw * 0.2, tw * 0.17, tw * 0.25];
+
     const headers = ["Layanan", "Harga", "Jumlah", "Total"];
     const dataR = [
       ["Potong Dewasa", "25.000", `${dewasa}`, `${totalDewasa}.000`],
@@ -61,97 +66,88 @@ export default function BarberCalculator() {
       ["Semir Rambut", "40.000", `${semir}`, `${totalSemir}.000`],
     ];
 
-    const rowH = 8;
-    const totalH = rowH * (1 + dataR.length + 1);
-    const tableY = y;
-    const tblX = 10;
-    const tblW = colW.reduce((a, b) => a + b, 0);
+    const rh = 7.5;
+    const fs = 9;
+    const fw = (txt: string, s?: number) => doc.getTextWidth(txt) * (s || fs) / doc.getFontSize();
 
-    const drawCell = (x: number, y: number, w: number, h: number, txt: string, opts: { bold?: boolean; bg?: number[]; color?: number[]; align?: string; size?: number }) => {
-      if (opts.bg) {
-        doc.setFillColor(opts.bg[0], opts.bg[1], opts.bg[2]);
-        doc.rect(x, y, w, h, "F");
-      }
+    const cell = (x: number, y: number, w: number, h: number, txt: string, a: string, opts?: { bold?: boolean; bg?: number[]; color?: number[]; sz?: number }) => {
+      if (opts?.bg) { doc.setFillColor(opts.bg[0], opts.bg[1], opts.bg[2]); doc.rect(x, y, w, h, "F"); }
       doc.setDrawColor(0);
       doc.setLineWidth(0.3);
       doc.rect(x, y, w, h);
-      doc.setFont("helvetica", opts.bold ? "bold" : "normal");
-      doc.setFontSize(opts.size || 10);
-      if (opts.color) doc.setTextColor(opts.color[0], opts.color[1], opts.color[2]);
-      else doc.setTextColor(0);
-      const a = opts.align as "center" | "left" | "right" | "justify";
-      const alignX = a === "right" ? x + w - 3 : a === "center" || a === "justify" ? x + w / 2 : x + 3;
-      doc.text(txt, alignX, y + h / 2 + 1.5, { align: a });
+      doc.setFont("helvetica", opts?.bold ? "bold" : "normal");
+      doc.setFontSize(opts?.sz || fs);
+      const c = opts?.color || [0, 0, 0];
+      doc.setTextColor(c[0], c[1], c[2]);
+      const ax = a === "r" ? x + w - 3 : a === "c" ? x + w / 2 : x + 3;
+      type AlignT = "center" | "left" | "right" | "justify";
+      const alignMap: Record<string, AlignT> = { r: "right", c: "center", l: "left" };
+      const align1 = a === "r" ? "right" as const : a === "c" ? "center" as const : "left" as const;
+      doc.text(txt, ax, y + h / 2 + 1.2, { align: alignMap[a] || "left" });
     };
 
-    let cx = tblX;
-    for (let i = 0; i < headers.length; i++) {
-      drawCell(cx, tableY, colW[i], rowH, headers[i], { bold: true, bg: [0, 0, 0], color: [255, 255, 255], align: i === 3 ? "right" : i === 0 ? "left" : "center" });
-      cx += colW[i];
+    const cxPos = () => { let s = ml; return (i: number) => { const p = s; s += colW[i]; return p; }; };
+
+    let cx = ml;
+    for (let i = 0; i < headers.length; i++) { cell(cx, y, colW[i], rh, headers[i], i === 0 ? "l" : "c", { bold: true, bg: [0, 0, 0], color: [255, 255, 255] }); cx += colW[i]; }
+    y += rh;
+
+    for (const row of dataR) {
+      cx = ml;
+      for (let c = 0; c < row.length; c++) { cell(cx, y, colW[c], rh, row[c], c === 0 ? "l" : "c"); cx += colW[c]; }
+      y += rh;
     }
 
-    for (let r = 0; r < dataR.length; r++) {
-      cx = tblX;
-      for (let c = 0; c < dataR[r].length; c++) {
-        drawCell(cx, tableY + (r + 1) * rowH, colW[c], rowH, dataR[r][c], {
-          align: c === 3 ? "right" : c === 0 ? "left" : "center",
-        });
-        cx += colW[c];
-      }
-    }
+    cell(ml, y, colW[0] + colW[1], rh, "TOTAL", "l", { bold: true, bg: [253, 230, 138] });
+    cell(ml + colW[0] + colW[1], y, colW[2], rh, `${totalCustomers}`, "c", { bold: true, bg: [253, 230, 138] });
+    cell(ml + colW[0] + colW[1] + colW[2], y, colW[3], rh, `${grandTotal}.000`, "r", { bold: true, bg: [253, 230, 138], sz: 10 });
+    y += rh + 12;
 
-    const footY = tableY + (dataR.length + 1) * rowH;
-    cx = tblX;
-    for (let i = 0; i < colW.length; i++) {
-      drawCell(cx, footY, i === 0 ? colW[0] + colW[1] : colW[i], rowH, 
-        i === 0 ? "TOTAL" : i === 2 ? `${totalCustomers}` : `${grandTotal}.000`,
-        { bold: true, bg: [253, 230, 138], align: i >= 2 ? "right" : "left", size: 11 });
-      if (i === 1) cx += colW[1];
-      cx += colW[i];
-    }
-
-    y = footY + rowH + 12;
-
-    const boxX = 40;
-    const boxW = 120;
-    const boxH = 34;
-    doc.setDrawColor(0);
-    doc.setLineWidth(0.6);
-    doc.rect(boxX, y, boxW, boxH);
-
+    const bx = pw / 2 - 55;
+    const bw = 110;
+    const bh = 30;
+    doc.setLineWidth(0.5);
+    doc.rect(bx, y, bw, bh);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.text("BAGI HASIL 60 : 40", 100, y + 7, { align: "center" });
+    doc.setFontSize(10);
+    doc.text("BAGI HASIL 60 : 40", pw / 2, y + 6.5, { align: "center" });
 
-    const mid = boxX + boxW / 2;
+    const m = bx + bw / 2;
+    const lx = bx + bw / 4;
+    const rx = m + bw / 4;
+
+    doc.setFontSize(8);
+    doc.text("Owner (60%)", lx, y + 15, { align: "center" });
+    doc.text("Karyawan (40%)", rx, y + 15, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text(`${owner}.000`, lx, y + 21, { align: "center" });
+    doc.text(`${employeeGross}.000`, rx, y + 21, { align: "center" });
+
+    doc.setFontSize(7);
+    doc.setTextColor(200, 0, 0);
+    doc.text(`- Uang Makan ${uangMakan}.000`, lx, y + 26, { align: "center" });
+    doc.setTextColor(0, 150, 0);
+    doc.text(`+ Uang Makan ${uangMakan}.000`, rx, y + 26, { align: "center" });
+    doc.setTextColor(0);
+
+    y += bh + 18;
+
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.text("Owner (60%)", boxX + boxW / 4, y + 16, { align: "center" });
-    doc.text("Karyawan (40%)", mid + boxW / 4, y + 16, { align: "center" });
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.text(`${owner}.000`, boxX + boxW / 4, y + 22, { align: "center" });
-    doc.text(`${employeeGross}.000`, mid + boxW / 4, y + 22, { align: "center" });
-
-    doc.setFontSize(8);
-    doc.setTextColor(200, 0, 0);
-    doc.text(`- Uang Makan ${uangMakan}.000`, boxX + boxW / 4, y + 27, { align: "center" });
-    doc.setTextColor(0, 150, 0);
-    doc.text(`+ Uang Makan ${uangMakan}.000`, mid + boxW / 4, y + 27, { align: "center" });
-
-    doc.setTextColor(0);
-    doc.setFontSize(11);
+    doc.text("Owner Terima", pw / 4, y, { align: "center" });
+    doc.text("Karyawan Terima", pw * 3 / 4, y, { align: "center" });
+    y += 5;
+    doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text(`${ownerGet}.000`, boxX + boxW / 4, y + 33, { align: "center" });
-    doc.text(`${employeeGet}.000`, mid + boxW / 4, y + 33, { align: "center" });
-
-    y += boxH + 20;
+    doc.text(`${ownerGet}.000`, pw / 4, y, { align: "center" });
+    doc.text(`${employeeGet}.000`, pw * 3 / 4, y, { align: "center" });
+    y += 12;
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor(150);
-    doc.text("socialtoolsbyza", 105, y, { align: "center" });
+    doc.setFontSize(7);
+    doc.setTextColor(180);
+    doc.text("socialtoolsbyza", pw / 2, y, { align: "center" });
 
     doc.save(`deka-barber-${new Date().toISOString().slice(0, 10)}.pdf`);
   };
