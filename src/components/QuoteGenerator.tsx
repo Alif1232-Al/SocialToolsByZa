@@ -117,7 +117,7 @@ export default function QuoteGenerator() {
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "rgba(0,0,0,0.72)";
+    ctx.fillStyle = "#000";
     let cy = startY;
     for (const line of allLines) {
       if (line) {
