@@ -1,6 +1,6 @@
 import {
   Download, Sparkles, FileText, Scan, Search, Image, Music,
-  Braces, Terminal, MessageCircle, Link, ArrowRight, Check, Star
+  Braces, Terminal, MessageCircle, Link, Scissors, ArrowRight, Check, Star
 } from "lucide-react";
 
 const features = [
@@ -112,6 +112,15 @@ const features = [
     desc: "Buat linktree keren buat bio IG. Tambahin semua sosial media lo, generate link atau download PNG!",
     highlights: ["15+ platforms", "Shareable link", "Download PNG"],
   },
+  {
+    icon: Scissors,
+    title: "Barber Kalkulator",
+    badge: "HITUNG!",
+    badgeColor: "bg-pink-500 text-white",
+    bgColor: "bg-cyan-400",
+    desc: "Hitung pendapatan harian barber. Sistem bagi hasil 60:40 (Owner:Karyawan). Cepet tinggal isi jumlah pelanggan!",
+    highlights: ["Potong Dewasa 25k", "Potong Anak 20k", "Semir 40k"],
+  },
 ];
 
 export default function FeaturesPage() {
@@ -127,7 +136,7 @@ export default function FeaturesPage() {
           <div className="absolute -bottom-5 left-12 w-10 h-10 bg-pink-500 border-r-4 border-b-4 border-black rotate-45 z-[-1] comic-shadow"></div>
         </div>
         <p className="max-w-2xl font-body text-body-lg text-gray-600">
-          10 alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Satu web, semua beres!
+          12 alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Satu web, semua beres!
         </p>
       </section>
 

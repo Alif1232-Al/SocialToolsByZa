@@ -1,6 +1,6 @@
 import {
   Download, Sparkles, FileText, Scan, Search, Image, Music,
-  Braces, Terminal, Star, ArrowRight, ExternalLink, Link
+  Braces, Terminal, Star, ArrowRight, ExternalLink, Link, Scissors
 } from "lucide-react";
 
 const demos = [
@@ -102,6 +102,15 @@ const demos = [
     bgColor: "bg-white",
     desc: "Bikin halaman linktree lo sendiri. Tambahin semua sosial media, generate link buat bio IG atau download PNG",
     steps: ["Isi nama kamu", "Tambah link sosial media", "Klik GENERATE LINK", "Copy & paste di bio IG"],
+  },
+  {
+    icon: Scissors,
+    title: "Barber Kalkulator",
+    badge: "HITUNG!",
+    badgeColor: "bg-pink-500 text-white",
+    bgColor: "bg-cyan-400",
+    desc: "Hitung pendapatan harian barber dengan sistem bagi hasil 60:40. Cukup isi jumlah pelanggan, langsung keluar hasilnya!",
+    steps: ["Isi jumlah potong dewasa", "Isi jumlah potong anak", "Isi jumlah semir", "Lihat hasil Owner & Karyawan"],
   },
 ];
 

@@ -14,6 +14,7 @@ const JsonFormatter = dynamic(() => import("@/components/JsonFormatter"), { ssr:
 const MarkdownPreviewer = dynamic(() => import("@/components/MarkdownPreviewer"), { ssr: false });
 const QuoteGenerator = dynamic(() => import("@/components/QuoteGenerator"), { ssr: false });
 const LinktreeGenerator = dynamic(() => import("@/components/LinktreeGenerator"), { ssr: false });
+const BarberCalculator = dynamic(() => import("@/components/BarberCalculator"), { ssr: false });
 
 export default function Home() {
   return (
@@ -53,6 +54,9 @@ export default function Home() {
         </ErrorBoundary>
         <ErrorBoundary>
           <PremiumGate title="Linktree Generator"><LinktreeGenerator /></PremiumGate>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <PremiumGate title="Barber Kalkulator"><BarberCalculator /></PremiumGate>
         </ErrorBoundary>
       </div>
     </>
