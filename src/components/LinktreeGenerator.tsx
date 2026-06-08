@@ -1,6 +1,6 @@
 "use client";
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Link, Plus, Trash2, Download, Camera } from "lucide-react";
+import { Link, Plus, Trash2, Download, Camera, Copy } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
@@ -69,6 +69,7 @@ export default function LinktreeGenerator() {
   const [downloading, setDownloading] = useState(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoReady, setPhotoReady] = useState(0);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const updateLink = (id: string, field: "label" | "url", value: string) =>
     setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
@@ -247,6 +248,16 @@ export default function LinktreeGenerator() {
     setTimeout(() => setDownloading(false), 500);
   };
 
+  const handleGenerateLink = () => {
+    const visibleLinks = links.filter((l) => l.label.trim() && l.url.trim());
+    const data = { name: name.trim() || "Bio Links", links: visibleLinks.map((l) => ({ label: l.label, url: l.url })) };
+    const encoded = btoa(JSON.stringify(data));
+    const url = `${window.location.origin}/link?d=${encoded}`;
+    navigator.clipboard.writeText(url);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
   return (
     <ComicPanel bgColor="bg-white" badge="TREE!" badgeColor="bg-green-500 text-white">
       <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2">
@@ -300,6 +311,10 @@ export default function LinktreeGenerator() {
 
         <button onClick={addLink} className="comic-btn bg-cyan-500 text-black text-sm flex items-center justify-center gap-1 py-2">
           <Plus className="w-4 h-4" /> TAMBAH LINK
+        </button>
+
+        <button onClick={handleGenerateLink} className="comic-btn bg-green-500 text-white w-full text-sm flex items-center justify-center gap-1 py-2">
+          <Copy className="w-4 h-4" /> {linkCopied ? "LINK COPIED!" : "GENERATE LINK"}
         </button>
 
         <button onClick={handleDownload} disabled={downloading} className="comic-btn bg-black text-white w-full text-sm flex items-center justify-center gap-1 disabled:opacity-50 py-2">

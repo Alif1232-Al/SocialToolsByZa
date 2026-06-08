@@ -109,8 +109,8 @@ const features = [
     badge: "TREE!",
     badgeColor: "bg-green-500 text-white",
     bgColor: "bg-white",
-    desc: "Buat linktree keren buat bio IG. Tambahin semua sosial media lo, tinggal download dan upload!",
-    highlights: ["15+ platforms", "Custom name", "Download PNG"],
+    desc: "Buat linktree keren buat bio IG. Tambahin semua sosial media lo, generate link atau download PNG!",
+    highlights: ["15+ platforms", "Shareable link", "Download PNG"],
   },
 ];
 

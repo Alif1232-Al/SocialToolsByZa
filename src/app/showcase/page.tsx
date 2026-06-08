@@ -100,8 +100,8 @@ const demos = [
     badge: "TREE!",
     badgeColor: "bg-green-500 text-white",
     bgColor: "bg-white",
-    desc: "Bikin halaman linktree lo sendiri. Tambahin semua sosial media, atur urutan, download PNG siap upload",
-    steps: ["Isi nama kamu", "Tambah link sosial media", "Atur urutannya", "Download & upload ke IG bio"],
+    desc: "Bikin halaman linktree lo sendiri. Tambahin semua sosial media, generate link buat bio IG atau download PNG",
+    steps: ["Isi nama kamu", "Tambah link sosial media", "Klik GENERATE LINK", "Copy & paste di bio IG"],
   },
 ];
 
