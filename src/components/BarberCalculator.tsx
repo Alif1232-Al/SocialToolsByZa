@@ -27,10 +27,9 @@ export default function BarberCalculator() {
   const totalAnak = anak * PRICES.anak;
   const totalSemir = semir * PRICES.semir;
   const grandTotal = totalDewasa + totalAnak + totalSemir;
-  const owner = grandTotal * OWNER_SHARE;
-  const employeeGross = grandTotal * EMPLOYEE_SHARE;
-  const employeeGet = employeeGross + uangMakan;
-  const ownerGet = owner - uangMakan;
+  const netTotal = Math.max(0, grandTotal - uangMakan);
+  const owner = netTotal * OWNER_SHARE;
+  const employee = netTotal * EMPLOYEE_SHARE;
   const totalCustomers = dewasa + anak + semir;
   const hasResult = totalCustomers > 0;
 
@@ -111,7 +110,7 @@ export default function BarberCalculator() {
     const bx = 60;
     const bw = sz - 120;
     const by = y;
-    const bh = 80;
+    const bh = 65;
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 2;
     ctx.strokeRect(bx, by, bw, bh);
@@ -122,25 +121,19 @@ export default function BarberCalculator() {
     ctx.fillText("Owner (60%)", bx + bw * 0.25, by + 18);
     ctx.fillText("Karyawan (40%)", bx + bw * 0.75, by + 18);
 
-    ctx.font = '600 18px "Inter","Arial",sans-serif';
-    ctx.fillText(`${owner}k`, bx + bw * 0.25, by + 38);
-    ctx.fillText(`${employeeGross}k`, bx + bw * 0.75, by + 38);
+    ctx.font = '700 22px "Inter","Arial",sans-serif';
+    ctx.fillText(`${owner}k`, bx + bw * 0.25, by + 50);
+    ctx.fillText(`${employee}k`, bx + bw * 0.75, by + 50);
 
-    ctx.font = '400 11px "Inter","Arial",sans-serif';
-    ctx.fillStyle = "#c00";
-    ctx.fillText(`- Uang Makan ${uangMakan}k`, bx + bw * 0.25, by + 53);
-    ctx.fillStyle = "#090";
-    ctx.fillText(`+ Uang Makan ${uangMakan}k`, bx + bw * 0.75, by + 53);
-
-    ctx.font = '700 20px "Inter","Arial",sans-serif';
-    ctx.fillStyle = "#111";
-    ctx.fillText(`${ownerGet}k`, bx + bw * 0.25, by + 73);
-    ctx.fillText(`${employeeGet}k`, bx + bw * 0.75, by + 73);
+    y = by + bh + 10;
+    ctx.font = '400 10px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#888";
+    ctx.fillText(`Pendapatan bersih: ${netTotal}k (setelah uang makan ${uangMakan}k)`, sz / 2, y);
 
     ctx.font = '400 10px "Inter","Arial",sans-serif';
     ctx.fillStyle = "rgba(0,0,0,0.15)";
     ctx.fillText("socialtoolsbyza", sz / 2, sz - 15);
-  }, [hasResult, date, dewasa, anak, semir, uangMakan, grandTotal, totalDewasa, totalAnak, totalSemir, owner, employeeGross, employeeGet, ownerGet, totalCustomers]);
+  }, [hasResult, date, dewasa, anak, semir, uangMakan, grandTotal, totalDewasa, totalAnak, totalSemir, owner, employee, netTotal, totalCustomers]);
 
   useEffect(() => { renderCanvas(); }, [renderCanvas]);
 
@@ -238,29 +231,18 @@ export default function BarberCalculator() {
     doc.setFontSize(8);
     doc.text("Owner (60%)", lx, y + 15, { align: "center" });
     doc.text("Karyawan (40%)", rx, y + 15, { align: "center" });
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text(`${owner}.000`, lx, y + 24, { align: "center" });
+    doc.text(`${employee}.000`, rx, y + 24, { align: "center" });
+
+    y += bh + 10;
+
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.text(`${owner}.000`, lx, y + 21, { align: "center" });
-    doc.text(`${employeeGross}.000`, rx, y + 21, { align: "center" });
-
-    doc.setFontSize(7);
-    doc.setTextColor(200, 0, 0);
-    doc.text(`- Uang Makan ${uangMakan}.000`, lx, y + 26, { align: "center" });
-    doc.setTextColor(0, 150, 0);
-    doc.text(`+ Uang Makan ${uangMakan}.000`, rx, y + 26, { align: "center" });
+    doc.setFontSize(8);
+    doc.setTextColor(100);
+    doc.text(`Pendapatan bersih: ${netTotal}.000 (setelah uang makan ${uangMakan}.000)`, pw / 2, y, { align: "center" });
     doc.setTextColor(0);
-
-    y += bh + 18;
-
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    doc.text("Owner Terima", pw / 4, y, { align: "center" });
-    doc.text("Karyawan Terima", pw * 3 / 4, y, { align: "center" });
-    y += 5;
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text(`${ownerGet}.000`, pw / 4, y, { align: "center" });
-    doc.text(`${employeeGet}.000`, pw * 3 / 4, y, { align: "center" });
     y += 12;
 
     doc.setFont("helvetica", "normal");
@@ -338,19 +320,18 @@ export default function BarberCalculator() {
               <span>TOTAL</span>
               <span className="font-display text-xl">{grandTotal}k</span>
             </div>
+            <div className="text-xs text-gray-500 text-center -mt-1">
+              Uang makan: {uangMakan}k → Pendapatan bersih: <strong>{netTotal}k</strong>
+            </div>
 
             <div className="flex gap-2">
-              <div className="flex-1 text-center bg-black text-white py-2 px-1">
+              <div className="flex-1 text-center bg-black text-white py-3 px-1">
                 <p className="text-[9px] uppercase tracking-widest opacity-70">Owner (60%)</p>
-                <p className="font-display text-base font-black">{owner}k</p>
-                <p className="text-[8px] text-red-300">-{uangMakan}k</p>
-                <p className="font-display text-sm font-black border-t border-white/30 pt-1 mt-1">{ownerGet}k</p>
+                <p className="font-display text-xl font-black">{owner}k</p>
               </div>
-              <div className="flex-1 text-center bg-gray-800 text-white py-2 px-1">
+              <div className="flex-1 text-center bg-gray-800 text-white py-3 px-1">
                 <p className="text-[9px] uppercase tracking-widest opacity-70">Karyawan (40%)</p>
-                <p className="font-display text-base font-black">{employeeGross}k</p>
-                <p className="text-[8px] text-green-300">+{uangMakan}k</p>
-                <p className="font-display text-sm font-black border-t border-white/30 pt-1 mt-1">{employeeGet}k</p>
+                <p className="font-display text-xl font-black">{employee}k</p>
               </div>
             </div>
           </div>
