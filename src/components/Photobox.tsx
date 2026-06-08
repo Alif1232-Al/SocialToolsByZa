@@ -203,7 +203,7 @@ export default function Photobox() {
           </div>
 
           <div ref={containerRef} className="flex justify-center overflow-hidden">
-            <canvas ref={canvasRef} className="w-full max-w-full h-auto shadow-[4px_4px_0_#000]" style={{ maxHeight: '70vh' }} />
+            <canvas ref={canvasRef} className="w-full max-w-full h-auto shadow-[4px_4px_0_#000]" style={{ maxHeight: '350px' }} />
           </div>
 
           <button onClick={downloadPng}

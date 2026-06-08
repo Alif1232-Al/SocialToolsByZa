@@ -27,7 +27,9 @@ export default function ComicPanel({
           {badge}
         </div>
       )}
-      {children}
+      <div className="flex-1 flex flex-col">
+        {children}
+      </div>
     </div>
   );
 }
