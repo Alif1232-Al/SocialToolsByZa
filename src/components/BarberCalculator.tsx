@@ -39,100 +39,161 @@ export default function BarberCalculator() {
     const cvs = canvasRef.current;
     if (!cvs || !hasResult) return;
     const ctx = cvs.getContext("2d")!;
-    const sz = 500;
-    cvs.width = sz;
-    cvs.height = sz;
+    const dpr = window.devicePixelRatio || 1;
+    const sz = 600;
+    cvs.width = sz * dpr;
+    cvs.height = sz * dpr;
+    cvs.style.width = sz + "px";
+    cvs.style.height = sz + "px";
+    ctx.scale(dpr, dpr);
 
-    const grad = ctx.createLinearGradient(0, 0, sz, sz);
+    const padL = 50;
+    const padR = 50;
+
+    const grad = ctx.createLinearGradient(0, 0, sz, 0);
     grad.addColorStop(0, "#fdf2f8");
     grad.addColorStop(0.5, "#fce7f3");
     grad.addColorStop(1, "#fef3c7");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, sz, sz);
 
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(10, 10, sz - 20, sz - 20);
+
     ctx.textAlign = "center";
-
     ctx.fillStyle = "#111";
-    ctx.font = '900 28px "Inter","Arial",sans-serif';
-    ctx.fillText("DEKA BARBER", sz / 2, 50);
+    ctx.font = '900 34px "Inter","Arial",sans-serif';
+    ctx.fillText("DEKA BARBER", sz / 2, 56);
 
-    ctx.font = '400 14px "Inter","Arial",sans-serif';
-    ctx.fillStyle = "#666";
-    ctx.fillText(date, sz / 2, 70);
+    ctx.font = '500 13px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#888";
+    ctx.fillText(date, sz / 2, 76);
 
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 2;
+    const divY = 95;
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(40, 85);
-    ctx.lineTo(sz - 40, 85);
+    ctx.moveTo(padL, divY);
+    ctx.lineTo(sz - padR, divY);
     ctx.stroke();
 
-    const rows = [
-      ["Potong Dewasa", `${dewasa} × 25k`, `${totalDewasa}k`],
-      ["Potong Anak", `${anak} × 20k`, `${totalAnak}k`],
-      ["Semir Rambut", `${semir} × 40k`, `${totalSemir}k`],
+    let y = 120;
+    const rh = 30;
+    const c1 = padL + 5;
+    const c2 = sz / 2 - 20;
+    const c3 = sz / 2 + 30;
+    const c4 = sz - padR - 5;
+
+    ctx.font = '700 11px "Inter","Arial",sans-serif';
+    ctx.fillStyle = "#111";
+    ctx.textAlign = "left";
+    ctx.fillText("Layanan", c1, y + 8);
+    ctx.textAlign = "center";
+    ctx.fillText("Jumlah", c2, y + 8);
+    ctx.textAlign = "center";
+    ctx.fillText("@", c3, y + 8);
+    ctx.textAlign = "right";
+    ctx.fillText("Total", c4, y + 8);
+    y += rh;
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL, y - 4);
+    ctx.lineTo(sz - padR, y - 4);
+    ctx.stroke();
+
+    const items = [
+      { label: "Potong Dewasa", qty: dewasa, price: "25k", total: totalDewasa },
+      { label: "Potong Anak", qty: anak, price: "20k", total: totalAnak },
+      { label: "Semir Rambut", qty: semir, price: "40k", total: totalSemir },
     ];
-    ctx.font = '400 14px "Inter","Arial",sans-serif';
-    let y = 115;
-    for (const r of rows) {
-      ctx.textAlign = "left";
+    ctx.font = '500 13px "Inter","Arial",sans-serif';
+    for (const item of items) {
       ctx.fillStyle = "#333";
-      ctx.fillText(r[0], 50, y);
+      ctx.textAlign = "left";
+      ctx.fillText(item.label, c1, y + 8);
       ctx.textAlign = "center";
-      ctx.fillText(r[1], sz / 2, y);
+      ctx.fillText(`${item.qty}`, c2, y + 8);
+      ctx.textAlign = "center";
+      ctx.fillText(item.price, c3, y + 8);
       ctx.textAlign = "right";
-      ctx.fillText(r[2], sz - 50, y);
-      y += 28;
+      ctx.fillText(`${item.total}k`, c4, y + 8);
+      y += rh;
     }
 
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(40, y);
-    ctx.lineTo(sz - 40, y);
+    ctx.moveTo(padL, y - 4);
+    ctx.lineTo(sz - padR, y - 4);
     ctx.stroke();
-    y += 10;
 
+    y += 2;
+    ctx.fillStyle = "#111";
+    ctx.font = '700 15px "Inter","Arial",sans-serif';
     ctx.textAlign = "left";
-    ctx.font = '700 16px "Inter","Arial",sans-serif';
-    ctx.fillStyle = "#111";
-    ctx.fillText("TOTAL", 50, y);
+    ctx.fillText("TOTAL", c1, y + 8);
     ctx.textAlign = "right";
-    ctx.fillText(`${grandTotal}k`, sz - 50, y);
-    y += 40;
+    ctx.fillText(`${grandTotal}k`, c4, y + 8);
 
+    y += 34;
     ctx.textAlign = "center";
-    ctx.font = '700 12px "Inter","Arial",sans-serif';
-    ctx.fillStyle = "#555";
-    ctx.fillText("— BAGI HASIL 60 : 40 —", sz / 2, y);
-    y += 8;
-
-    const bx = 60;
-    const bw = sz - 120;
-    const by = y;
-    const bh = 65;
-    ctx.strokeStyle = "#000";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(bx, by, bw, bh);
-
-    ctx.font = '700 12px "Inter","Arial",sans-serif';
-    ctx.fillStyle = "#111";
-    ctx.textAlign = "center";
-    ctx.fillText("Owner (60%)", bx + bw * 0.25, by + 18);
-    ctx.fillText("Karyawan (40%)", bx + bw * 0.75, by + 18);
-
-    ctx.font = '700 22px "Inter","Arial",sans-serif';
-    ctx.fillText(`${owner}k`, bx + bw * 0.25, by + 50);
-    ctx.fillText(`${employee}k`, bx + bw * 0.75, by + 50);
-
-    y = by + bh + 10;
-    ctx.font = '400 10px "Inter","Arial",sans-serif';
     ctx.fillStyle = "#888";
-    ctx.fillText(`Pendapatan bersih: ${netTotal}k (setelah uang makan ${uangMakan}k)`, sz / 2, y);
+    ctx.font = '500 11px "Inter","Arial",sans-serif';
+    ctx.fillText(`Uang Makan: ${uangMakan}k  │  Pendapatan Bersih: ${netTotal}k`, sz / 2, y);
 
+    y += 24;
+    const bw = 280;
+    const bx = (sz - bw) / 2;
+    const bh = 72;
+
+    ctx.fillStyle = "rgba(0,0,0,0.06)";
+    ctx.fillRect(bx + 3, y + 3, bw, bh);
+
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(bx, y, bw, bh);
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(bx, y, bw, bh);
+
+    ctx.strokeStyle = "#ddd";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(sz / 2, y + 10);
+    ctx.lineTo(sz / 2, y + bh - 10);
+    ctx.stroke();
+
+    ctx.fillStyle = "#888";
+    ctx.font = '700 9px "Inter","Arial",sans-serif';
+    ctx.textAlign = "center";
+    ctx.fillText("BAGI HASIL", sz / 2, y + 14);
+
+    ctx.fillStyle = "#111";
+    ctx.font = '700 10px "Inter","Arial",sans-serif';
+    ctx.fillText("OWNER", bx + bw * 0.25, y + 30);
+    ctx.fillStyle = "#888";
+    ctx.font = '400 9px "Inter","Arial",sans-serif';
+    ctx.fillText("(60%)", bx + bw * 0.25, y + 40);
+
+    ctx.fillStyle = "#111";
+    ctx.font = '700 10px "Inter","Arial",sans-serif';
+    ctx.fillText("KARYAWAN", bx + bw * 0.75, y + 30);
+    ctx.fillStyle = "#888";
+    ctx.font = '400 9px "Inter","Arial",sans-serif';
+    ctx.fillText("(40%)", bx + bw * 0.75, y + 40);
+
+    ctx.fillStyle = "#111";
+    ctx.font = '700 20px "Inter","Arial",sans-serif';
+    ctx.fillText(`${owner}k`, bx + bw * 0.25, y + 64);
+    ctx.fillText(`${employee}k`, bx + bw * 0.75, y + 64);
+
+    ctx.fillStyle = "rgba(0,0,0,0.12)";
     ctx.font = '400 10px "Inter","Arial",sans-serif';
-    ctx.fillStyle = "rgba(0,0,0,0.15)";
-    ctx.fillText("socialtoolsbyza", sz / 2, sz - 15);
+    ctx.textAlign = "center";
+    ctx.fillText("socialtoolsbyza", sz / 2, sz - 18);
   }, [hasResult, date, dewasa, anak, semir, uangMakan, grandTotal, totalDewasa, totalAnak, totalSemir, owner, employee, netTotal, totalCustomers]);
 
   useEffect(() => { renderCanvas(); }, [renderCanvas]);
