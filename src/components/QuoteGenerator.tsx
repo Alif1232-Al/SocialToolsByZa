@@ -4,36 +4,25 @@ import { Sparkles, Download, RefreshCw } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 
 const QUOTES = [
-  "gorengan ilang, hati remuk",
-  "temen curhat: ai. temen real: ga ada",
-  "skripsi? aku mah sosmed-an aja",
-  "abstrak aja ga jelas, apalagi masa depan",
-  "semangat tinggal semangat, duit tinggal duit",
-  "tidur? buat apa? besok juga mati",
-  "aku bukan pemalas, aku sedang menghemat energi",
-  "hari ini diet. besok lagi. besoknya lagi. besoknya lagi.",
-  "motivasi hidup: nanti aja deh",
-  "kayaknya perlu healing, tapi kantong lagi sakit",
-  "boss status: ga dibales karna chat cuma 'p'",
-  "jadwal hari ini: rebahan tapi overthinking",
-  "productive? iya, produktif scrolling",
-  "dikit-dikit baper, kalo ga baper ga seru",
-  "hidup itu kayak skripsi, penuh revisi",
-  "aku ga insecure, aku cuma sadar diri",
-  "semester ini targetku: ga nangis sampe UAS",
-  "ngoding error, hidup juga error",
-  "yang penting mah: pendinginan dulu",
-  "dosen bilang 'santai aja' tapi tugas numpuk",
-  "idup singleton: sendiri, sendiri, sendiri",
-  "404: motivasi not found",
-  "deploy hidup: always error 500",
-  "commit hari ini: 'fix minor bugs'",
-  "duit habis buat jajan, hati habis buat dia",
-  "stres? namanya juga hidup, Nak",
-  "kuota abis, sosial media dimatiin, batin pun teriak",
-  "aku ga malas, aku cuma lagi menghemat tenaga",
-  "hari senin aja males, apalagi hari lain",
-  "kafein itu temen begadang, tapi hati tetap hampa",
+  "dia: jangan baper\naku: *baper*",
+  "suka sama kamu\ntapi kamu suka dia\nyaudah\n*nyanyi lagu sedih*",
+  "chat cuma 'p'\njawab cuma 'iya'\naku baper", "dia chat 'hmm'\naku udah bikin\nskenario nikah",
+  "akun diagnosed:\nsuka suka\nyang gak bales",
+  "aku: santai aja\njuga aku:\n*overthinking 24/7*",
+  "tiap liat story dia\ntapi ga pernah\nberani chat",
+  "mental health:\n-30\ncinta:\n0",
+  "dia: kita temenan aja\naku: *pura pura ikhlas*",
+  "followers dia naik\naku? sedih naik",
+  "suka sama yang\ngak seharusnya\nclassic deh pokoknya",
+  "aku bukan pelarian\ntapi kalo kamu\nmau ngejar, gapapa",
+  "dia: jangan baper ya\naku yang salah\n*salahkan diri sendiri*",
+  "nyaman sama kamu\ntapi kamu nyaman\nsama semua orang",
+  "aku? patah hati terus\nudah jadi hobi",
+  "dia suka sama\ntemenku\naku: *pura pura happy*",
+  "story dia diliatin\nchat aja ga pernah\ngimana sih",
+  "relationship status:\noverthinking",
+  "aku suka kamu\ntapi gpp\nbiasa aja",
+  "dia chat seminggu sekali\naku? siap sedia 24 jam",
 ];
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
@@ -53,6 +42,10 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   return lines;
 }
 
+function splitLines(text: string): string[] {
+  return text.split("\n");
+}
+
 export default function QuoteGenerator() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [text, setText] = useState("");
@@ -69,11 +62,8 @@ export default function QuoteGenerator() {
     if (!canvas || !text.trim()) return;
     const ctx = canvas.getContext("2d")!;
     const size = 600;
-    const accentHeight = 8;
-    const watermarkSize = 11;
-    const padding = 48;
+    const padding = 44;
     const maxTextWidth = size - padding * 2;
-    const fontSize = 38;
 
     canvas.width = size;
     canvas.height = size;
@@ -83,39 +73,38 @@ export default function QuoteGenerator() {
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, size, size);
 
-    const drawAccent = (y: number) => {
-      const grad = ctx.createLinearGradient(0, y, size, y);
-      grad.addColorStop(0, "#ec4899");
-      grad.addColorStop(0.5, "#06b6d4");
-      grad.addColorStop(1, "#ec4899");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, y, size, accentHeight);
-    };
+    const rawLines = splitLines(text.trim());
+    const maxRawLen = Math.max(...rawLines.map((l) => l.length));
+    const fs = maxRawLen < 12 ? 52 : maxRawLen < 20 ? 44 : maxRawLen < 30 ? 36 : 30;
 
-    const drawWatermark = () => {
-      ctx.font = `700 ${watermarkSize}px "Inter",Arial,sans-serif`;
-      ctx.fillStyle = "rgba(0,0,0,0.15)";
-      ctx.textBaseline = "bottom";
-      ctx.fillText("socialtoolsbyza", size / 2, size - 16);
-    };
+    ctx.font = `900 ${fs}px "Inter","Arial Black",Impact,sans-serif`;
 
-    drawAccent(0);
-    drawAccent(size - accentHeight);
+    const allLines: string[] = [];
+    for (const line of rawLines) {
+      if (ctx.measureText(line).width <= maxTextWidth && line) {
+        allLines.push(line);
+      } else if (line) {
+        const wrapped = wrapText(ctx, line, maxTextWidth);
+        allLines.push(...wrapped);
+      } else {
+        allLines.push("");
+      }
+    }
 
-    ctx.font = `900 ${fontSize}px "Anybody","Arial Black",Impact,sans-serif`;
-    const lines = wrapText(ctx, text.trim(), maxTextWidth);
-    const lineHeight = fontSize * 1.35;
-    const textHeight = lines.length * lineHeight;
-    const contentArea = size - accentHeight * 2 - 40;
-    const startY = accentHeight + (contentArea - textHeight) / 2 + lineHeight / 2;
+    const lineSpacing = fs * 0.2;
+    const lineHeight = fs + lineSpacing;
+    const totalTextHeight = allLines.length * lineHeight;
+    const startY = (size - totalTextHeight) / 2 + lineHeight / 2;
 
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#111";
-    lines.forEach((line, i) => {
-      ctx.fillText(line, size / 2, startY + i * lineHeight);
-    });
-
-    drawWatermark();
+    let cy = startY;
+    for (const line of allLines) {
+      if (line) {
+        ctx.fillText(line, size / 2, cy);
+      }
+      cy += lineHeight;
+    }
   }, [text]);
 
   useEffect(() => { renderCanvas(); }, [renderCanvas]);
@@ -125,7 +114,7 @@ export default function QuoteGenerator() {
     if (!canvas) return;
     setDownloading(true);
     const link = document.createElement("a");
-    link.download = "quote-gen-z.png";
+    link.download = "quote.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
     setTimeout(() => setDownloading(false), 500);
@@ -137,26 +126,26 @@ export default function QuoteGenerator() {
         <Sparkles className="w-6 h-6" />Quote Generator
       </h3>
       <p className="font-body text-body-md text-gray-600 mb-4">
-        Bikin quote anak gen z buat story/feed. Random atau tulis sendiri!
+        Auto jadi gambar, tinggal download. Cocok buat story, feed, atau sindiran buat crush!
       </p>
       <div className="flex flex-col gap-3">
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="w-full min-h-[80px] p-3 border-4 border-black bg-white font-body text-sm outline-none resize-none"
-          placeholder="Tulis quote..."
-          rows={2}
+          className="w-full min-h-[90px] p-3 border-4 border-black bg-white font-body text-sm outline-none resize-none"
+          placeholder="ketik quote..."
+          rows={3}
         />
-        <div className="flex gap-2">
-          <button onClick={randomQuote} className="comic-btn bg-yellow-400 text-black flex-1 text-sm flex items-center justify-center gap-1">
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={randomQuote} className="comic-btn bg-yellow-400 text-black flex-1 text-sm flex items-center justify-center gap-1 min-w-[120px]">
             <RefreshCw className="w-4 h-4" /> ACKAHIN!
           </button>
-          <button onClick={handleDownload} disabled={downloading || !text.trim()} className="comic-btn bg-black text-white flex items-center justify-center gap-1 text-sm disabled:opacity-50">
+          <button onClick={handleDownload} disabled={downloading || !text.trim()} className="comic-btn bg-black text-white flex items-center justify-center gap-1 text-sm disabled:opacity-50 min-w-[120px]">
             <Download className="w-4 h-4" /> {downloading ? "..." : "DOWNLOAD"}
           </button>
         </div>
         <div className="flex justify-center">
-          <canvas ref={canvasRef} className="w-full max-w-[500px] shadow-[4px_4px_0_#000]" />
+          <canvas ref={canvasRef} className="w-full max-w-[400px]" />
         </div>
       </div>
     </ComicPanel>
