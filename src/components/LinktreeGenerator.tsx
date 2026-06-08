@@ -64,6 +64,31 @@ function getPlatformIcon(platform: string): string {
   return "🔗";
 }
 
+const URL_HINTS: Record<string, string> = {
+  instagram: "username",
+  tiktok: "@username",
+  youtube: "@channel",
+  "twitter / x": "@username",
+  linkedin: "nama-lo",
+  whatsapp: "62812xxxxxxx (no HP)",
+  telegram: "@username",
+  github: "username",
+  shopee: "shopee.co.id/...",
+  facebook: "username",
+  threads: "@username",
+  snapchat: "username",
+  discord: "invite-code",
+  spotify: "open.spotify.com/...",
+  website: "https://...",
+};
+
+function getUrlHint(label: string): string {
+  for (const [key, val] of Object.entries(URL_HINTS)) {
+    if (label.toLowerCase().includes(key)) return val;
+  }
+  return "https://...";
+}
+
 export default function LinktreeGenerator() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -82,6 +107,28 @@ export default function LinktreeGenerator() {
 
   const updateLink = (id: string, field: "label" | "url", value: string) =>
     setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
+
+  const formatUrl = (label: string, url: string) => {
+    if (!url.trim() || url.startsWith("http://") || url.startsWith("https://")) return url;
+    const p = label.toLowerCase();
+    const u = url.trim();
+    if (p.includes("instagram")) return `https://instagram.com/${u.replace(/^@/, "")}`;
+    if (p.includes("tiktok")) return `https://tiktok.com/@${u.replace(/^@/, "")}`;
+    if (p.includes("whatsapp")) { const d = u.replace(/[^0-9]/g, ""); return d ? `https://wa.me/${d}` : u; }
+    if (p.includes("telegram")) return `https://t.me/${u.replace(/^@/, "")}`;
+    if (p.includes("github")) return `https://github.com/${u.replace(/^@/, "")}`;
+    if (p.includes("twitter")) return `https://x.com/${u.replace(/^@/, "")}`;
+    if (p.includes("youtube")) return `https://youtube.com/@${u.replace(/^@/, "")}`;
+    if (p.includes("linkedin")) return `https://linkedin.com/in/${u.replace(/^@/, "")}`;
+    if (p.includes("facebook")) return `https://facebook.com/${u.replace(/^@/, "")}`;
+    if (p.includes("threads")) return `https://threads.net/@${u.replace(/^@/, "")}`;
+    if (p.includes("snapchat")) return `https://snapchat.com/add/${u}`;
+    if (p.includes("spotify") && u.startsWith("open.spotify.com")) return `https://${u}`;
+    if (p.includes("shopee") && u.startsWith("shopee.")) return `https://${u}`;
+    if (p.includes("discord")) return u.startsWith("discord.gg/") ? `https://${u}` : u;
+    return u;
+  };
+
 
   const addLink = () => setLinks((prev) => [...prev, { id: nextId(), label: "Website", url: "" }]);
   const removeLink = (id: string) => setLinks((prev) => prev.filter((l) => l.id !== id));
@@ -356,7 +403,8 @@ export default function LinktreeGenerator() {
                 {PLATFORMS.map((p) => (<option key={p} value={p}>{getPlatformIcon(p)} {p}</option>))}
               </select>
               <input value={l.url} onChange={(e) => updateLink(l.id, "url", e.target.value)}
-                className="flex-1 p-2 border-2 border-black font-body text-xs outline-none bg-white min-w-0" placeholder="https://..." />
+                onBlur={(e) => updateLink(l.id, "url", formatUrl(l.label, e.target.value))}
+                className="flex-1 p-2 border-2 border-black font-body text-xs outline-none bg-white min-w-0" placeholder={getUrlHint(l.label)} />
               <button onClick={() => removeLink(l.id)} className="p-1 text-red-500 hover:text-red-700 shrink-0">
                 <Trash2 className="w-4 h-4" /></button>
             </div>
