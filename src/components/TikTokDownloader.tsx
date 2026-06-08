@@ -8,6 +8,33 @@ export default function TikTokDownloader() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = useCallback(async () => {
+    if (!videoUrl) return;
+    setDownloading(true);
+    try {
+      const res = await fetch("/api/tiktok/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoUrl }),
+      });
+      if (!res.ok) throw new Error("Download gagal");
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = "tiktok-video.mp4";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal mendownload video");
+    } finally {
+      setDownloading(false);
+    }
+  }, [videoUrl]);
 
   const handleGrab = useCallback(async () => {
     if (!url.trim()) return;
@@ -43,7 +70,9 @@ export default function TikTokDownloader() {
         </div>
         {error && <p className="bg-red-100 border-2 border-red-500 text-red-700 p-2 font-body font-bold text-xs">{error}</p>}
         {videoUrl && (
-          <a href={videoUrl} download className="bg-green-500 text-white border-4 border-black px-4 py-2 font-body font-bold uppercase text-center comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all">⬇ DOWNLOAD VIDEO</a>
+          <button onClick={handleDownload} disabled={downloading} className="bg-green-500 text-white border-4 border-black px-4 py-2 font-body font-bold uppercase text-center comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-comic">
+            {downloading ? "DOWNLOADING..." : "⬇ DOWNLOAD VIDEO"}
+          </button>
         )}
         <button onClick={handleGrab} disabled={loading} className="comic-btn bg-black text-white w-full text-center disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-comic">
           {loading ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-5 h-5 animate-spin" />PROCESSING...</span> : "GRAB VIDEO!"}
