@@ -324,21 +324,13 @@ export default function LinktreeGenerator() {
     link.click();
   };
 
-  const handleGenerateLink = async () => {
-    let photoData = "";
-    if (photo) {
-      const img = new Image();
-      await new Promise((resolve) => { img.onload = resolve; img.src = photo; });
-      const c = document.createElement("canvas");
-      const s = 128;
-      c.width = s; c.height = s;
-      const cx = c.getContext("2d")!;
-      const min = Math.min(img.naturalWidth, img.naturalHeight);
-      cx.drawImage(img, (img.naturalWidth - min) / 2, (img.naturalHeight - min) / 2, min, min, 0, 0, s, s);
-      photoData = c.toDataURL("image/jpeg", 0.75);
-    }
+  const handleGenerateLink = () => {
     const visibleLinks = links.filter((l) => l.label.trim() && l.url.trim());
-    const data = { name: name.trim() || "Bio Links", bio: bio.trim(), links: visibleLinks.map((l) => ({ label: l.label, url: l.url })), photo: photoData };
+    const data = {
+      name: name.trim() || "Bio Links",
+      bio: bio.trim(),
+      links: visibleLinks.map((l) => ({ label: l.label, url: l.url })),
+    };
     const encoded = btoa(JSON.stringify(data));
     const url = `${window.location.origin}/link?d=${encoded}`;
     navigator.clipboard.writeText(url);
