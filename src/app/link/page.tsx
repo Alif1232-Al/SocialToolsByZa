@@ -35,12 +35,14 @@ function LinkContent() {
   const raw = params.get("d");
   let name = "";
   let links: { label: string; url: string }[] = [];
+  let photoData = "";
 
   try {
     if (raw) {
       const data = JSON.parse(atob(raw));
       name = data.name || "";
       links = data.links || [];
+      photoData = data.photo || "";
     }
   } catch {}
 
@@ -51,9 +53,13 @@ function LinkContent() {
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-pink-100 to-amber-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-black text-white flex items-center justify-center text-3xl font-bold shadow-lg border-4 border-white mb-4">
-            {initial}
-          </div>
+          {photoData ? (
+            <img src={photoData} alt="" className="w-20 h-20 rounded-full object-cover shadow-lg border-4 border-white mb-4" />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-black text-white flex items-center justify-center text-3xl font-bold shadow-lg border-4 border-white mb-4">
+              {initial}
+            </div>
+          )}
           <h1 className="text-2xl font-bold text-gray-900">{displayName}</h1>
           <p className="text-sm text-gray-500 mt-1">{links.length} links</p>
         </div>
