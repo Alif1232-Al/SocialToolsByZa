@@ -83,8 +83,8 @@ export default function QuoteGenerator() {
       if (w > maxW) maxW = w;
     }
 
-    let fs = Math.floor(120 * ((maxTextWidth * 0.88) / maxW));
-    fs = Math.min(180, Math.max(28, fs));
+    let fs = Math.floor(120 * ((maxTextWidth * 0.95) / maxW));
+    fs = Math.min(220, Math.max(28, fs));
 
     ctx.font = `900 ${fs}px "Inter","Arial Black",Impact,sans-serif`;
 
@@ -103,8 +103,8 @@ export default function QuoteGenerator() {
     const totalTextHeight = allLines.length * lineHeight;
     const startY = (size - totalTextHeight) / 2 + lineHeight / 2;
 
-    ctx.shadowColor = "rgba(0,0,0,0.2)";
-    ctx.shadowBlur = 3;
+    ctx.shadowColor = "rgba(0,0,0,0.3)";
+    ctx.shadowBlur = 6;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
     ctx.textBaseline = "middle";
