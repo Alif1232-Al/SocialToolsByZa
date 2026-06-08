@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 
 const PLATFORM_COLORS: Record<string, string> = {
   instagram: "#E4405F", tiktok: "#000000", youtube: "#FF0000",
@@ -32,22 +32,48 @@ function getIcon(label: string) {
 
 function LinkContent() {
   const params = useSearchParams();
-  const raw = params.get("d");
-  let name = "";
-  let links: { label: string; url: string }[] = [];
-  let photoData = "";
+  const [name, setName] = useState("");
+  const [links, setLinks] = useState<{ label: string; url: string }[]>([]);
+  const [photoData, setPhotoData] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  try {
-    if (raw) {
-      const data = JSON.parse(atob(raw));
-      name = data.name || "";
-      links = data.links || [];
-      photoData = data.photo || "";
+  useEffect(() => {
+    const code = params.get("c");
+    const raw = params.get("d");
+
+    if (code) {
+      fetch(`/api/link/${code}`)
+        .then((r) => r.json())
+        .then((data) => {
+          setName(data.name || "");
+          setLinks(data.links || []);
+          setPhotoData(data.photo || "");
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    } else if (raw) {
+      try {
+        const data = JSON.parse(atob(raw));
+        setName(data.name || "");
+        setLinks(data.links || []);
+        setPhotoData(data.photo || "");
+      } catch {}
+      setLoading(false);
+    } else {
+      setLoading(false);
     }
-  } catch {}
+  }, [params]);
 
   const displayName = name || "Bio Links";
   const initial = displayName[0].toUpperCase();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-300 via-pink-300 to-cyan-300 flex items-center justify-center p-4">
+        <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-yellow-300 via-pink-300 to-cyan-300 flex items-center justify-center p-4">

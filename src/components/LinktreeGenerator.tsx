@@ -263,8 +263,10 @@ export default function LinktreeGenerator() {
     }
     const visibleLinks = links.filter((l) => l.label.trim() && l.url.trim());
     const data = { name: name.trim() || "Bio Links", links: visibleLinks.map((l) => ({ label: l.label, url: l.url })), photo: photoData };
-    const encoded = btoa(JSON.stringify(data));
-    const url = `${window.location.origin}/link?d=${encoded}`;
+    const res = await fetch("/api/link/create", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error);
+    const url = `${window.location.origin}/link?c=${json.code}`;
     navigator.clipboard.writeText(url);
     setLinkCopied(true);
     setTimeout(() => setLinkCopied(false), 2000);
