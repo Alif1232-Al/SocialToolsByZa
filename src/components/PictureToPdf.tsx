@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { Image, FileImage, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import toast from "react-hot-toast";
 
 export default function PictureToPdf() {
   const { images, addImages, removeImage } = useImageUpload();
@@ -42,8 +43,10 @@ export default function PictureToPdf() {
         pdf.addImage(img, fmt, x, y, w, h);
       }
       pdf.save("converted.pdf");
+      toast.success("PDF berhasil dibuat!");
     } catch {
       setError("Gagal membuat PDF. Coba dengan gambar lebih kecil.");
+      toast.error("Gagal membuat PDF");
     } finally {
       setLoading(false);
     }

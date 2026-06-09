@@ -2,6 +2,7 @@
 import { useState, useCallback, useRef } from "react";
 import { Scan, Upload, Copy, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
+import toast from "react-hot-toast";
 
 export default function OcrPictureToText() {
   const [ocrText, setOcrText] = useState("");
@@ -31,16 +32,18 @@ export default function OcrPictureToText() {
       const worker = await createWorker("eng");
       const { data } = await worker.recognize(fileRef.current);
       setOcrText(data.text);
+      toast.success("Teks berhasil di-extract!");
       await worker.terminate();
     } catch {
       setError("Gagal membaca teks. Coba gambar dengan resolusi lebih baik.");
+      toast.error("Gagal membaca teks");
     } finally {
       setLoading(false);
     }
   }, []);
 
   const copyText = useCallback(() => {
-    navigator.clipboard.writeText(ocrText).catch(() => {});
+    navigator.clipboard.writeText(ocrText).then(() => toast.success("Teks dicopy!")).catch(() => {});
   }, [ocrText]);
 
   return (

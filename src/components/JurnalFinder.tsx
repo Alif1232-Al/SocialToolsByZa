@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { Search, ExternalLink, Loader2 } from "lucide-react";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
+import toast from "react-hot-toast";
 
 interface JurnalItem {
   title: string;
@@ -33,8 +34,10 @@ export default function JurnalFinder() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setResults(data.results || []);
+      toast.success("Jurnal ditemukan!");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mencari jurnal");
+      toast.error(err instanceof Error ? err.message : "Gagal");
     } finally {
       setLoading(false);
     }

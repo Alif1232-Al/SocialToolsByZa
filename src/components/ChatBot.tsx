@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { Bot, X, Send, Sparkles } from "lucide-react";
 import { features } from "@/lib/chat-knowledge";
+import toast from "react-hot-toast";
 
 type View = "menu" | "features" | "detail" | "chat";
 
@@ -105,6 +106,7 @@ export default function ChatBot() {
       setMsgs((p) => [...p, { role: "assistant", content: d.reply || "Error, coba lagi ya" }]);
     } catch {
       setMsgs((p) => [...p, { role: "assistant", content: "Wah error bro, coba lagi nanti!" }]);
+      toast.error("Gagal terhubung ke server");
     }
     setLoading(false);
   };

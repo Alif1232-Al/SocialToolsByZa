@@ -4,6 +4,7 @@ import { FileText, Upload, Loader2, FileWarning } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
+import toast from "react-hot-toast";
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 
@@ -20,11 +21,13 @@ export default function PdfToWord() {
     if (f) {
       if (!f.name.toLowerCase().endsWith(".pdf")) {
         setError("Hanya file PDF yang diterima");
+        toast.error("Hanya file PDF yang diterima");
         setFile(null);
         return;
       }
       if (f.size > MAX_FILE_SIZE) {
         setError("File terlalu besar! Maksimal 15MB");
+        toast.error("File terlalu besar! Maksimal 15MB");
         setFile(null);
         return;
       }
@@ -66,9 +69,11 @@ export default function PdfToWord() {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      toast.success("PDF berhasil di-convert!");
       setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat konversi");
+      toast.error("Gagal mengonversi PDF");
     } finally {
       clearInterval(progressInterval);
       setLoading(false);

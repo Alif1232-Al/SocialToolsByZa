@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Users, Plus, Loader2, Trash2, AlertTriangle, Shield, LogOut } from "lucide-react";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
+import toast from "react-hot-toast";
 
 type User = { id: string; email: string; name: string; role: string; createdAt: string };
 
@@ -28,7 +29,7 @@ export default function AdminPage() {
       const data = await res.json();
       setUsers(data.users);
     } catch (err: any) {
-      setError(err.message || "Error");
+      toast.error(err.message || "Error");
     } finally {
       setLoading(false);
     }
@@ -53,8 +54,9 @@ export default function AdminPage() {
       setName("");
       setPassword("");
       await fetchUsers();
+      toast.success("User berhasil ditambahkan!");
     } catch (err: any) {
-      setCreateError(err.message || "Gagal");
+      toast.error(err.message || "Gagal");
     } finally {
       setCreating(false);
     }
@@ -78,8 +80,9 @@ export default function AdminPage() {
         throw new Error(d.error || "Gagal");
       }
       await fetchUsers();
+      toast.success("User berhasil dihapus!");
     } catch (err: any) {
-      setError(err.message || "Gagal hapus");
+      toast.error(err.message || "Gagal hapus");
     }
   };
 

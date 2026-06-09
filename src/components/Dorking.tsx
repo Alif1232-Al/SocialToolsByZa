@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
+import toast from "react-hot-toast";
 
 const SOCIAL_ICONS: Record<string, string> = {
   Instagram: "Ig",
@@ -97,9 +98,11 @@ export default function Dorking() {
       const d = await res.json();
       if (!res.ok) throw new Error(d.error || "Request failed");
       setData(d);
+      toast.success("Hasil OSINT ditemukan!");
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
     } catch (err: any) {
       setError(err.message || "Gagal mencari");
+      toast.error(err.message || "Gagal");
     } finally {
       setLoading(false);
     }
@@ -252,7 +255,7 @@ export default function Dorking() {
                               <div className="flex items-center gap-1 shrink-0 ml-2">
                                 {r.status === "found" ? (
                                   <>
-                                    <button onClick={async (e) => { e.stopPropagation(); try { await navigator.clipboard.writeText(r.url); } catch {} }}
+                                    <button onClick={async (e) => { e.stopPropagation(); try { await navigator.clipboard.writeText(r.url); toast.success("URL dicopy!"); } catch {} }}
                                       className="p-1 hover:bg-black/10 rounded transition-colors">
                                       <Copy className="w-3 h-3 text-gray-500" />
                                     </button>

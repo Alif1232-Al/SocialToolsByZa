@@ -7,6 +7,7 @@ import ChatWelcomePopup from "@/components/ChatWelcomePopup";
 import { AuthProvider } from "@/lib/AuthContext";
 import ThemeProvider from "@/lib/ThemeProvider";
 import LangProvider from "@/lib/LangContext";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: {
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </AuthProvider>
         </LangProvider>
         </ThemeProvider>
+        <Toaster position="top-right" toastOptions={{duration:3000,style:{background:"#111",color:"#fff",border:"2px solid #000",borderRadius:8,fontSize:13,fontWeight:600},success:{iconTheme:{primary:"#22c55e",secondary:"#fff"}},error:{iconTheme:{primary:"#ef4444",secondary:"#fff"}}}} />
       </body>
     </html>
   );

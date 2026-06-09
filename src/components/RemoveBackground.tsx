@@ -4,6 +4,7 @@ import { Upload, Sparkles, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
+import toast from "react-hot-toast";
 
 export default function RemoveBackground() {
   const { lang } = useLang();
@@ -42,10 +43,12 @@ export default function RemoveBackground() {
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
+      toast.success("Background berhasil dihapus!");
     } catch (e) {
       console.error("RemoveBG error:", e);
       const msg = e instanceof Error ? e.message : "Coba gambar lain atau refresh";
       setError(`Gagal: ${msg}`);
+      toast.error("Gagal menghapus background");
     } finally {
       setLoading(false);
     }

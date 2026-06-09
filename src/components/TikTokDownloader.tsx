@@ -4,6 +4,7 @@ import { Download, Link as LinkIcon, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
+import toast from "react-hot-toast";
 
 export default function TikTokDownloader() {
   const { lang } = useLang();
@@ -34,6 +35,7 @@ export default function TikTokDownloader() {
       URL.revokeObjectURL(blobUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mendownload video");
+      toast.error(err instanceof Error ? err.message : "Gagal");
     } finally {
       setDownloading(false);
     }
@@ -53,8 +55,10 @@ export default function TikTokDownloader() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setVideoUrl(data.videoUrl);
+      toast.success("Video siap di download!");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mengambil video");
+      toast.error(err instanceof Error ? err.message : "Gagal");
     } finally {
       setLoading(false);
     }

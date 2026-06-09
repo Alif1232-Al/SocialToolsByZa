@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
 import { LogIn, Loader2, AlertTriangle } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,8 +31,9 @@ export default function LoginPage() {
       refresh();
       router.push("/");
       router.refresh();
+      toast.success("Berhasil login!");
     } catch (err: any) {
-      setError(err.message || t("login.failed", lang));
+      toast.error(err.message || t("login.failed", lang));
     } finally {
       setLoading(false);
     }
