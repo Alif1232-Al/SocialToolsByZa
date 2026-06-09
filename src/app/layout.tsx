@@ -24,6 +24,11 @@ export const metadata: Metadata = {
     locale: "id_ID",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "SocialToolsByZa!! - Alat Tempur Mahasiswa IT",
+    description: "12+ alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Gratis!",
+  },
   robots: {
     index: true,
     follow: true,
