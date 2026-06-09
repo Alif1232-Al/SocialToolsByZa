@@ -121,13 +121,13 @@ export default function AdminPage() {
               <h4 className="font-body font-bold text-sm uppercase text-gray-800">{t("admin.formTitle", lang)}</h4>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("admin.formEmail", lang)} required
-                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none" />
+                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-gray-900 placeholder-gray-400" />
               <input type="text" value={name} onChange={(e) => setName(e.target.value)}
                 placeholder={t("admin.formName", lang)} required
-                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none" />
+                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-gray-900 placeholder-gray-400" />
               <input type="text" value={password} onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("admin.formPass", lang)} required
-                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none" />
+                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-gray-900 placeholder-gray-400" />
               {createError && (
                 <div className="bg-red-100 border border-red-500 text-red-700 p-2 font-body font-bold text-xs">{createError}</div>
               )}
