@@ -158,7 +158,7 @@ export default function ShowcasePage() {
 
             <div className="flex flex-col md:flex-row gap-8">
               <div className="md:w-2/5">
-                <h3 className="font-display text-headline-md uppercase italic mb-3 flex items-center gap-2">
+                <h3 className={`font-display text-headline-md uppercase italic mb-3 flex items-center gap-2 ${demo.bgColor === 'bg-gray-900' ? 'dark:text-white' : 'dark:text-gray-900'}`}>
                   <demo.icon className="w-6 h-6 shrink-0" />
                   {demo.title}
                 </h3>

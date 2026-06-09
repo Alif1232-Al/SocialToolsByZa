@@ -165,7 +165,7 @@ export default function FeaturesPage() {
               {f.badge}
             </div>
 
-            <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 break-words">
+            <h3 className={`font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 break-words ${f.bgColor === 'bg-gray-900' ? 'dark:text-white' : 'dark:text-gray-900'}`}>
               <f.icon className="w-6 h-6 shrink-0" />
               <span className="min-w-0">{f.title}</span>
             </h3>
