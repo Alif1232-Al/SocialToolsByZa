@@ -34,8 +34,8 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white dark:bg-gray-800 border-b-4 border-black dark:border-gray-600 shadow-comic">
-      <nav className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 sm:py-3 max-w-7xl mx-auto">
-        <Link href="/" className="font-display text-sm sm:text-headline-md uppercase italic bg-yellow-400 text-black px-2 sm:px-4 py-1.5 sm:py-2 border-4 border-black shadow-comic -rotate-2 leading-none shrink-0 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+      <nav className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-3 max-w-7xl mx-auto">
+        <Link href="/" className="font-display text-lg sm:text-headline-md uppercase italic bg-yellow-400 text-black px-3 sm:px-4 py-2 border-4 border-black shadow-comic -rotate-2 leading-none shrink-0 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
           SOCIAL TOOLS BY ZA!!
         </Link>
 
