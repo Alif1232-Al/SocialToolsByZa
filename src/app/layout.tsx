@@ -6,6 +6,7 @@ import ChatBot from "@/components/ChatBot";
 import ChatWelcomePopup from "@/components/ChatWelcomePopup";
 import { AuthProvider } from "@/lib/AuthContext";
 import ThemeProvider from "@/lib/ThemeProvider";
+import LangProvider from "@/lib/LangContext";
 
 export const metadata: Metadata = {
   title: {
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-body min-h-screen">
         <ThemeProvider>
+        <LangProvider>
         <AuthProvider>
           <Header />
           <main className="pt-28 md:pt-24 pb-16 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
@@ -61,6 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ChatWelcomePopup />
           <ChatBot />
         </AuthProvider>
+        </LangProvider>
         </ThemeProvider>
       </body>
     </html>

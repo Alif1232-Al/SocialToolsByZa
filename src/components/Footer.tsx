@@ -1,5 +1,7 @@
 "use client";
 import { Camera, Globe, MessageCircle, ExternalLink } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
 const SOCIAL_LINKS = {
   instagram: "https://instagram.com/popify_dev",
@@ -10,6 +12,7 @@ const SOCIAL_LINKS = {
 };
 
 export default function Footer() {
+  const { lang } = useLang();
   const socialLinks = [
     { label: "Instagram", icon: Camera, href: SOCIAL_LINKS.instagram, color: "hover:bg-pink-500" },
     { label: "Threads", icon: ExternalLink, href: SOCIAL_LINKS.threads, color: "hover:bg-yellow-400" },
@@ -23,10 +26,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-12">
         <div className="text-center mb-10">
           <div className="inline-block bg-pink-500 text-white border-4 border-black px-6 py-2 -rotate-2 comic-shadow mb-4">
-            <span className="font-display text-headline-md uppercase">THE CREW / CONTACT ME</span>
+            <span className="font-display text-headline-md uppercase">{t("footer.title", lang)}</span>
           </div>
           <p className="font-body text-body-md text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
-            Punya pertanyaan, kritik, atau pengen ngopi bareng? Temuin gue di sosmed bawah ini!
+            {t("footer.desc", lang)}
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-6 mb-10">
@@ -49,12 +52,12 @@ export default function Footer() {
             SOCIAL TOOLS BY ZA!!
           </div>
           <div className="flex gap-6">
-            <span className="font-body font-bold uppercase text-sm text-gray-500 dark:text-gray-400 cursor-default">Terms</span>
-            <span className="font-body font-bold uppercase text-sm text-gray-500 dark:text-gray-400 cursor-default">Privacy</span>
-            <a href="mailto:hello@socialtoolsbyza.com" className="font-body font-bold uppercase text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Contact</a>
+            <span className="font-body font-bold uppercase text-sm text-gray-500 dark:text-gray-400 cursor-default">{t("footer.terms", lang)}</span>
+            <span className="font-body font-bold uppercase text-sm text-gray-500 dark:text-gray-400 cursor-default">{t("footer.privacy", lang)}</span>
+            <a href="mailto:hello@socialtoolsbyza.com" className="font-body font-bold uppercase text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">{t("footer.contact", lang)}</a>
           </div>
           <div className="font-body font-bold text-sm text-center md:text-right text-gray-600 dark:text-gray-400">
-            LETTER TO THE EDITOR: &copy; 2026 ZA PRODUCTIONS
+            {t("footer.copyright", lang)} &copy; 2026 ZA PRODUCTIONS
           </div>
         </div>
       </div>
