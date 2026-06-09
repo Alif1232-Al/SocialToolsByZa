@@ -35,9 +35,8 @@ export default function Header() {
   return (
     <header className="fixed top-0 w-full z-50 bg-white dark:bg-gray-800 border-b-4 border-black dark:border-gray-600 shadow-comic">
       <nav className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 sm:py-3 max-w-7xl mx-auto">
-        <Link href="/" className="font-display text-xs sm:text-headline-md uppercase italic bg-yellow-400 text-black px-2 sm:px-4 py-1.5 sm:py-2 border-4 border-black shadow-comic -rotate-2 leading-none shrink-0 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
-          <span className="sm:hidden">STBZ!!</span>
-          <span className="hidden sm:inline">SOCIAL TOOLS BY ZA!!</span>
+        <Link href="/" className="font-display text-sm sm:text-headline-md uppercase italic bg-yellow-400 text-black px-2 sm:px-4 py-1.5 sm:py-2 border-4 border-black shadow-comic -rotate-2 leading-none shrink-0 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+          SOCIAL TOOLS BY ZA!!
         </Link>
 
         <div className="hidden md:flex items-center gap-gutter">
@@ -50,7 +49,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-1 sm:gap-3">
-          <div className="hidden xs:flex sm:flex items-center gap-1 sm:gap-2">
+          <div className="hidden md:flex items-center gap-1 sm:gap-2">
             <LangToggle />
             <ThemeToggle />
           </div>
@@ -87,6 +86,11 @@ export default function Header() {
       {menuOpen && (
         <div className="md:hidden bg-white dark:bg-gray-800 border-t-4 border-black dark:border-gray-600 comic-shadow">
           <div className="px-margin-mobile py-4 space-y-3">
+            <div className="flex items-center gap-2 pb-3 border-b-2 border-gray-300 dark:border-gray-600">
+              <span className="font-body text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500 mr-auto">Pengaturan</span>
+              <LangToggle />
+              <ThemeToggle />
+            </div>
             {NAV_KEYS.map((l) => (
               <Link key={l.href} href={l.href}
                 className={`block font-body font-bold uppercase tracking-widest text-sm py-2 dark:text-gray-200 ${isActive(l.href) ? "text-pink-600" : "text-black"}`}>
