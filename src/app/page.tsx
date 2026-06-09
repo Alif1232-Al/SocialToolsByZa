@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import HeroSection from "@/components/HeroSection";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PremiumGate from "@/components/PremiumGate";
+import PromoPopup from "@/components/PromoPopup";
 
 const TikTokDownloader = dynamic(() => import("@/components/TikTokDownloader"), { ssr: false });
 const PdfToWord = dynamic(() => import("@/components/PdfToWord"), { ssr: false });
@@ -23,6 +24,7 @@ const subTools = [
 export default function Home() {
   return (
     <>
+      <PromoPopup />
       <HeroSection />
 
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
