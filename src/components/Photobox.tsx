@@ -1,8 +1,9 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { ImagePlus, Download, X, Sparkles, ChevronLeft, ChevronRight, Palette, LayoutGrid, Frame } from "lucide-react";
+import { ImagePlus, Download, X, Sparkles, ChevronLeft, ChevronRight, Palette, LayoutGrid, Frame, Pen } from "lucide-react";
 import { FILTERS } from "@/lib/photo-filters";
-import { FRAMES } from "@/lib/photo-frames";
+import { FRAMES, DEFAULT_CUSTOM, renderCustomBackground, drawCustomFrameText, drawFrameText } from "@/lib/photo-frames";
+import type { CustomFrameOptions } from "@/lib/photo-frames";
 
 const GRID_LAYOUTS = [
   { id: "1x1", cols: 1, rows: 1, cells: 1, label: "1" },
@@ -23,6 +24,25 @@ const ALL_LAYOUTS = [...GRID_LAYOUTS, ...SPECIAL_LAYOUTS];
 const FILTER_CATEGORIES = [
   { name: "Trending", ids: ["original", "warmfilm", "cinematic", "softpastel", "y2kflash", "noirgrain", "grunge"] },
   { name: "Classic", ids: ["vintage", "popart", "comic", "neon", "cartoon", "lomo", "bw-hc", "halftone", "sketch", "rgbsplit", "pixelate"] },
+];
+
+const COLOR_SWATCHES = [
+  "#111", "#fff", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899",
+  "#fdf2f8", "#fef3c7", "#dbeafe", "#bbf7d0", "#fce7f3", "#e0f2fe", "#f8fafc", "#020617",
+];
+
+const DECORATIONS = [
+  { id: "none", label: "None", emoji: "⬜" },
+  { id: "stars", label: "Stars", emoji: "⭐" },
+  { id: "hearts", label: "Hearts", emoji: "❤️" },
+  { id: "dots", label: "Dots", emoji: "🔵" },
+  { id: "circles", label: "Circles", emoji: "⭕" },
+];
+
+const TRENDY_TEXTS = [
+  "MY MOMENTS", "BESTIES", "FOREVER", "VIBES", "LIT", "SLAY", "ICONIC",
+  "GOALS", "FAMILY", "SQUAD", "DREAM", "BLESSED", "LOVE", "PEACE",
+  "WILD", "FREE", "BOSS", "CHILL", "FIRE", "LIT AF",
 ];
 
 function applyFilterToCanvas(canvas: HTMLCanvasElement, filterId: string) {
@@ -46,18 +66,21 @@ export default function Photobox() {
   const [filter, setFilter] = useState("original");
   const [frameId, setFrameId] = useState("comic-boom");
   const [filterTab, setFilterTab] = useState<"Trending" | "Classic">("Trending");
+  const [customOpts, setCustomOpts] = useState<CustomFrameOptions>(DEFAULT_CUSTOM);
   const [ready, setReady] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const offRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const loadedImgs = useRef<HTMLImageElement[]>([]);
+  const customTextRef = useRef<HTMLInputElement>(null);
 
+  const isCustom = frameId === "custom";
   const cur = ALL_LAYOUTS.find((l) => l.id === layout) || GRID_LAYOUTS[3];
   const isFilmstrip = layout === "filmstrip";
   const isPhotostrip = layout === "photostrip";
   const isSpecial = isFilmstrip || isPhotostrip;
-  const frame = FRAMES.find((f) => f.id === frameId) || FRAMES[0];
+  const frame = !isCustom ? FRAMES.find((f) => f.id === frameId) || FRAMES[0] : null;
   const maxCells = cur.cells;
   const visible = Math.min(images.length, maxCells);
   const cols = isSpecial ? 1 : cur.cols;
@@ -109,7 +132,13 @@ export default function Photobox() {
       ctx.strokeStyle = "#111";
       ctx.lineWidth = 4;
       ctx.strokeRect(4, 4, totalW - 8, totalH - 8);
-    } else {
+    } else if (isCustom) {
+      renderCustomBackground(ctx, totalW, totalH, customOpts);
+      const bw = customOpts.borderWidth;
+      ctx.strokeStyle = customOpts.borderColor;
+      ctx.lineWidth = bw;
+      ctx.strokeRect(bw / 2, bw / 2, totalW - bw, totalH - bw);
+    } else if (frame) {
       frame.render(ctx, totalW, totalH);
       const bw = frame.borderWidth;
       ctx.strokeStyle = frame.borderColor;
@@ -132,25 +161,26 @@ export default function Photobox() {
       const s = Math.min(img.naturalWidth, img.naturalHeight);
       const sx = (img.naturalWidth - s) / 2;
       const sy = (img.naturalHeight - s) / 2;
-      const cbw = isSpecial ? (isFilmstrip ? 0 : 2) : frame.cellBorderWidth;
-      octx.drawImage(img, sx, sy, s, s, cbw, cbw, cellW - cbw * 2, cellH - cbw * 2);
+      const cellBw = isSpecial ? (isFilmstrip ? 0 : 2) : isCustom ? customOpts.cellBorderWidth : (frame?.cellBorderWidth ?? 2);
+      octx.drawImage(img, sx, sy, s, s, cellBw, cellBw, cellW - cellBw * 2, cellH - cellBw * 2);
       applyFilterToCanvas(off, filter);
       ctx.drawImage(off, x, y);
 
       if (!isFilmstrip) {
-        ctx.strokeStyle = isPhotostrip ? "#111" : frame.cellBorderColor;
-        ctx.lineWidth = isPhotostrip ? 2 : frame.cellBorderWidth;
+        const cellBc = isPhotostrip ? "#111" : isCustom ? customOpts.cellBorderColor : (frame?.cellBorderColor ?? "#111");
+        ctx.strokeStyle = cellBc;
+        ctx.lineWidth = isPhotostrip ? 2 : isCustom ? customOpts.cellBorderWidth : (frame?.cellBorderWidth ?? 2);
         ctx.strokeRect(x - 1, y - 1, cellW + 2, cellH + 2);
 
-        if (frame.showNumbers && !isPhotostrip) {
+        const showNums = isCustom ? true : (frame?.showNumbers ?? true);
+        if (showNums && !isPhotostrip) {
           ctx.fillStyle = "rgba(0,0,0,0.65)";
           ctx.font = 'bold 11px "Inter","Arial",sans-serif';
           ctx.textAlign = "left";
           ctx.textBaseline = "top";
-          const ns = 6;
-          ctx.fillRect(x + ns - 2, y + ns - 2, 18, 18);
+          ctx.fillRect(x + 4, y + 4, 18, 18);
           ctx.fillStyle = "#fff";
-          ctx.fillText(`${i + 1}`, x + ns, y + ns);
+          ctx.fillText(`${i + 1}`, x + 6, y + 6);
         }
       }
     }
@@ -161,14 +191,21 @@ export default function Photobox() {
       ctx.strokeRect(2, 2, totalW - 4, totalH - 4);
     }
 
-    if (frame.watermark && !isSpecial) {
+    if (isCustom && customOpts.textEnabled && customOpts.text.trim()) {
+      drawCustomFrameText(ctx, totalW, totalH, customOpts.text, customOpts.textColor, customOpts.textBg, customOpts.textPosition);
+    } else if (frame?.text && !isSpecial) {
+      drawFrameText(ctx, totalW, totalH, frame.text);
+    }
+
+    const showWm = isCustom ? false : (frame?.watermark ?? false);
+    if (showWm && !isSpecial) {
       ctx.fillStyle = "rgba(0,0,0,0.06)";
       ctx.font = '8px "Inter","Arial",sans-serif';
       ctx.textAlign = "center";
       ctx.textBaseline = "bottom";
       ctx.fillText("photobox by socialtoolsbyza", totalW / 2, totalH - 5);
     }
-  }, [filter, frameId, totalW, totalH, cur, cellW, cellH, visible, isFilmstrip, isPhotostrip, isSpecial, frame]);
+  }, [filter, frameId, customOpts, totalW, totalH, cur, cellW, cellH, visible, isFilmstrip, isPhotostrip, isSpecial, frame, isCustom]);
 
   useEffect(() => { if (images.length > 0) renderCanvas(); }, [renderCanvas, ready, images.length]);
 
@@ -211,6 +248,10 @@ export default function Photobox() {
     l.download = `photobox-${layout}-${filter}-${frameId}.png`;
     l.href = c.toDataURL("image/png");
     l.click();
+  };
+
+  const updateCustom = <K extends keyof CustomFrameOptions>(key: K, value: CustomFrameOptions[K]) => {
+    setCustomOpts((prev) => ({ ...prev, [key]: value }));
   };
 
   const currentFilters = FILTER_CATEGORIES.find((c) => c.name === filterTab)?.ids || [];
@@ -362,8 +403,166 @@ export default function Photobox() {
                   </button>
                 );
               })}
+              <button onClick={() => setFrameId("custom")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${frameId === "custom" ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
+                style={frameId === "custom" ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}
+              >
+                <Pen className="w-3.5 h-3.5" />
+                <span>Custom</span>
+              </button>
             </div>
           </div>
+
+          {isCustom && (
+            <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-4" style={{ boxShadow: "4px 4px 0 rgba(0,0,0,1)" }}>
+              <div className="flex items-center gap-2">
+                <Pen className="w-4 h-4" />
+                <p className="font-display text-sm uppercase italic">Edit Bingkai Custom</p>
+              </div>
+
+              <div className="space-y-1">
+                <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Tipe Background</p>
+                <div className="flex gap-2">
+                  <button onClick={() => updateCustom("bgType", "gradient")}
+                    className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType === "gradient" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
+                    Gradient
+                  </button>
+                  <button onClick={() => updateCustom("bgType", "solid")}
+                    className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType === "solid" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
+                    Solid
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 1</p>
+                  <div className="flex gap-1 flex-wrap">
+                    {COLOR_SWATCHES.map((c) => (
+                      <button key={c} onClick={() => updateCustom("bgColor1", c)}
+                        className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor1 === c ? "border-black scale-110" : "border-gray-200"}`}
+                        style={{ backgroundColor: c }} />
+                    ))}
+                  </div>
+                </div>
+                {customOpts.bgType === "gradient" && (
+                  <div className="space-y-1">
+                    <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 2</p>
+                    <div className="flex gap-1 flex-wrap">
+                      {COLOR_SWATCHES.map((c) => (
+                        <button key={c} onClick={() => updateCustom("bgColor2", c)}
+                          className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor2 === c ? "border-black scale-110" : "border-gray-200"}`}
+                          style={{ backgroundColor: c }} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Dekorasi</p>
+                <div className="flex gap-1.5 flex-wrap">
+                  {DECORATIONS.map((d) => (
+                    <button key={d.id} onClick={() => updateCustom("decoration", d.id as CustomFrameOptions["decoration"])}
+                      className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.decoration === d.id ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
+                      {d.emoji} {d.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Border Luar</p>
+                  <div className="flex gap-1 flex-wrap">
+                    {COLOR_SWATCHES.slice(0, 10).map((c) => (
+                      <button key={c} onClick={() => updateCustom("borderColor", c)}
+                        className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.borderColor === c ? "border-black scale-110" : "border-gray-200"}`}
+                        style={{ backgroundColor: c }} />
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Border Foto</p>
+                  <div className="flex gap-1 flex-wrap">
+                    {COLOR_SWATCHES.slice(0, 10).map((c) => (
+                      <button key={c} onClick={() => updateCustom("cellBorderColor", c)}
+                        className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.cellBorderColor === c ? "border-black scale-110" : "border-gray-200"}`}
+                        style={{ backgroundColor: c }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t-2 border-gray-200 pt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="font-display text-sm uppercase italic">Teks</p>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <span className="font-body text-[10px] font-bold text-gray-500">Tampilkan</span>
+                    <input type="checkbox" checked={customOpts.textEnabled} onChange={(e) => updateCustom("textEnabled", e.target.checked)}
+                      className="w-4 h-4 accent-pink-500" />
+                  </label>
+                </div>
+                {customOpts.textEnabled && (
+                  <div className="space-y-3">
+                    <div className="flex gap-2">
+                      <input ref={customTextRef} type="text" value={customOpts.text} onChange={(e) => updateCustom("text", e.target.value)}
+                        placeholder="Ketik teks..."
+                        className="flex-1 px-3 py-1.5 text-xs border-2 border-black rounded-lg font-display font-bold uppercase outline-none" />
+                      <div className="relative group">
+                        <button className="px-2 py-1.5 text-xs border-2 border-black rounded-lg font-bold bg-white hover:bg-gray-100">
+                          💡
+                        </button>
+                        <div className="absolute right-0 top-full mt-1 w-56 bg-white border-2 border-black rounded-xl p-2 hidden group-hover:grid grid-cols-3 gap-1 z-20 shadow-[4px_4px_0_#000]">
+                          {TRENDY_TEXTS.map((t) => (
+                            <button key={t} onClick={() => updateCustom("text", t)}
+                              className="text-[8px] font-bold px-1 py-1 bg-gray-100 rounded hover:bg-pink-100 transition-colors uppercase">
+                              {t}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Teks</p>
+                        <div className="flex gap-1 flex-wrap">
+                          {["#fff", "#000", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"].map((c) => (
+                            <button key={c} onClick={() => updateCustom("textColor", c)}
+                              className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textColor === c ? "border-black scale-110" : "border-gray-200"}`}
+                              style={{ backgroundColor: c }} />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Background Teks</p>
+                        <div className="flex gap-1 flex-wrap">
+                          {["#000", "#fff", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"].map((c) => (
+                            <button key={c} onClick={() => updateCustom("textBg", c)}
+                              className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textBg === c ? "border-black scale-110" : "border-gray-200"}`}
+                              style={{ backgroundColor: c }} />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Posisi</p>
+                        <div className="flex gap-1">
+                          <button onClick={() => updateCustom("textPosition", "top-bar")}
+                            className={`px-2.5 py-1 text-[10px] border-2 rounded-lg font-bold transition-all ${customOpts.textPosition === "top-bar" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300"}`}>
+                            Atas
+                          </button>
+                          <button onClick={() => updateCustom("textPosition", "bottom-bar")}
+                            className={`px-2.5 py-1 text-[10px] border-2 rounded-lg font-bold transition-all ${customOpts.textPosition === "bottom-bar" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300"}`}>
+                            Bawah
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{ boxShadow: "4px 4px 0 rgba(0,0,0,1)" }}>
             <div className="flex items-center gap-2">
