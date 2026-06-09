@@ -77,6 +77,7 @@ export default function Photobox() {
   const [editEmojiIdx,setEditEmojiIdx]=useState<number|null>(null);
   const [ready,setReady]=useState(0);
   const [dragOver,setDragOver]=useState(false);
+  const [showTrendy,setShowTrendy]=useState(false);
   const canvasRef=useRef<HTMLCanvasElement>(null);
   const offRef=useRef<HTMLCanvasElement>(null);
   const fileRef=useRef<HTMLInputElement>(null);
@@ -139,6 +140,17 @@ export default function Photobox() {
     const rect=canvas.getBoundingClientRect();
     const xPct=((e.clientX-rect.left)/rect.width)*100;
     const yPct=((e.clientY-rect.top)/rect.height)*100;
+    const newEmoji:PlacedEmoji={id:nextEmojiId(),emoji:customOpts.selectedEmoji,x:Math.round(xPct*10)/10,y:Math.round(yPct*10)/10,size:28};
+    setCustomOpts((prev)=>({...prev,emojis:[...prev.emojis,newEmoji],selectedEmoji:null}));
+  };
+
+  const handleCanvasTouchEnd=(e:React.TouchEvent<HTMLCanvasElement>)=>{
+    if(!isCustom||!customOpts.selectedEmoji)return;
+    const canvas=canvasRef.current;if(!canvas)return;
+    const rect=canvas.getBoundingClientRect();
+    const touch=e.changedTouches[0];if(!touch)return;
+    const xPct=((touch.clientX-rect.left)/rect.width)*100;
+    const yPct=((touch.clientY-rect.top)/rect.height)*100;
     const newEmoji:PlacedEmoji={id:nextEmojiId(),emoji:customOpts.selectedEmoji,x:Math.round(xPct*10)/10,y:Math.round(yPct*10)/10,size:28};
     setCustomOpts((prev)=>({...prev,emojis:[...prev.emojis,newEmoji],selectedEmoji:null}));
   };
@@ -252,15 +264,15 @@ export default function Photobox() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 1</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor1",c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor1===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                {customOpts.bgType==="gradient"&&<div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 2</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor2",c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
+                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 1</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor1",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.bgColor1===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                {customOpts.bgType==="gradient"&&<div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 2</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor2",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.bgColor2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
               </div>
 
               <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Dekorasi</p><div className="flex gap-1.5 flex-wrap">{DECORATIONS.map((d)=>(<button key={d.id} onClick={()=>updateCustom("decoration",d.id as CustomFrameOptions["decoration"])} className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.decoration===d.id?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{d.emoji} {d.label}</button>))}</div></div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Luar</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("borderColor",c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.borderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Foto</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("cellBorderColor",c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.cellBorderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Luar</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("borderColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.borderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Foto</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("cellBorderColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.cellBorderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
               </div>
 
               {/* TEKS */}
@@ -268,7 +280,7 @@ export default function Photobox() {
                 <div className="flex items-center justify-between"><p className="font-display text-sm uppercase italic">Teks</p><label className="flex items-center gap-2 cursor-pointer"><span className="font-body text-[10px] font-bold text-gray-500">Tampilkan</span><input type="checkbox" checked={customOpts.textEnabled} onChange={(e)=>updateCustom("textEnabled",e.target.checked)} className="w-4 h-4 accent-pink-500"/></label></div>
                 {customOpts.textEnabled&&(<div className="space-y-3">
                   <div className="flex gap-2"><input type="text" value={customOpts.text} onChange={(e)=>updateCustom("text",e.target.value)} placeholder="Ketik teks..." className="flex-1 px-3 py-1.5 text-xs border-2 border-black rounded-lg font-display font-bold uppercase outline-none"/>
-                    <div className="relative group"><button className="px-3 py-1.5 text-xs border-2 border-black rounded-lg font-bold bg-white hover:bg-gray-100">💡</button><div className="absolute right-0 top-full mt-1 w-56 bg-white border-2 border-black rounded-xl p-2 hidden group-hover:grid grid-cols-3 gap-1 z-20 shadow-[4px_4px_0_#000]">{TRENDY_TEXTS.map((t)=>(<button key={t} onClick={()=>updateCustom("text",t)} className="text-[8px] font-bold px-1 py-1 bg-gray-100 rounded hover:bg-pink-100 transition-colors uppercase">{t}</button>))}</div></div>
+                    <div className="relative"><button onClick={()=>setShowTrendy((p)=>!p)} className="px-3 py-1.5 text-xs border-2 border-black rounded-lg font-bold bg-white hover:bg-gray-100">💡</button>{showTrendy&&<div className="absolute right-0 top-full mt-1 w-56 bg-white border-2 border-black rounded-xl p-2 grid grid-cols-3 gap-1 z-20 shadow-[4px_4px_0_#000]">{TRENDY_TEXTS.map((t)=>(<button key={t} onClick={()=>{updateCustom("text",t);setShowTrendy(false);}} className="text-[8px] font-bold px-1 py-1 bg-gray-100 rounded hover:bg-pink-100 transition-colors uppercase">{t}</button>))}<button onClick={()=>setShowTrendy(false)} className="col-span-3 text-[9px] font-bold text-gray-400 hover:text-gray-600 pt-1 border-t border-gray-200 mt-1">✕ Tutup</button></div>}</div>
                   </div>
 
                   {/* FONT - 10 options */}
@@ -296,9 +308,9 @@ export default function Photobox() {
 
                   {/* TEXT COLORS + OPACITY */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Teks</p><div className="flex gap-1 flex-wrap">{["#fff","#000","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textColor",c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">BG Teks</p><div className="flex gap-1 flex-wrap">{["#000","#fff","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg",c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textBg===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Shadow</p><div className="flex gap-1 flex-wrap">{["#000","#fff","#ef4444","#3b82f6","#8b5cf6","#ec4899","transparent"].map((c)=>(<button key={c} onClick={()=>updateCustom("textShadow",c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textShadow===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c==="transparent"?"#ccc":c}}/>))}</div></div>
+                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Teks</p><div className="flex gap-1 flex-wrap">{["#fff","#000","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">BG Teks</p><div className="flex gap-1 flex-wrap">{["#000","#fff","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textBg===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Shadow</p><div className="flex gap-1 flex-wrap">{["#000","#fff","#ef4444","#3b82f6","#8b5cf6","#ec4899","transparent"].map((c)=>(<button key={c} onClick={()=>updateCustom("textShadow",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textShadow===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c==="transparent"?"#ccc":c}}/>))}</div></div>
                     <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Opacity {customOpts.textOpacity}%</p><input type="range" min={20} max={100} value={customOpts.textOpacity} onChange={(e)=>updateCustom("textOpacity",Number(e.target.value))} className="w-full accent-pink-500"/></div>
                   </div>
 
@@ -306,7 +318,7 @@ export default function Photobox() {
                   {(customOpts.textShape==="rounded"||customOpts.textShape==="pill")&&(
                     <div className="flex items-center gap-3 flex-wrap">
                       <label className="flex items-center gap-2 cursor-pointer"><span className="font-body text-[10px] font-bold text-gray-500">Gradient BG</span><input type="checkbox" checked={customOpts.textBgGrad} onChange={(e)=>updateCustom("textBgGrad",e.target.checked)} className="w-4 h-4 accent-pink-500"/></label>
-                      {customOpts.textBgGrad&&<div className="flex items-center gap-2"><span className="font-body text-[9px] font-bold text-gray-400">Warna 2:</span><div className="flex gap-1 flex-wrap">{["#333","#fff","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg2",c)} className={`w-5 h-5 rounded-full border-2 transition-all ${customOpts.textBg2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
+                      {customOpts.textBgGrad&&<div className="flex items-center gap-2"><span className="font-body text-[9px] font-bold text-gray-400">Warna 2:</span><div className="flex gap-1 flex-wrap">{["#333","#fff","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg2",c)} className={`sm:w-5 sm:h-5 w-6 h-6 rounded-full border-2 transition-all ${customOpts.textBg2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
                     </div>
                   )}
                 </div>)}
@@ -375,7 +387,7 @@ export default function Photobox() {
           {/* CANVAS PREVIEW */}
           <div ref={canvasWrapRef} className="flex justify-center">
             <div className="relative inline-block" style={{boxShadow:"6px 6px 0 rgba(0,0,0,1)",cursor:customOpts.selectedEmoji?"crosshair":"default"}}>
-              <canvas ref={canvasRef} onClick={handleCanvasClick} className="w-full max-w-full h-auto border-2 border-black" />
+              <canvas ref={canvasRef} onClick={handleCanvasClick} onTouchEnd={handleCanvasTouchEnd} className="w-full max-w-full h-auto border-2 border-black" style={{touchAction:customOpts.selectedEmoji?"none":"auto"}} />
             </div>
           </div>
 
