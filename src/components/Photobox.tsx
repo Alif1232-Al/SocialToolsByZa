@@ -1,9 +1,10 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { ImagePlus, Download, X, Sparkles, ChevronLeft, ChevronRight, Palette, LayoutGrid, Frame, Pen } from "lucide-react";
+import { ImagePlus, Download, X, Sparkles, ChevronLeft, ChevronRight, Palette, LayoutGrid, Frame, Pen, Sticker } from "lucide-react";
 import { FILTERS } from "@/lib/photo-filters";
-import { FRAMES, DEFAULT_CUSTOM, renderCustomBackground, drawCustomFrameText, drawFrameText } from "@/lib/photo-frames";
-import type { CustomFrameOptions } from "@/lib/photo-frames";
+import { FRAMES, DEFAULT_CUSTOM, renderCustomBackground, drawTextBadge, drawEmojis } from "@/lib/photo-frames";
+import { EMOJI_CATEGORIES } from "@/lib/photo-frames";
+import type { CustomFrameOptions, TextPosition, FontStyle, PlacedEmoji } from "@/lib/photo-frames";
 
 const GRID_LAYOUTS = [
   { id: "1x1", cols: 1, rows: 1, cells: 1, label: "1" },
@@ -45,6 +46,33 @@ const TRENDY_TEXTS = [
   "WILD", "FREE", "BOSS", "CHILL", "FIRE", "LIT AF",
 ];
 
+const FONT_OPTIONS: { id: FontStyle; label: string; preview: string }[] = [
+  { id: "bold", label: "Bold", preview: "Bold" },
+  { id: "playful", label: "Playful", preview: "Playful" },
+  { id: "elegant", label: "Elegant", preview: "Elegant" },
+  { id: "compact", label: "Compact", preview: "Compact" },
+];
+
+const TEXT_POSITIONS: { id: TextPosition; label: string }[] = [
+  { id: "top-left", label: "Kiri Atas" },
+  { id: "top-center", label: "Tengah Atas" },
+  { id: "top-right", label: "Kanan Atas" },
+  { id: "bottom-left", label: "Kiri Bawah" },
+  { id: "bottom-center", label: "Tengah Bawah" },
+  { id: "bottom-right", label: "Kanan Bawah" },
+];
+
+const EMOJI_PRESETS: { label: string; emoji: string; x: number; y: number }[] = [
+  { label: "Kiri Atas", emoji: "✨", x: 10, y: 12 },
+  { label: "Kanan Atas", emoji: "✨", x: 90, y: 12 },
+  { label: "Kiri Bawah", emoji: "💫", x: 10, y: 88 },
+  { label: "Kanan Bawah", emoji: "💫", x: 90, y: 88 },
+  { label: "Tengah Atas", emoji: "⭐", x: 50, y: 14 },
+  { label: "Tengah Bawah", emoji: "⭐", x: 50, y: 86 },
+  { label: "Kiri Tengah", emoji: "🌸", x: 6, y: 50 },
+  { label: "Kanan Tengah", emoji: "🌸", x: 94, y: 50 },
+];
+
 function applyFilterToCanvas(canvas: HTMLCanvasElement, filterId: string) {
   if (filterId === "original") return;
   const f = FILTERS.find((x) => x.id === filterId);
@@ -67,13 +95,13 @@ export default function Photobox() {
   const [frameId, setFrameId] = useState("comic-boom");
   const [filterTab, setFilterTab] = useState<"Trending" | "Classic">("Trending");
   const [customOpts, setCustomOpts] = useState<CustomFrameOptions>(DEFAULT_CUSTOM);
+  const [emojiTab, setEmojiTab] = useState(0);
   const [ready, setReady] = useState(0);
   const [dragOver, setDragOver] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const offRef = useRef<HTMLCanvasElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const loadedImgs = useRef<HTMLImageElement[]>([]);
-  const customTextRef = useRef<HTMLInputElement>(null);
 
   const isCustom = frameId === "custom";
   const cur = ALL_LAYOUTS.find((l) => l.id === layout) || GRID_LAYOUTS[3];
@@ -119,30 +147,23 @@ export default function Photobox() {
     canvas.height = totalH;
 
     if (isFilmstrip) {
-      ctx.fillStyle = "#1a1a1a";
-      ctx.fillRect(0, 0, totalW, totalH);
+      ctx.fillStyle = "#1a1a1a"; ctx.fillRect(0, 0, totalW, totalH);
       drawFilmPerforations(ctx, totalW, totalH);
     } else if (isPhotostrip) {
       const g = ctx.createLinearGradient(0, 0, 0, totalH);
-      g.addColorStop(0, "#fef9c3");
-      g.addColorStop(0.5, "#fef3c7");
-      g.addColorStop(1, "#fde68a");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, totalW, totalH);
-      ctx.strokeStyle = "#111";
-      ctx.lineWidth = 4;
+      g.addColorStop(0, "#fef9c3"); g.addColorStop(0.5, "#fef3c7"); g.addColorStop(1, "#fde68a");
+      ctx.fillStyle = g; ctx.fillRect(0, 0, totalW, totalH);
+      ctx.strokeStyle = "#111"; ctx.lineWidth = 4;
       ctx.strokeRect(4, 4, totalW - 8, totalH - 8);
     } else if (isCustom) {
       renderCustomBackground(ctx, totalW, totalH, customOpts);
       const bw = customOpts.borderWidth;
-      ctx.strokeStyle = customOpts.borderColor;
-      ctx.lineWidth = bw;
+      ctx.strokeStyle = customOpts.borderColor; ctx.lineWidth = bw;
       ctx.strokeRect(bw / 2, bw / 2, totalW - bw, totalH - bw);
     } else if (frame) {
       frame.render(ctx, totalW, totalH);
       const bw = frame.borderWidth;
-      ctx.strokeStyle = frame.borderColor;
-      ctx.lineWidth = bw;
+      ctx.strokeStyle = frame.borderColor; ctx.lineWidth = bw;
       ctx.strokeRect(bw / 2, bw / 2, totalW - bw, totalH - bw);
     }
 
@@ -152,8 +173,7 @@ export default function Photobox() {
       const x = pad + col * (cellW + gap);
       const y = pad + row * (cellH + gap);
 
-      off.width = cellW;
-      off.height = cellH;
+      off.width = cellW; off.height = cellH;
       const octx = off.getContext("2d")!;
       octx.clearRect(0, 0, cellW, cellH);
 
@@ -176,8 +196,7 @@ export default function Photobox() {
         if (showNums && !isPhotostrip) {
           ctx.fillStyle = "rgba(0,0,0,0.65)";
           ctx.font = 'bold 11px "Inter","Arial",sans-serif';
-          ctx.textAlign = "left";
-          ctx.textBaseline = "top";
+          ctx.textAlign = "left"; ctx.textBaseline = "top";
           ctx.fillRect(x + 4, y + 4, 18, 18);
           ctx.fillStyle = "#fff";
           ctx.fillText(`${i + 1}`, x + 6, y + 6);
@@ -185,24 +204,20 @@ export default function Photobox() {
       }
     }
 
-    if (isFilmstrip) {
-      ctx.strokeStyle = "#333";
-      ctx.lineWidth = 1;
-      ctx.strokeRect(2, 2, totalW - 4, totalH - 4);
-    }
+    if (isFilmstrip) { ctx.strokeStyle = "#333"; ctx.lineWidth = 1; ctx.strokeRect(2, 2, totalW - 4, totalH - 4); }
 
     if (isCustom && customOpts.textEnabled && customOpts.text.trim()) {
-      drawCustomFrameText(ctx, totalW, totalH, customOpts.text, customOpts.textColor, customOpts.textBg, customOpts.textPosition);
+      drawTextBadge(ctx, totalW, totalH, customOpts.text, customOpts.textColor, customOpts.textBg, customOpts.textShadow, customOpts.textPosition, 20, customOpts.textFont);
+      drawEmojis(ctx, totalW, totalH, customOpts.emojis);
     } else if (frame?.text && !isSpecial) {
-      drawFrameText(ctx, totalW, totalH, frame.text);
+      drawTextBadge(ctx, totalW, totalH, frame.text.text, frame.text.color, frame.text.bgColor, frame.text.shadowColor, frame.text.position, frame.text.fontSize, frame.text.fontStyle);
     }
 
     const showWm = isCustom ? false : (frame?.watermark ?? false);
     if (showWm && !isSpecial) {
       ctx.fillStyle = "rgba(0,0,0,0.06)";
       ctx.font = '8px "Inter","Arial",sans-serif';
-      ctx.textAlign = "center";
-      ctx.textBaseline = "bottom";
+      ctx.textAlign = "center"; ctx.textBaseline = "bottom";
       ctx.fillText("photobox by socialtoolsbyza", totalW / 2, totalH - 5);
     }
   }, [filter, frameId, customOpts, totalW, totalH, cur, cellW, cellH, visible, isFilmstrip, isPhotostrip, isSpecial, frame, isCustom]);
@@ -224,8 +239,7 @@ export default function Photobox() {
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
+    e.preventDefault(); setDragOver(false);
     if (e.dataTransfer.files) handleUpload(e.dataTransfer.files);
   };
 
@@ -234,11 +248,7 @@ export default function Photobox() {
   const moveImage = (idx: number, dir: -1 | 1) => {
     const to = idx + dir;
     if (to < 0 || to >= images.length) return;
-    setImages((prev) => {
-      const next = [...prev];
-      [next[idx], next[to]] = [next[to], next[idx]];
-      return next;
-    });
+    setImages((prev) => { const next = [...prev]; [next[idx], next[to]] = [next[to], next[idx]]; return next; });
   };
 
   const downloadPng = () => {
@@ -252,6 +262,17 @@ export default function Photobox() {
 
   const updateCustom = <K extends keyof CustomFrameOptions>(key: K, value: CustomFrameOptions[K]) => {
     setCustomOpts((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const addEmoji = (emoji: string, preset: { x: number; y: number }) => {
+    setCustomOpts((prev) => {
+      const next = [...prev.emojis, { emoji, x: preset.x, y: preset.y, size: 28 }];
+      return { ...prev, emojis: next };
+    });
+  };
+
+  const removeEmoji = (idx: number) => {
+    setCustomOpts((prev) => ({ ...prev, emojis: prev.emojis.filter((_, i) => i !== idx) }));
   };
 
   const currentFilters = FILTER_CATEGORIES.find((c) => c.name === filterTab)?.ids || [];
@@ -311,30 +332,13 @@ export default function Photobox() {
                     <X className="w-3 h-3 text-white" />
                   </button>
                   <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {i > 0 && (
-                      <button onClick={() => moveImage(i, -1)}
-                        className="w-5 h-5 bg-black/70 flex items-center justify-center hover:bg-black transition-colors">
-                        <ChevronLeft className="w-3 h-3 text-white" />
-                      </button>
-                    )}
-                    {i < images.length - 1 && (
-                      <button onClick={() => moveImage(i, 1)}
-                        className="w-5 h-5 bg-black/70 flex items-center justify-center hover:bg-black transition-colors">
-                        <ChevronRight className="w-3 h-3 text-white" />
-                      </button>
-                    )}
+                    {i > 0 && (<button onClick={() => moveImage(i, -1)} className="w-5 h-5 bg-black/70 flex items-center justify-center hover:bg-black"><ChevronLeft className="w-3 h-3 text-white" /></button>)}
+                    {i < images.length - 1 && (<button onClick={() => moveImage(i, 1)} className="w-5 h-5 bg-black/70 flex items-center justify-center hover:bg-black"><ChevronRight className="w-3 h-3 text-white" /></button>)}
                   </div>
-                  <span className="absolute top-1 left-1 w-4 h-4 bg-black/70 text-white text-[8px] font-bold flex items-center justify-center rounded">
-                    {i + 1}
-                  </span>
+                  <span className="absolute top-1 left-1 w-4 h-4 bg-black/70 text-white text-[8px] font-bold flex items-center justify-center rounded">{i + 1}</span>
                 </div>
               ))}
-              {!isFull && (
-                <button onClick={() => fileRef.current?.click()}
-                  className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-400 flex items-center justify-center text-2xl hover:bg-gray-100 hover:border-gray-400 transition-colors shrink-0">
-                  +
-                </button>
-              )}
+              {!isFull && (<button onClick={() => fileRef.current?.click()} className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-400 flex items-center justify-center text-2xl hover:bg-gray-100 hover:border-gray-400 transition-colors shrink-0">+</button>)}
             </div>
           </div>
 
@@ -347,18 +351,12 @@ export default function Photobox() {
               {GRID_LAYOUTS.map((l) => {
                 const disabled = images.length > l.cells;
                 const active = layout === l.id;
-                const cells = Array.from({ length: l.cells });
                 return (
-                  <button key={l.id} onClick={() => setLayout(l.id)}
-                    disabled={disabled}
-                    title={`${l.cols}x${l.rows}`}
+                  <button key={l.id} onClick={() => setLayout(l.id)} disabled={disabled}
                     className={`p-2 border-2 rounded-lg transition-all ${active ? "border-pink-500 bg-pink-50" : "border-gray-300 bg-white hover:border-gray-400"} ${disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}`}
-                    style={active ? { boxShadow: "2px 2px 0 rgba(236,72,153,0.5)" } : {}}
-                  >
+                    style={active ? { boxShadow: "2px 2px 0 rgba(236,72,153,0.5)" } : {}}>
                     <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${l.cols}, 1fr)` }}>
-                      {cells.map((_, ci) => (
-                        <div key={ci} className={`w-4 h-4 rounded-sm ${active ? "bg-pink-400" : "bg-gray-300"}`} />
-                      ))}
+                      {Array.from({ length: l.cells }).map((_, ci) => (<div key={ci} className={`w-4 h-4 rounded-sm ${active ? "bg-pink-400" : "bg-gray-300"}`} />))}
                     </div>
                     <p className={`font-body text-[9px] mt-1 font-bold uppercase ${active ? "text-pink-600" : "text-gray-400"}`}>{l.label}</p>
                   </button>
@@ -368,15 +366,11 @@ export default function Photobox() {
                 const disabled = images.length > l.cells || images.length < 2;
                 const active = layout === l.id;
                 return (
-                  <button key={l.id} onClick={() => setLayout(l.id)}
-                    disabled={disabled}
+                  <button key={l.id} onClick={() => setLayout(l.id)} disabled={disabled}
                     className={`p-2 border-2 rounded-lg transition-all ${active ? "border-pink-500 bg-pink-50" : "border-gray-300 bg-white hover:border-gray-400"} ${disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}`}
-                    style={active ? { boxShadow: "2px 2px 0 rgba(236,72,153,0.5)" } : {}}
-                  >
+                    style={active ? { boxShadow: "2px 2px 0 rgba(236,72,153,0.5)" } : {}}>
                     <div className="flex flex-col gap-0.5 items-center">
-                      {Array.from({ length: 4 }).map((_, ci) => (
-                        <div key={ci} className={`w-5 h-3 rounded-sm ${active ? "bg-pink-400" : "bg-gray-300"}`} />
-                      ))}
+                      {Array.from({ length: 4 }).map((_, ci) => (<div key={ci} className={`w-5 h-3 rounded-sm ${active ? "bg-pink-400" : "bg-gray-300"}`} />))}
                     </div>
                     <p className={`font-body text-[9px] mt-1 font-bold uppercase ${active ? "text-pink-600" : "text-gray-400"}`}>{l.label}</p>
                   </button>
@@ -396,19 +390,15 @@ export default function Photobox() {
                 return (
                   <button key={f.id} onClick={() => setFrameId(f.id)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${active ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
-                    style={active ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}
-                  >
-                    <span className="text-sm">{f.emoji}</span>
-                    <span>{f.name}</span>
+                    style={active ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}>
+                    <span className="text-sm">{f.emoji}</span><span>{f.name}</span>
                   </button>
                 );
               })}
               <button onClick={() => setFrameId("custom")}
                 className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${frameId === "custom" ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
-                style={frameId === "custom" ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}
-              >
-                <Pen className="w-3.5 h-3.5" />
-                <span>Custom</span>
+                style={frameId === "custom" ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}>
+                <Pen className="w-3.5 h-3.5" /><span>Custom</span>
               </button>
             </div>
           </div>
@@ -424,13 +414,9 @@ export default function Photobox() {
                 <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Tipe Background</p>
                 <div className="flex gap-2">
                   <button onClick={() => updateCustom("bgType", "gradient")}
-                    className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType === "gradient" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
-                    Gradient
-                  </button>
+                    className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType === "gradient" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>Gradient</button>
                   <button onClick={() => updateCustom("bgType", "solid")}
-                    className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType === "solid" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
-                    Solid
-                  </button>
+                    className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType === "solid" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>Solid</button>
                 </div>
               </div>
 
@@ -438,22 +424,14 @@ export default function Photobox() {
                 <div className="space-y-1">
                   <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 1</p>
                   <div className="flex gap-1 flex-wrap">
-                    {COLOR_SWATCHES.map((c) => (
-                      <button key={c} onClick={() => updateCustom("bgColor1", c)}
-                        className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor1 === c ? "border-black scale-110" : "border-gray-200"}`}
-                        style={{ backgroundColor: c }} />
-                    ))}
+                    {COLOR_SWATCHES.map((c) => (<button key={c} onClick={() => updateCustom("bgColor1", c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor1 === c ? "border-black scale-110" : "border-gray-200"}`} style={{ backgroundColor: c }} />))}
                   </div>
                 </div>
                 {customOpts.bgType === "gradient" && (
                   <div className="space-y-1">
                     <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 2</p>
                     <div className="flex gap-1 flex-wrap">
-                      {COLOR_SWATCHES.map((c) => (
-                        <button key={c} onClick={() => updateCustom("bgColor2", c)}
-                          className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor2 === c ? "border-black scale-110" : "border-gray-200"}`}
-                          style={{ backgroundColor: c }} />
-                      ))}
+                      {COLOR_SWATCHES.map((c) => (<button key={c} onClick={() => updateCustom("bgColor2", c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.bgColor2 === c ? "border-black scale-110" : "border-gray-200"}`} style={{ backgroundColor: c }} />))}
                     </div>
                   </div>
                 )}
@@ -464,9 +442,7 @@ export default function Photobox() {
                 <div className="flex gap-1.5 flex-wrap">
                   {DECORATIONS.map((d) => (
                     <button key={d.id} onClick={() => updateCustom("decoration", d.id as CustomFrameOptions["decoration"])}
-                      className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.decoration === d.id ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
-                      {d.emoji} {d.label}
-                    </button>
+                      className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.decoration === d.id ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{d.emoji} {d.label}</button>
                   ))}
                 </div>
               </div>
@@ -475,21 +451,13 @@ export default function Photobox() {
                 <div className="space-y-1">
                   <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Border Luar</p>
                   <div className="flex gap-1 flex-wrap">
-                    {COLOR_SWATCHES.slice(0, 10).map((c) => (
-                      <button key={c} onClick={() => updateCustom("borderColor", c)}
-                        className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.borderColor === c ? "border-black scale-110" : "border-gray-200"}`}
-                        style={{ backgroundColor: c }} />
-                    ))}
+                    {COLOR_SWATCHES.slice(0, 10).map((c) => (<button key={c} onClick={() => updateCustom("borderColor", c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.borderColor === c ? "border-black scale-110" : "border-gray-200"}`} style={{ backgroundColor: c }} />))}
                   </div>
                 </div>
                 <div className="space-y-1">
                   <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Border Foto</p>
                   <div className="flex gap-1 flex-wrap">
-                    {COLOR_SWATCHES.slice(0, 10).map((c) => (
-                      <button key={c} onClick={() => updateCustom("cellBorderColor", c)}
-                        className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.cellBorderColor === c ? "border-black scale-110" : "border-gray-200"}`}
-                        style={{ backgroundColor: c }} />
-                    ))}
+                    {COLOR_SWATCHES.slice(0, 10).map((c) => (<button key={c} onClick={() => updateCustom("cellBorderColor", c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.cellBorderColor === c ? "border-black scale-110" : "border-gray-200"}`} style={{ backgroundColor: c }} />))}
                   </div>
                 </div>
               </div>
@@ -499,67 +467,127 @@ export default function Photobox() {
                   <p className="font-display text-sm uppercase italic">Teks</p>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <span className="font-body text-[10px] font-bold text-gray-500">Tampilkan</span>
-                    <input type="checkbox" checked={customOpts.textEnabled} onChange={(e) => updateCustom("textEnabled", e.target.checked)}
-                      className="w-4 h-4 accent-pink-500" />
+                    <input type="checkbox" checked={customOpts.textEnabled} onChange={(e) => updateCustom("textEnabled", e.target.checked)} className="w-4 h-4 accent-pink-500" />
                   </label>
                 </div>
                 {customOpts.textEnabled && (
                   <div className="space-y-3">
                     <div className="flex gap-2">
-                      <input ref={customTextRef} type="text" value={customOpts.text} onChange={(e) => updateCustom("text", e.target.value)}
+                      <input type="text" value={customOpts.text} onChange={(e) => updateCustom("text", e.target.value)}
                         placeholder="Ketik teks..."
                         className="flex-1 px-3 py-1.5 text-xs border-2 border-black rounded-lg font-display font-bold uppercase outline-none" />
                       <div className="relative group">
-                        <button className="px-2 py-1.5 text-xs border-2 border-black rounded-lg font-bold bg-white hover:bg-gray-100">
-                          💡
-                        </button>
+                        <button className="px-3 py-1.5 text-xs border-2 border-black rounded-lg font-bold bg-white hover:bg-gray-100">💡</button>
                         <div className="absolute right-0 top-full mt-1 w-56 bg-white border-2 border-black rounded-xl p-2 hidden group-hover:grid grid-cols-3 gap-1 z-20 shadow-[4px_4px_0_#000]">
-                          {TRENDY_TEXTS.map((t) => (
-                            <button key={t} onClick={() => updateCustom("text", t)}
-                              className="text-[8px] font-bold px-1 py-1 bg-gray-100 rounded hover:bg-pink-100 transition-colors uppercase">
-                              {t}
-                            </button>
-                          ))}
+                          {TRENDY_TEXTS.map((t) => (<button key={t} onClick={() => updateCustom("text", t)} className="text-[8px] font-bold px-1 py-1 bg-gray-100 rounded hover:bg-pink-100 transition-colors uppercase">{t}</button>))}
                         </div>
                       </div>
                     </div>
+
+                    <div className="space-y-1">
+                      <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Font</p>
+                      <div className="flex gap-1.5 flex-wrap">
+                        {FONT_OPTIONS.map((fo) => {
+                          const active = customOpts.textFont === fo.id;
+                          const fontStyles: Record<string, string> = { bold: "font-bold", playful: "font-display italic", elegant: "italic font-serif", compact: "font-semibold tracking-tight" };
+                          return (
+                            <button key={fo.id} onClick={() => updateCustom("textFont", fo.id)}
+                              className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${active ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"} ${fontStyles[fo.id]}`}>
+                              {fo.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Posisi Teks</p>
+                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
+                        {TEXT_POSITIONS.map((tp) => {
+                          const active = customOpts.textPosition === tp.id;
+                          return (
+                            <button key={tp.id} onClick={() => updateCustom("textPosition", tp.id)}
+                              className={`px-2 py-1 text-[9px] border-2 rounded-lg font-bold transition-all ${active ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>
+                              {tp.label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="space-y-1">
                         <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Teks</p>
                         <div className="flex gap-1 flex-wrap">
-                          {["#fff", "#000", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"].map((c) => (
-                            <button key={c} onClick={() => updateCustom("textColor", c)}
-                              className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textColor === c ? "border-black scale-110" : "border-gray-200"}`}
-                              style={{ backgroundColor: c }} />
-                          ))}
+                          {["#fff", "#000", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"].map((c) => (<button key={c} onClick={() => updateCustom("textColor", c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textColor === c ? "border-black scale-110" : "border-gray-200"}`} style={{ backgroundColor: c }} />))}
                         </div>
                       </div>
                       <div className="space-y-1">
                         <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Background Teks</p>
                         <div className="flex gap-1 flex-wrap">
-                          {["#000", "#fff", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"].map((c) => (
-                            <button key={c} onClick={() => updateCustom("textBg", c)}
-                              className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textBg === c ? "border-black scale-110" : "border-gray-200"}`}
-                              style={{ backgroundColor: c }} />
-                          ))}
+                          {["#000", "#fff", "#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"].map((c) => (<button key={c} onClick={() => updateCustom("textBg", c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textBg === c ? "border-black scale-110" : "border-gray-200"}`} style={{ backgroundColor: c }} />))}
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Posisi</p>
-                        <div className="flex gap-1">
-                          <button onClick={() => updateCustom("textPosition", "top-bar")}
-                            className={`px-2.5 py-1 text-[10px] border-2 rounded-lg font-bold transition-all ${customOpts.textPosition === "top-bar" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300"}`}>
-                            Atas
-                          </button>
-                          <button onClick={() => updateCustom("textPosition", "bottom-bar")}
-                            className={`px-2.5 py-1 text-[10px] border-2 rounded-lg font-bold transition-all ${customOpts.textPosition === "bottom-bar" ? "bg-black text-white border-black" : "bg-white text-gray-600 border-gray-300"}`}>
-                            Bawah
-                          </button>
+                        <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Shadow</p>
+                        <div className="flex gap-1 flex-wrap">
+                          {["#000", "#fff", "#ef4444", "#3b82f6", "#8b5cf6", "#ec4899", "transparent"].map((c) => (<button key={c} onClick={() => updateCustom("textShadow", c)} className={`w-6 h-6 rounded-full border-2 transition-all ${customOpts.textShadow === c ? "border-black scale-110" : "border-gray-200"}`} style={{ backgroundColor: c === "transparent" ? "#ccc" : c }} />))}
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
+              </div>
+
+              <div className="border-t-2 border-gray-200 pt-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Sticker className="w-4 h-4" />
+                  <p className="font-display text-sm uppercase italic">Emoji / Stiker</p>
+                </div>
+
+                <div className="flex gap-2 flex-wrap">
+                  {EMOJI_PRESETS.map((preset, pi) => (
+                    <button key={pi} onClick={() => addEmoji(preset.emoji, preset)}
+                      className="flex flex-col items-center gap-0.5 px-2 py-1.5 text-xs border-2 border-gray-300 rounded-lg hover:border-gray-400 bg-white transition-colors">
+                      <span className="text-lg">{preset.emoji}</span>
+                      <span className="text-[7px] font-bold text-gray-400 uppercase">{preset.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {customOpts.emojis.length > 0 && (
+                  <div className="flex gap-2 flex-wrap items-center">
+                    <p className="font-body text-[9px] font-bold text-gray-400 uppercase">Dipasang:</p>
+                    {customOpts.emojis.map((e, i) => (
+                      <div key={i} className="flex items-center gap-1 px-2 py-1 bg-gray-100 rounded-lg border border-gray-200">
+                        <span className="text-base">{e.emoji}</span>
+                        <button onClick={() => removeEmoji(i)} className="text-red-400 hover:text-red-600"><X className="w-3 h-3" /></button>
+                      </div>
+                    ))}
+                    <button onClick={() => updateCustom("emojis", [])} className="text-[9px] font-bold text-red-500 hover:text-red-600 uppercase">Hapus semua</button>
+                  </div>
+                )}
+
+                <div className="space-y-1">
+                  <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Pilih Emoji</p>
+                  <div className="flex gap-1 border-b-2 border-gray-200 pb-1 overflow-x-auto">
+                    {EMOJI_CATEGORIES.map((cat, ci) => (
+                      <button key={cat.name} onClick={() => setEmojiTab(ci)}
+                        className={`px-2 py-0.5 text-xs font-bold whitespace-nowrap transition-all rounded-t ${emojiTab === ci ? "text-pink-600 border-b-2 border-pink-500 -mb-[6px]" : "text-gray-400 hover:text-gray-600"}`}>
+                        {cat.name}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex gap-1.5 flex-wrap max-h-24 overflow-y-auto p-1">
+                    {EMOJI_CATEGORIES[emojiTab]?.items.map((em) => (
+                      <button key={em} onClick={() => { if (customOpts.emojis.length < 8) addEmoji(em, { x: 50, y: 50 }); }}
+                        className="w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                        title={em}>
+                        {em}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -572,9 +600,7 @@ export default function Photobox() {
             <div className="flex gap-1 border-b-2 border-gray-200 pb-2">
               {FILTER_CATEGORIES.map((cat) => (
                 <button key={cat.name} onClick={() => setFilterTab(cat.name as "Trending" | "Classic")}
-                  className={`px-3 py-1 font-body text-[10px] font-bold uppercase tracking-wider transition-all rounded-t-lg ${filterTab === cat.name ? "text-pink-600 border-b-2 border-pink-500 -mb-[10px]" : "text-gray-400 hover:text-gray-600"}`}>
-                  {cat.name}
-                </button>
+                  className={`px-3 py-1 font-body text-[10px] font-bold uppercase tracking-wider transition-all rounded-t-lg ${filterTab === cat.name ? "text-pink-600 border-b-2 border-pink-500 -mb-[10px]" : "text-gray-400 hover:text-gray-600"}`}>{cat.name}</button>
               ))}
             </div>
             <div className="flex gap-1.5 flex-wrap">
@@ -585,10 +611,7 @@ export default function Photobox() {
                 return (
                   <button key={f.id} onClick={() => setFilter(f.id)}
                     className={`px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${active ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
-                    style={active ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}
-                  >
-                    {f.name}
-                  </button>
+                    style={active ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}>{f.name}</button>
                 );
               })}
             </div>
