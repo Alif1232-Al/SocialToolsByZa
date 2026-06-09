@@ -26,7 +26,10 @@ const COLOR_SWATCHES = [
 const DECORATIONS = [
   { id:"none", label:"None", emoji:"⬜" }, { id:"stars", label:"Stars", emoji:"⭐" },
   { id:"hearts", label:"Hearts", emoji:"❤️" }, { id:"dots", label:"Dots", emoji:"🔵" },
-  { id:"circles", label:"Circles", emoji:"⭕" },
+  { id:"circles", label:"Circles", emoji:"⭕" }, { id:"lightning", label:"Bolt", emoji:"⚡" },
+  { id:"confetti", label:"Confetti", emoji:"🎊" }, { id:"sparkles", label:"Sparkles", emoji:"✨" },
+  { id:"waves", label:"Waves", emoji:"〰️" }, { id:"grid", label:"Grid", emoji:"#️⃣" },
+  { id:"music", label:"Music", emoji:"🎵" }, { id:"stripes", label:"Stripes", emoji:"〽️" },
 ];
 const TRENDY_TEXTS = [
   "MY MOMENTS","BESTIES","FOREVER","VIBES","LIT","SLAY","ICONIC",
@@ -144,7 +147,7 @@ export default function Photobox() {
     setCustomOpts((prev)=>({...prev,selectedEmoji:prev.selectedEmoji===emoji?null:emoji}));
   };
 
-  const updateEmojiPos=(idx:number,key:"x"|"y",val:number)=>{
+  const updateEmojiPos=(idx:number,key:"x"|"y"|"size",val:number)=>{
     setCustomOpts((prev)=>{const next=[...prev.emojis];next[idx]={...next[idx],[key]:Math.max(0,Math.min(100,val))};return{...prev,emojis:next};});
   };
 
@@ -338,6 +341,7 @@ export default function Photobox() {
                         <div className="grid grid-cols-2 gap-3">
                           <div className="flex items-center gap-2"><span className="text-[10px] font-bold text-gray-500 w-4">X:</span><input type="range" min={0} max={100} value={customOpts.emojis[editEmojiIdx].x} onChange={(e)=>updateEmojiPos(editEmojiIdx,"x",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].x}%</span></div>
                           <div className="flex items-center gap-2"><span className="text-[10px] font-bold text-gray-500 w-4">Y:</span><input type="range" min={0} max={100} value={customOpts.emojis[editEmojiIdx].y} onChange={(e)=>updateEmojiPos(editEmojiIdx,"y",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].y}%</span></div>
+                          <div className="flex items-center gap-2 col-span-2"><span className="text-[10px] font-bold text-gray-500">Ukuran:</span><input type="range" min={12} max={64} value={customOpts.emojis[editEmojiIdx].size} onChange={(e)=>updateEmojiPos(editEmojiIdx,"size",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].size}px</span></div>
                         </div>
                       </div>
                     )}
