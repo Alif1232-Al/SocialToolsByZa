@@ -1,11 +1,14 @@
 "use client";
+import { useState } from "react";
 import dynamic from "next/dynamic";
+import { RotateCcw } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PremiumGate from "@/components/PremiumGate";
 import PromoPopup from "@/components/PromoPopup";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
+import toast from "react-hot-toast";
 
 const TikTokDownloader = dynamic(() => import("@/components/TikTokDownloader"), { ssr: false });
 const PdfToWord = dynamic(() => import("@/components/PdfToWord"), { ssr: false });
@@ -26,38 +29,51 @@ const subTools = [
 
 export default function Home() {
   const { lang } = useLang();
+  const [resetCount, setResetCount] = useState(0);
+
+  const handleResetAll = () => {
+    setResetCount((c) => c + 1);
+    toast.success("Semua tool sudah direset!");
+  };
+
   return (
     <>
       <PromoPopup />
       <HeroSection />
 
+      <div className="flex items-center justify-end mb-4">
+        <button onClick={handleResetAll} className="comic-btn bg-gray-200 text-black border-2 border-black text-xs flex items-center gap-1.5 !py-1.5 !px-3 hover:bg-gray-300 transition-all">
+          <RotateCcw className="w-3.5 h-3.5" /> Reset Semua Tool
+        </button>
+      </div>
+
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.tiktok.title", lang)}><TikTokDownloader /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.tiktok.title", lang)}><TikTokDownloader key={`tiktok-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.removebg.title", lang)}><RemoveBackground /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.removebg.title", lang)}><RemoveBackground key={`removebg-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.pdftoword.title", lang)}><PdfToWord /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.pdftoword.title", lang)}><PdfToWord key={`pdftoword-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.ocr.title", lang)}><OcrPictureToText /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.ocr.title", lang)}><OcrPictureToText key={`ocr-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.pictopdf.title", lang)}><PictureToPdf /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.pictopdf.title", lang)}><PictureToPdf key={`pictopdf-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.dorking.title", lang)}><Dorking /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.dorking.title", lang)}><Dorking key={`dorking-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.json.title", lang)}><JsonFormatter /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.json.title", lang)}><JsonFormatter key={`json-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.quote.title", lang)}><QuoteGenerator /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.quote.title", lang)}><QuoteGenerator key={`quote-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.barber.title", lang)}><BarberCalculator /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.barber.title", lang)}><BarberCalculator key={`barber-${resetCount}`} /></PremiumGate></ErrorBoundary>
         </div>
       </div>
 
