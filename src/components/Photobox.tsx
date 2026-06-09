@@ -53,6 +53,16 @@ const SHAPE_OPTIONS: { id:BadgeShape; label:string; emoji:string }[] = [
   { id:"outline", label:"Outline", emoji:"◻️" },
 ];
 
+const TEMPLATES = [
+  { id:"comic-strip", label:"Comic Strip", emoji:"💥", layout:"2x2", frameId:"comic-boom", filter:"popart" },
+  { id:"photo-strip", label:"Photo Strip", emoji:"🎞️", layout:"photostrip", frameId:"vintage-sepia", filter:"warmfilm" },
+  { id:"film-roll", label:"Film Roll", emoji:"🎬", layout:"filmstrip", frameId:"monochrome", filter:"noirgrain" },
+  { id:"neon-grid", label:"Neon Grid", emoji:"💜", layout:"2x2", frameId:"neon-cyber", filter:"neon" },
+  { id:"tropical", label:"Tropical", emoji:"🌴", layout:"2x1", frameId:"tropical", filter:"cinematic" },
+  { id:"dreamy", label:"Dreamy", emoji:"🌸", layout:"3x1", frameId:"pastel-dream", filter:"softpastel" },
+  { id:"midnight", label:"Midnight", emoji:"🌙", layout:"2x2", frameId:"midnight", filter:"noirgrain" },
+];
+
 let emojiIdCounter = 0;
 function nextEmojiId() { return `emoji_${++emojiIdCounter}`; }
 
@@ -201,14 +211,25 @@ export default function Photobox() {
                   <img src={src} alt="" className="w-full h-full object-cover"/>
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"/>
                   <button onClick={()=>removeImage(i)} className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 border-2 border-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><X className="w-3 h-3 text-white"/></button>
-                  <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {i>0&&<button onClick={()=>moveImage(i,-1)} className="w-5 h-5 bg-black/70 flex items-center justify-center hover:bg-black"><ChevronLeft className="w-3 h-3 text-white"/></button>}
-                    {i<images.length-1&&<button onClick={()=>moveImage(i,1)} className="w-5 h-5 bg-black/70 flex items-center justify-center hover:bg-black"><ChevronRight className="w-3 h-3 text-white"/></button>}
+                  <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0 max-sm:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {i>0&&<button onClick={()=>moveImage(i,-1)} className="w-7 h-7 sm:w-5 sm:h-5 bg-black/70 flex items-center justify-center hover:bg-black active:bg-black"><ChevronLeft className="w-4 h-4 sm:w-3 sm:h-3 text-white"/></button>}
+                    {i<images.length-1&&<button onClick={()=>moveImage(i,1)} className="w-7 h-7 sm:w-5 sm:h-5 bg-black/70 flex items-center justify-center hover:bg-black active:bg-black"><ChevronRight className="w-4 h-4 sm:w-3 sm:h-3 text-white"/></button>}
                   </div>
                   <span className="absolute top-1 left-1 w-4 h-4 bg-black/70 text-white text-[8px] font-bold flex items-center justify-center rounded">{i+1}</span>
                 </div>
               ))}
               {!isFull&&<button onClick={()=>fileRef.current?.click()} className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-400 flex items-center justify-center text-2xl hover:bg-gray-100 hover:border-gray-400 transition-colors shrink-0">+</button>}
+            </div>
+          </div>
+
+          {/* TEMPLATE */}
+          <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2"><Sparkles className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Template Cepat</p></div>
+              <span className="font-body text-[9px] font-bold text-gray-400">{images.length}/{maxCells} foto</span>
+            </div>
+            <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+              {TEMPLATES.map((t)=>(<button key={t.id} onClick={()=>{setLayout(t.layout);setFrameId(t.frameId);setFilter(t.filter);}} className="flex flex-col items-center gap-0.5 px-3 py-2 border-2 border-black rounded-xl bg-white hover:bg-gray-50 transition-all shrink-0" style={{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}}><span className="text-lg">{t.emoji}</span><span className="font-body text-[8px] font-bold uppercase whitespace-nowrap">{t.label}</span></button>))}
             </div>
           </div>
 
