@@ -1,6 +1,8 @@
 "use client";
 import { useState, useCallback } from "react";
 import { Search, ExternalLink, Loader2 } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
 interface JurnalItem {
   title: string;
@@ -11,6 +13,7 @@ interface JurnalItem {
 }
 
 export default function JurnalFinder() {
+  const { lang } = useLang();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<JurnalItem[]>([]);
   const [loading, setLoading] = useState(false);

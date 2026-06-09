@@ -2,8 +2,11 @@
 import { useCallback, useRef, useState } from "react";
 import { Upload, Sparkles, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
 export default function RemoveBackground() {
+  const { lang } = useLang();
   const fileRef = useRef<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
@@ -50,8 +53,8 @@ export default function RemoveBackground() {
 
   return (
     <ComicPanel bgColor="bg-pink-500" badge="ZAP!" badgeColor="bg-yellow-400 text-black">
-      <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 text-white"><Sparkles className="w-6 h-6" />Remove Background</h3>
-      <p className="font-body text-body-md text-white/80 mb-4 flex-grow">Hapus latar belakang gambar otomatis. Drag & drop aja!</p>
+      <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 text-white"><Sparkles className="w-6 h-6" />{t("removebg.title", lang)}</h3>
+      <p className="font-body text-body-md text-white/80 mb-4 flex-grow">{t("removebg.desc", lang)}</p>
       <label className="dashed-border bg-white/90 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white transition-colors min-h-[160px]">
         <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
         <Upload className="w-10 h-10 mb-2 text-pink-500" />

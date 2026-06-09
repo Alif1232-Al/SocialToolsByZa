@@ -4,6 +4,8 @@ import {
   Search, Globe, Loader2, ExternalLink, UserCheck, XCircle, Ban, AlertTriangle,
   Download, Copy, Check, Sparkles
 } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
 const SOCIAL_ICONS: Record<string, string> = {
   Instagram: "Ig",
@@ -72,6 +74,7 @@ type Result = { name: string; url: string; category: string; status: string };
 type DorkItem = { title: string; link: string; snippet: string };
 
 export default function Dorking() {
+  const { lang } = useLang();
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"user" | "dork">("user");
   const [loading, setLoading] = useState(false);
@@ -129,10 +132,10 @@ export default function Dorking() {
 
         <h3 className="font-display text-headline-md uppercase italic mb-3 flex items-center gap-2">
           <Search className="w-6 h-6 shrink-0" />
-          Dorking OSINT
+          {t("dorking.title", lang)}
         </h3>
         <p className="font-body text-body-md text-white/70 mb-3">
-          Cari username di 20 platform terkenal. Cek jejak digital!
+          {t("dorking.desc", lang)}
         </p>
 
         <div className="flex gap-1 mb-3 bg-white border-2 border-black p-1">

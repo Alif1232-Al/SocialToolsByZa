@@ -2,10 +2,13 @@
 import { useState, useCallback } from "react";
 import { FileText, Upload, Loader2, FileWarning } from "lucide-react";
 import ComicPanel from "./ComicPanel";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 
 export default function PdfToWord() {
+  const { lang } = useLang();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -75,8 +78,8 @@ export default function PdfToWord() {
 
   return (
     <ComicPanel bgColor="bg-cyan-500" badge="CONVERT!" badgeColor="bg-yellow-400 text-black">
-      <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 text-white"><FileText className="w-6 h-6" />PDF to Word</h3>
-      <p className="font-body text-body-md text-white/80 mb-4 flex-grow">Konversi PDF ke dokumen Word (.docx). Edit jadi lebih gampang!</p>
+      <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 text-white"><FileText className="w-6 h-6" />{t("pdftoword.title", lang)}</h3>
+      <p className="font-body text-body-md text-white/80 mb-4 flex-grow">{t("pdftoword.desc", lang)}</p>
       <label className="dashed-border bg-white/90 p-5 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white transition-colors min-h-[120px]">
         <input type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
         {file ? (

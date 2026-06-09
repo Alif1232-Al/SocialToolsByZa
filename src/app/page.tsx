@@ -33,31 +33,31 @@ export default function Home() {
 
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="TikTok Downloader"><TikTokDownloader /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.tiktok.title", lang)}><TikTokDownloader /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="Remove Background"><RemoveBackground /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.removebg.title", lang)}><RemoveBackground /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="PDF to Word"><PdfToWord /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.pdftoword.title", lang)}><PdfToWord /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="OCR Picture to Text"><OcrPictureToText /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.ocr.title", lang)}><OcrPictureToText /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="Picture to PDF"><PictureToPdf /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.pictopdf.title", lang)}><PictureToPdf /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="Dorking OSINT"><Dorking /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.dorking.title", lang)}><Dorking /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="JSON Formatter"><JsonFormatter /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.json.title", lang)}><JsonFormatter /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="Quote Generator"><QuoteGenerator /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.quote.title", lang)}><QuoteGenerator /></PremiumGate></ErrorBoundary>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title="Barber Kalkulator"><BarberCalculator /></PremiumGate></ErrorBoundary>
+          <ErrorBoundary><PremiumGate title={t("f.barber.title", lang)}><BarberCalculator /></PremiumGate></ErrorBoundary>
         </div>
       </div>
 
