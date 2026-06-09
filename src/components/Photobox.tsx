@@ -198,221 +198,222 @@ export default function Photobox() {
           <span className="font-body text-[10px] text-gray-400 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">Maksimal 6 foto &bull; JPG, PNG, WebP</span>
         </div>
       ):(
-        <div className="space-y-5">
-          {/* FOTO */}
-          <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-4" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
-            <div className="flex items-center justify-between">
-              <p className="font-display text-sm uppercase italic">Foto ({images.length}/6)</p>
-              <button onClick={()=>{setImages([]);loadedImgs.current=[];setReady(0);}} className="font-body text-[10px] uppercase font-bold text-red-500 hover:text-red-600 flex items-center gap-1"><X className="w-3 h-3"/> Hapus semua</button>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {images.map((src,i)=>(
-                <div key={i} className="group relative w-16 h-16 border-2 border-black rounded-lg overflow-hidden shrink-0">
-                  <img src={src} alt="" className="w-full h-full object-cover"/>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"/>
-                  <button onClick={()=>removeImage(i)} className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 border-2 border-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"><X className="w-3 h-3 text-white"/></button>
-                  <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0 max-sm:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {i>0&&<button onClick={()=>moveImage(i,-1)} className="w-7 h-7 sm:w-5 sm:h-5 bg-black/70 flex items-center justify-center hover:bg-black active:bg-black"><ChevronLeft className="w-4 h-4 sm:w-3 sm:h-3 text-white"/></button>}
-                    {i<images.length-1&&<button onClick={()=>moveImage(i,1)} className="w-7 h-7 sm:w-5 sm:h-5 bg-black/70 flex items-center justify-center hover:bg-black active:bg-black"><ChevronRight className="w-4 h-4 sm:w-3 sm:h-3 text-white"/></button>}
-                  </div>
-                  <span className="absolute top-1 left-1 w-4 h-4 bg-black/70 text-white text-[8px] font-bold flex items-center justify-center rounded">{i+1}</span>
-                </div>
-              ))}
-              {!isFull&&<button onClick={()=>fileRef.current?.click()} className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-400 flex items-center justify-center text-2xl hover:bg-gray-100 hover:border-gray-400 transition-colors shrink-0">+</button>}
-            </div>
-          </div>
-
-          {/* TEMPLATE */}
-          <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2"><Sparkles className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Template Cepat</p></div>
-              <span className="font-body text-[9px] font-bold text-gray-400">{images.length}/{maxCells} foto</span>
-            </div>
-            <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-              {TEMPLATES.map((t)=>(<button key={t.id} onClick={()=>{setLayout(t.layout);setFrameId(t.frameId);setFilter(t.filter);}} className="flex flex-col items-center gap-0.5 px-3 py-2 border-2 border-black rounded-xl bg-white hover:bg-gray-50 transition-all shrink-0" style={{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}}><span className="text-lg">{t.emoji}</span><span className="font-body text-[8px] font-bold uppercase whitespace-nowrap">{t.label}</span></button>))}
-            </div>
-          </div>
-
-          {/* LAYOUT */}
-          <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
-            <div className="flex items-center gap-2"><LayoutGrid className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Layout</p></div>
-            <div className="flex flex-wrap gap-2">
-              {GRID_LAYOUTS.map((l)=>{const disabled=images.length>l.cells;const active=layout===l.id;return(
-                <button key={l.id} onClick={()=>setLayout(l.id)} disabled={disabled}
-                  className={`p-2 border-2 rounded-lg transition-all ${active?"border-pink-500 bg-pink-50":"border-gray-300 bg-white hover:border-gray-400"} ${disabled?"opacity-30 cursor-not-allowed":"cursor-pointer"}`}
-                  style={active?{boxShadow:"2px 2px 0 rgba(236,72,153,0.5)"}:{}}>
-                  <div className="grid gap-0.5" style={{gridTemplateColumns:`repeat(${l.cols},1fr)`}}>{Array.from({length:l.cells}).map((_,ci)=><div key={ci} className={`w-4 h-4 rounded-sm ${active?"bg-pink-400":"bg-gray-300"}`}/>)}</div>
-                  <p className={`font-body text-[9px] mt-1 font-bold uppercase ${active?"text-pink-600":"text-gray-400"}`}>{l.label}</p>
-                </button>
-              );})}
-              {SPECIAL_LAYOUTS.map((l)=>{const disabled=images.length>l.cells||images.length<2;const active=layout===l.id;return(
-                <button key={l.id} onClick={()=>setLayout(l.id)} disabled={disabled}
-                  className={`p-2 border-2 rounded-lg transition-all ${active?"border-pink-500 bg-pink-50":"border-gray-300 bg-white hover:border-gray-400"} ${disabled?"opacity-30 cursor-not-allowed":"cursor-pointer"}`}
-                  style={active?{boxShadow:"2px 2px 0 rgba(236,72,153,0.5)"}:{}}>
-                  <div className="flex flex-col gap-0.5 items-center">{Array.from({length:4}).map((_,ci)=><div key={ci} className={`w-5 h-3 rounded-sm ${active?"bg-pink-400":"bg-gray-300"}`}/>)}</div>
-                  <p className={`font-body text-[9px] mt-1 font-bold uppercase ${active?"text-pink-600":"text-gray-400"}`}>{l.label}</p>
-                </button>
-              );})}
-            </div>
-          </div>
-
-          {/* BINGKAI */}
-          <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
-            <div className="flex items-center gap-2"><Frame className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Bingkai</p></div>
-            <div className="flex gap-2 flex-wrap">
-              {FRAMES.map((f)=>{const active=frameId===f.id;return(
-                <button key={f.id} onClick={()=>setFrameId(f.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${active?"bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black":"bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
-                  style={active?{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}:{}}><span className="text-sm">{f.emoji}</span><span>{f.name}</span></button>
-              );})}
-              <button onClick={()=>setFrameId("custom")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${frameId==="custom"?"bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black":"bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
-                style={frameId==="custom"?{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}:{}}><Pen className="w-3.5 h-3.5"/><span>Custom</span></button>
-            </div>
-          </div>
-
-          {/* CUSTOM EDITOR */}
-          {isCustom&&(
-            <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-5" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
-              <div className="flex items-center gap-2"><Pen className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Edit Bingkai Custom</p></div>
-
-              <div className="space-y-1">
-                <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Tipe Background</p>
-                <div className="flex gap-2">
-                  <button onClick={()=>updateCustom("bgType","gradient")} className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType==="gradient"?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>Gradient</button>
-                  <button onClick={()=>updateCustom("bgType","solid")} className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType==="solid"?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>Solid</button>
-                </div>
+        <div className="flex flex-col lg:flex-row gap-5">
+          {/* LEFT — Tools Panel */}
+          <div className="lg:w-96 xl:w-[28rem] space-y-5 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:sticky lg:top-4 lg:shrink-0">
+            {/* FOTO */}
+            <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-4" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
+              <div className="flex items-center justify-between">
+                <p className="font-display text-sm uppercase italic">Foto ({images.length}/6)</p>
+                <button onClick={()=>{setImages([]);loadedImgs.current=[];setReady(0);}} className="font-body text-[10px] uppercase font-bold text-red-500 hover:text-red-600 flex items-center gap-1"><X className="w-3 h-3"/> Hapus semua</button>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 1</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor1",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.bgColor1===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                {customOpts.bgType==="gradient"&&<div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 2</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor2",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.bgColor2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
-              </div>
-
-              <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Dekorasi</p><div className="flex gap-1.5 flex-wrap">{DECORATIONS.map((d)=>(<button key={d.id} onClick={()=>updateCustom("decoration",d.id as CustomFrameOptions["decoration"])} className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.decoration===d.id?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{d.emoji} {d.label}</button>))}</div></div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Luar</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("borderColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.borderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Foto</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("cellBorderColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.cellBorderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-              </div>
-
-              {/* TEKS */}
-              <div className="border-t-2 border-gray-200 pt-4 space-y-3">
-                <div className="flex items-center justify-between"><p className="font-display text-sm uppercase italic">Teks</p><label className="flex items-center gap-2 cursor-pointer"><span className="font-body text-[10px] font-bold text-gray-500">Tampilkan</span><input type="checkbox" checked={customOpts.textEnabled} onChange={(e)=>updateCustom("textEnabled",e.target.checked)} className="w-4 h-4 accent-pink-500"/></label></div>
-                {customOpts.textEnabled&&(<div className="space-y-3">
-                  <div className="flex gap-2"><input type="text" value={customOpts.text} onChange={(e)=>updateCustom("text",e.target.value)} placeholder="Ketik teks..." className="flex-1 px-3 py-1.5 text-xs border-2 border-black rounded-lg font-display font-bold uppercase outline-none"/>
-                    <div className="relative"><button onClick={()=>setShowTrendy((p)=>!p)} className="px-3 py-1.5 text-xs border-2 border-black rounded-lg font-bold bg-white hover:bg-gray-100">💡</button>{showTrendy&&<div className="absolute right-0 top-full mt-1 w-56 bg-white border-2 border-black rounded-xl p-2 grid grid-cols-3 gap-1 z-20 shadow-[4px_4px_0_#000]">{TRENDY_TEXTS.map((t)=>(<button key={t} onClick={()=>{updateCustom("text",t);setShowTrendy(false);}} className="text-[8px] font-bold px-1 py-1 bg-gray-100 rounded hover:bg-pink-100 transition-colors uppercase">{t}</button>))}<button onClick={()=>setShowTrendy(false)} className="col-span-3 text-[9px] font-bold text-gray-400 hover:text-gray-600 pt-1 border-t border-gray-200 mt-1">✕ Tutup</button></div>}</div>
-                  </div>
-
-                  {/* FONT - 10 options */}
-                  <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Font</p>
-                    <div className="flex gap-1.5 flex-wrap">{FONT_OPTIONS.map((fo)=>{const active=customOpts.textFont===fo.id;const s:Record<string,string>={bold:"font-bold",playful:"font-display italic",elegant:"italic font-serif",compact:"font-semibold tracking-tight",classic:"font-serif",funky:"font-black uppercase",cute:"font-display",retro:"font-mono",graffiti:"font-black italic uppercase",minimal:"font-light"};return(
-                      <button key={fo.id} onClick={()=>updateCustom("textFont",fo.id)}
-                        className={`px-2.5 py-1 text-[10px] border-2 rounded-lg font-bold transition-all ${active?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"} ${s[fo.id]}`}>{fo.label}</button>
-                    );})}</div>
-                  </div>
-
-                  {/* SHAPE */}
-                  <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Bentuk Badge</p>
-                    <div className="flex gap-1.5 flex-wrap">{SHAPE_OPTIONS.map((so)=>{const active=customOpts.textShape===so.id;return(
-                      <button key={so.id} onClick={()=>updateCustom("textShape",so.id)}
-                        className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${active?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{so.emoji} {so.label}</button>
-                    );})}</div>
-                  </div>
-
-                  {/* POSITION */}
-                  <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Posisi Teks</p>
-                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">{TEXT_POSITIONS.map((tp)=>{const active=customOpts.textPosition===tp.id;return(
-                      <button key={tp.id} onClick={()=>updateCustom("textPosition",tp.id)} className={`px-2 py-1 text-[9px] border-2 rounded-lg font-bold transition-all ${active?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{tp.label}</button>
-                    );})}</div>
-                  </div>
-
-                  {/* TEXT COLORS + OPACITY */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Teks</p><div className="flex gap-1 flex-wrap">{["#fff","#000","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">BG Teks</p><div className="flex gap-1 flex-wrap">{["#000","#fff","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textBg===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
-                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Shadow</p><div className="flex gap-1 flex-wrap">{["#000","#fff","#ef4444","#3b82f6","#8b5cf6","#ec4899","transparent"].map((c)=>(<button key={c} onClick={()=>updateCustom("textShadow",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textShadow===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c==="transparent"?"#ccc":c}}/>))}</div></div>
-                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Opacity {customOpts.textOpacity}%</p><input type="range" min={20} max={100} value={customOpts.textOpacity} onChange={(e)=>updateCustom("textOpacity",Number(e.target.value))} className="w-full accent-pink-500"/></div>
-                  </div>
-
-                  {/* GRADIENT BG + BG2 (only for rounded/pill shapes) */}
-                  {(customOpts.textShape==="rounded"||customOpts.textShape==="pill")&&(
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <label className="flex items-center gap-2 cursor-pointer"><span className="font-body text-[10px] font-bold text-gray-500">Gradient BG</span><input type="checkbox" checked={customOpts.textBgGrad} onChange={(e)=>updateCustom("textBgGrad",e.target.checked)} className="w-4 h-4 accent-pink-500"/></label>
-                      {customOpts.textBgGrad&&<div className="flex items-center gap-2"><span className="font-body text-[9px] font-bold text-gray-400">Warna 2:</span><div className="flex gap-1 flex-wrap">{["#333","#fff","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg2",c)} className={`sm:w-5 sm:h-5 w-6 h-6 rounded-full border-2 transition-all ${customOpts.textBg2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
+              <div className="flex gap-2 flex-wrap">
+                {images.map((src,i)=>(
+                  <div key={i} className="group relative w-16 h-16 border-2 border-black rounded-lg overflow-hidden shrink-0">
+                    <img src={src} alt="" className="w-full h-full object-cover"/>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"/>
+                    <button onClick={()=>removeImage(i)} className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 border-2 border-black rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 max-sm:opacity-100"><X className="w-3 h-3 text-white"/></button>
+                    <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0 max-sm:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {i>0&&<button onClick={()=>moveImage(i,-1)} className="w-7 h-7 sm:w-5 sm:h-5 bg-black/70 flex items-center justify-center hover:bg-black active:bg-black"><ChevronLeft className="w-4 h-4 sm:w-3 sm:h-3 text-white"/></button>}
+                      {i<images.length-1&&<button onClick={()=>moveImage(i,1)} className="w-7 h-7 sm:w-5 sm:h-5 bg-black/70 flex items-center justify-center hover:bg-black active:bg-black"><ChevronRight className="w-4 h-4 sm:w-3 sm:h-3 text-white"/></button>}
                     </div>
-                  )}
-                </div>)}
-              </div>
-
-              {/* EMOJI / STIKER */}
-              <div className="border-t-2 border-gray-200 pt-4 space-y-3">
-                <div className="flex items-center gap-2"><Sticker className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Emoji / Stiker</p></div>
-
-                {customOpts.selectedEmoji&&(
-                  <div className="bg-pink-50 border-2 border-pink-400 rounded-xl p-3 text-center">
-                    <p className="font-body text-xs font-bold text-pink-700 flex items-center justify-center gap-1"><Pointer className="w-3.5 h-3.5"/> Klik di canvas untuk tempatkan {customOpts.selectedEmoji}</p>
-                    <button onClick={()=>updateCustom("selectedEmoji",null)} className="mt-1 text-[10px] font-bold text-pink-500 hover:text-pink-600 underline">Batal</button>
+                    <span className="absolute top-1 left-1 w-4 h-4 bg-black/70 text-white text-[8px] font-bold flex items-center justify-center rounded">{i+1}</span>
                   </div>
-                )}
+                ))}
+                {!isFull&&<button onClick={()=>fileRef.current?.click()} className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-gray-400 flex items-center justify-center text-2xl hover:bg-gray-100 hover:border-gray-400 transition-colors shrink-0">+</button>}
+              </div>
+            </div>
 
-                {customOpts.emojis.length>0&&(
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between"><p className="font-body text-[9px] font-bold text-gray-400 uppercase">Dipasang ({customOpts.emojis.length})</p><button onClick={()=>{updateCustom("emojis",[]);setEditEmojiIdx(null);}} className="text-[9px] font-bold text-red-500 hover:text-red-600 uppercase">Hapus semua</button></div>
-                    <div className="flex flex-col gap-2">
-                      {customOpts.emojis.map((e,i)=>(
-                        <div key={e.id} className="flex items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-2">
-                          <span className="text-xl w-8 text-center">{e.emoji}</span>
-                          <button onClick={()=>setEditEmojiIdx(editEmojiIdx===i?null:i)} className="text-[9px] font-bold text-gray-500 hover:text-black underline">{editEmojiIdx===i?"Sembunyi":"Atur"}</button>
-                          <button onClick={()=>removeEmoji(i)} className="ml-auto text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5"/></button>
-                        </div>
-                      ))}
+            {/* TEMPLATE */}
+            <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2"><Sparkles className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Template Cepat</p></div>
+                <span className="font-body text-[9px] font-bold text-gray-400">{images.length}/{maxCells} foto</span>
+              </div>
+              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+                {TEMPLATES.map((t)=>(<button key={t.id} onClick={()=>{setLayout(t.layout);setFrameId(t.frameId);setFilter(t.filter);}} className="flex flex-col items-center gap-0.5 px-3 py-2 border-2 border-black rounded-xl bg-white hover:bg-gray-50 transition-all shrink-0" style={{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}}><span className="text-lg">{t.emoji}</span><span className="font-body text-[8px] font-bold uppercase whitespace-nowrap">{t.label}</span></button>))}
+              </div>
+            </div>
+
+            {/* LAYOUT */}
+            <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
+              <div className="flex items-center gap-2"><LayoutGrid className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Layout</p></div>
+              <div className="flex flex-wrap gap-2">
+                {GRID_LAYOUTS.map((l)=>{const disabled=images.length>l.cells;const active=layout===l.id;return(
+                  <button key={l.id} onClick={()=>setLayout(l.id)} disabled={disabled}
+                    className={`p-2 border-2 rounded-lg transition-all ${active?"border-pink-500 bg-pink-50":"border-gray-300 bg-white hover:border-gray-400"} ${disabled?"opacity-30 cursor-not-allowed":"cursor-pointer"}`}
+                    style={active?{boxShadow:"2px 2px 0 rgba(236,72,153,0.5)"}:{}}>
+                    <div className="grid gap-0.5" style={{gridTemplateColumns:`repeat(${l.cols},1fr)`}}>{Array.from({length:l.cells}).map((_,ci)=><div key={ci} className={`w-4 h-4 rounded-sm ${active?"bg-pink-400":"bg-gray-300"}`}/>)}</div>
+                    <p className={`font-body text-[9px] mt-1 font-bold uppercase ${active?"text-pink-600":"text-gray-400"}`}>{l.label}</p>
+                  </button>
+                );})}
+                {SPECIAL_LAYOUTS.map((l)=>{const disabled=images.length>l.cells||images.length<2;const active=layout===l.id;return(
+                  <button key={l.id} onClick={()=>setLayout(l.id)} disabled={disabled}
+                    className={`p-2 border-2 rounded-lg transition-all ${active?"border-pink-500 bg-pink-50":"border-gray-300 bg-white hover:border-gray-400"} ${disabled?"opacity-30 cursor-not-allowed":"cursor-pointer"}`}
+                    style={active?{boxShadow:"2px 2px 0 rgba(236,72,153,0.5)"}:{}}>
+                    <div className="flex flex-col gap-0.5 items-center">{Array.from({length:4}).map((_,ci)=><div key={ci} className={`w-5 h-3 rounded-sm ${active?"bg-pink-400":"bg-gray-300"}`}/>)}</div>
+                    <p className={`font-body text-[9px] mt-1 font-bold uppercase ${active?"text-pink-600":"text-gray-400"}`}>{l.label}</p>
+                  </button>
+                );})}
+              </div>
+            </div>
+
+            {/* BINGKAI */}
+            <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
+              <div className="flex items-center gap-2"><Frame className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Bingkai</p></div>
+              <div className="flex gap-2 flex-wrap">
+                {FRAMES.map((f)=>{const active=frameId===f.id;return(
+                  <button key={f.id} onClick={()=>setFrameId(f.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${active?"bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black":"bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
+                    style={active?{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}:{}}><span className="text-sm">{f.emoji}</span><span>{f.name}</span></button>
+                );})}
+                <button onClick={()=>setFrameId("custom")}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${frameId==="custom"?"bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black":"bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
+                  style={frameId==="custom"?{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}:{}}><Pen className="w-3.5 h-3.5"/><span>Custom</span></button>
+              </div>
+            </div>
+
+            {/* CUSTOM EDITOR */}
+            {isCustom&&(
+              <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-5" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
+                <div className="flex items-center gap-2"><Pen className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Edit Bingkai Custom</p></div>
+
+                <div className="space-y-1">
+                  <p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Tipe Background</p>
+                  <div className="flex gap-2">
+                    <button onClick={()=>updateCustom("bgType","gradient")} className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType==="gradient"?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>Gradient</button>
+                    <button onClick={()=>updateCustom("bgType","solid")} className={`px-3 py-1.5 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.bgType==="solid"?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>Solid</button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 1</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor1",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.bgColor1===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                  {customOpts.bgType==="gradient"&&<div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna 2</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.map((c)=>(<button key={c} onClick={()=>updateCustom("bgColor2",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.bgColor2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
+                </div>
+
+                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Dekorasi</p><div className="flex gap-1.5 flex-wrap">{DECORATIONS.map((d)=>(<button key={d.id} onClick={()=>updateCustom("decoration",d.id as CustomFrameOptions["decoration"])} className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${customOpts.decoration===d.id?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{d.emoji} {d.label}</button>))}</div></div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Luar</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("borderColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.borderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                  <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Border Foto</p><div className="flex gap-1 flex-wrap">{COLOR_SWATCHES.slice(0,10).map((c)=>(<button key={c} onClick={()=>updateCustom("cellBorderColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.cellBorderColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                </div>
+
+                {/* TEKS */}
+                <div className="border-t-2 border-gray-200 pt-4 space-y-3">
+                  <div className="flex items-center justify-between"><p className="font-display text-sm uppercase italic">Teks</p><label className="flex items-center gap-2 cursor-pointer"><span className="font-body text-[10px] font-bold text-gray-500">Tampilkan</span><input type="checkbox" checked={customOpts.textEnabled} onChange={(e)=>updateCustom("textEnabled",e.target.checked)} className="w-4 h-4 accent-pink-500"/></label></div>
+                  {customOpts.textEnabled&&(<div className="space-y-3">
+                    <div className="flex gap-2"><input type="text" value={customOpts.text} onChange={(e)=>updateCustom("text",e.target.value)} placeholder="Ketik teks..." className="flex-1 px-3 py-1.5 text-xs border-2 border-black rounded-lg font-display font-bold uppercase outline-none"/>
+                      <div className="relative"><button onClick={()=>setShowTrendy((p)=>!p)} className="px-3 py-1.5 text-xs border-2 border-black rounded-lg font-bold bg-white hover:bg-gray-100">💡</button>{showTrendy&&<div className="absolute right-0 top-full mt-1 w-56 bg-white border-2 border-black rounded-xl p-2 grid grid-cols-3 gap-1 z-20 shadow-[4px_4px_0_#000]">{TRENDY_TEXTS.map((t)=>(<button key={t} onClick={()=>{updateCustom("text",t);setShowTrendy(false);}} className="text-[8px] font-bold px-1 py-1 bg-gray-100 rounded hover:bg-pink-100 transition-colors uppercase">{t}</button>))}<button onClick={()=>setShowTrendy(false)} className="col-span-3 text-[9px] font-bold text-gray-400 hover:text-gray-600 pt-1 border-t border-gray-200 mt-1">✕ Tutup</button></div>}</div>
                     </div>
-                    {editEmojiIdx!==null&&customOpts.emojis[editEmojiIdx]&&(
-                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 space-y-2">
-                        <p className="font-body text-[9px] font-bold text-gray-500 uppercase">Posisi: {customOpts.emojis[editEmojiIdx].emoji}</p>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="flex items-center gap-2"><span className="text-[10px] font-bold text-gray-500 w-4">X:</span><input type="range" min={0} max={100} value={customOpts.emojis[editEmojiIdx].x} onChange={(e)=>updateEmojiPos(editEmojiIdx,"x",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].x}%</span></div>
-                          <div className="flex items-center gap-2"><span className="text-[10px] font-bold text-gray-500 w-4">Y:</span><input type="range" min={0} max={100} value={customOpts.emojis[editEmojiIdx].y} onChange={(e)=>updateEmojiPos(editEmojiIdx,"y",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].y}%</span></div>
-                          <div className="flex items-center gap-2 col-span-2"><span className="text-[10px] font-bold text-gray-500">Ukuran:</span><input type="range" min={12} max={64} value={customOpts.emojis[editEmojiIdx].size} onChange={(e)=>updateEmojiPos(editEmojiIdx,"size",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].size}px</span></div>
-                        </div>
+
+                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Font</p>
+                      <div className="flex gap-1.5 flex-wrap">{FONT_OPTIONS.map((fo)=>{const active=customOpts.textFont===fo.id;const s:Record<string,string>={bold:"font-bold",playful:"font-display italic",elegant:"italic font-serif",compact:"font-semibold tracking-tight",classic:"font-serif",funky:"font-black uppercase",cute:"font-display",retro:"font-mono",graffiti:"font-black italic uppercase",minimal:"font-light"};return(
+                        <button key={fo.id} onClick={()=>updateCustom("textFont",fo.id)}
+                          className={`px-2.5 py-1 text-[10px] border-2 rounded-lg font-bold transition-all ${active?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"} ${s[fo.id]}`}>{fo.label}</button>
+                      );})}</div>
+                    </div>
+
+                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Bentuk Badge</p>
+                      <div className="flex gap-1.5 flex-wrap">{SHAPE_OPTIONS.map((so)=>{const active=customOpts.textShape===so.id;return(
+                        <button key={so.id} onClick={()=>updateCustom("textShape",so.id)}
+                          className={`px-2.5 py-1 text-xs border-2 rounded-lg font-bold transition-all ${active?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{so.emoji} {so.label}</button>
+                      );})}</div>
+                    </div>
+
+                    <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Posisi Teks</p>
+                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">{TEXT_POSITIONS.map((tp)=>{const active=customOpts.textPosition===tp.id;return(
+                        <button key={tp.id} onClick={()=>updateCustom("textPosition",tp.id)} className={`px-2 py-1 text-[9px] border-2 rounded-lg font-bold transition-all ${active?"bg-black text-white border-black":"bg-white text-gray-600 border-gray-300 hover:border-gray-400"}`}>{tp.label}</button>
+                      );})}</div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Warna Teks</p><div className="flex gap-1 flex-wrap">{["#fff","#000","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textColor",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textColor===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                      <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">BG Teks</p><div className="flex gap-1 flex-wrap">{["#fff","#000","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textBg===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>
+                      <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Shadow</p><div className="flex gap-1 flex-wrap">{["#000","#fff","#ef4444","#3b82f6","#8b5cf6","#ec4899","transparent"].map((c)=>(<button key={c} onClick={()=>updateCustom("textShadow",c)} className={`sm:w-6 sm:h-6 w-7 h-7 rounded-full border-2 transition-all ${customOpts.textShadow===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c==="transparent"?"#ccc":c}}/>))}</div></div>
+                      <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Opacity {customOpts.textOpacity}%</p><input type="range" min={20} max={100} value={customOpts.textOpacity} onChange={(e)=>updateCustom("textOpacity",Number(e.target.value))} className="w-full accent-pink-500"/></div>
+                    </div>
+
+                    {(customOpts.textShape==="rounded"||customOpts.textShape==="pill")&&(
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <label className="flex items-center gap-2 cursor-pointer"><span className="font-body text-[10px] font-bold text-gray-500">Gradient BG</span><input type="checkbox" checked={customOpts.textBgGrad} onChange={(e)=>updateCustom("textBgGrad",e.target.checked)} className="w-4 h-4 accent-pink-500"/></label>
+                        {customOpts.textBgGrad&&<div className="flex items-center gap-2"><span className="font-body text-[9px] font-bold text-gray-400">Warna 2:</span><div className="flex gap-1 flex-wrap">{["#333","#fff","#ef4444","#f97316","#eab308","#22c55e","#06b6d4","#3b82f6","#8b5cf6","#ec4899"].map((c)=>(<button key={c} onClick={()=>updateCustom("textBg2",c)} className={`sm:w-5 sm:h-5 w-6 h-6 rounded-full border-2 transition-all ${customOpts.textBg2===c?"border-black scale-110":"border-gray-200"}`} style={{backgroundColor:c}}/>))}</div></div>}
                       </div>
                     )}
-                  </div>
-                )}
+                  </div>)}
+                </div>
 
-                <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Pilih & klik di canvas</p>
-                  <div className="flex gap-1 border-b-2 border-gray-200 pb-1 overflow-x-auto">{EMOJI_CATEGORIES.map((cat,ci)=>(<button key={cat.name} onClick={()=>setEmojiTab(ci)} className={`px-2 py-0.5 text-xs font-bold whitespace-nowrap transition-all rounded-t ${emojiTab===ci?"text-pink-600 border-b-2 border-pink-500 -mb-[6px]":"text-gray-400 hover:text-gray-600"}`}>{cat.name}</button>))}</div>
-                  <div className="flex gap-1.5 flex-wrap max-h-28 overflow-y-auto p-1">{EMOJI_CATEGORIES[emojiTab]?.items.map((em)=>(
-                    <button key={em} onClick={()=>selectEmojiForPlacement(em)}
-                      className={`w-9 h-9 flex items-center justify-center text-lg rounded-lg transition-colors border ${customOpts.selectedEmoji===em?"border-pink-500 bg-pink-50 ring-2 ring-pink-300":"border-gray-200 hover:bg-gray-100"}`}
-                      title={em}>{em}</button>
-                  ))}</div>
+                {/* EMOJI / STIKER */}
+                <div className="border-t-2 border-gray-200 pt-4 space-y-3">
+                  <div className="flex items-center gap-2"><Sticker className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Emoji / Stiker</p></div>
+
+                  {customOpts.selectedEmoji&&(
+                    <div className="bg-pink-50 border-2 border-pink-400 rounded-xl p-3 text-center">
+                      <p className="font-body text-xs font-bold text-pink-700 flex items-center justify-center gap-1"><Pointer className="w-3.5 h-3.5"/> Klik di canvas untuk tempatkan {customOpts.selectedEmoji}</p>
+                      <button onClick={()=>updateCustom("selectedEmoji",null)} className="mt-1 text-[10px] font-bold text-pink-500 hover:text-pink-600 underline">Batal</button>
+                    </div>
+                  )}
+
+                  {customOpts.emojis.length>0&&(
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between"><p className="font-body text-[9px] font-bold text-gray-400 uppercase">Dipasang ({customOpts.emojis.length})</p><button onClick={()=>{updateCustom("emojis",[]);setEditEmojiIdx(null);}} className="text-[9px] font-bold text-red-500 hover:text-red-600 uppercase">Hapus semua</button></div>
+                      <div className="flex flex-col gap-2">
+                        {customOpts.emojis.map((e,i)=>(
+                          <div key={e.id} className="flex items-center gap-2 bg-gray-50 rounded-lg border border-gray-200 p-2">
+                            <span className="text-xl w-8 text-center">{e.emoji}</span>
+                            <button onClick={()=>setEditEmojiIdx(editEmojiIdx===i?null:i)} className="text-[9px] font-bold text-gray-500 hover:text-black underline">{editEmojiIdx===i?"Sembunyi":"Atur"}</button>
+                            <button onClick={()=>removeEmoji(i)} className="ml-auto text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5"/></button>
+                          </div>
+                        ))}
+                      </div>
+                      {editEmojiIdx!==null&&customOpts.emojis[editEmojiIdx]&&(
+                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 space-y-2">
+                          <p className="font-body text-[9px] font-bold text-gray-500 uppercase">Posisi: {customOpts.emojis[editEmojiIdx].emoji}</p>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="flex items-center gap-2"><span className="text-[10px] font-bold text-gray-500 w-4">X:</span><input type="range" min={0} max={100} value={customOpts.emojis[editEmojiIdx].x} onChange={(e)=>updateEmojiPos(editEmojiIdx,"x",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].x}%</span></div>
+                            <div className="flex items-center gap-2"><span className="text-[10px] font-bold text-gray-500 w-4">Y:</span><input type="range" min={0} max={100} value={customOpts.emojis[editEmojiIdx].y} onChange={(e)=>updateEmojiPos(editEmojiIdx,"y",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].y}%</span></div>
+                            <div className="flex items-center gap-2 col-span-2"><span className="text-[10px] font-bold text-gray-500">Ukuran:</span><input type="range" min={12} max={64} value={customOpts.emojis[editEmojiIdx].size} onChange={(e)=>updateEmojiPos(editEmojiIdx,"size",Number(e.target.value))} className="flex-1 accent-pink-500"/><span className="text-[10px] font-bold text-gray-400 w-8 text-right">{customOpts.emojis[editEmojiIdx].size}px</span></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="space-y-1"><p className="font-body text-[10px] font-bold uppercase tracking-wider text-gray-500">Pilih & klik di canvas</p>
+                    <div className="flex gap-1 border-b-2 border-gray-200 pb-1 overflow-x-auto">{EMOJI_CATEGORIES.map((cat,ci)=>(<button key={cat.name} onClick={()=>setEmojiTab(ci)} className={`px-2 py-0.5 text-xs font-bold whitespace-nowrap transition-all rounded-t ${emojiTab===ci?"text-pink-600 border-b-2 border-pink-500 -mb-[6px]":"text-gray-400 hover:text-gray-600"}`}>{cat.name}</button>))}</div>
+                    <div className="flex gap-1.5 flex-wrap max-h-28 overflow-y-auto p-1">{EMOJI_CATEGORIES[emojiTab]?.items.map((em)=>(
+                      <button key={em} onClick={()=>selectEmojiForPlacement(em)}
+                        className={`w-9 h-9 flex items-center justify-center text-lg rounded-lg transition-colors border ${customOpts.selectedEmoji===em?"border-pink-500 bg-pink-50 ring-2 ring-pink-300":"border-gray-200 hover:bg-gray-100"}`}
+                        title={em}>{em}</button>
+                    ))}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* FILTER */}
-          <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
-            <div className="flex items-center gap-2"><Palette className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Filter</p></div>
-            <div className="flex gap-1 border-b-2 border-gray-200 pb-2">{FILTER_CATEGORIES.map((cat)=>(<button key={cat.name} onClick={()=>setFilterTab(cat.name as "Trending"|"Classic")} className={`px-3 py-1 font-body text-[10px] font-bold uppercase tracking-wider transition-all rounded-t-lg ${filterTab===cat.name?"text-pink-600 border-b-2 border-pink-500 -mb-[10px]":"text-gray-400 hover:text-gray-600"}`}>{cat.name}</button>))}</div>
-            <div className="flex gap-1.5 flex-wrap">{currentFilters.map((fid)=>{const f=FILTERS.find((x)=>x.id===fid);if(!f)return null;const active=filter===f.id;return(
-              <button key={f.id} onClick={()=>setFilter(f.id)} className={`px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${active?"bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black":"bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
-                style={active?{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}:{}}>{f.name}</button>
-            );})}</div>
+            {/* FILTER */}
+            <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}>
+              <div className="flex items-center gap-2"><Palette className="w-4 h-4"/><p className="font-display text-sm uppercase italic">Filter</p></div>
+              <div className="flex gap-1 border-b-2 border-gray-200 pb-2">{FILTER_CATEGORIES.map((cat)=>(<button key={cat.name} onClick={()=>setFilterTab(cat.name as "Trending"|"Classic")} className={`px-3 py-1 font-body text-[10px] font-bold uppercase tracking-wider transition-all rounded-t-lg ${filterTab===cat.name?"text-pink-600 border-b-2 border-pink-500 -mb-[10px]":"text-gray-400 hover:text-gray-600"}`}>{cat.name}</button>))}</div>
+              <div className="flex gap-1.5 flex-wrap">{currentFilters.map((fid)=>{const f=FILTERS.find((x)=>x.id===fid);if(!f)return null;const active=filter===f.id;return(
+                <button key={f.id} onClick={()=>setFilter(f.id)} className={`px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${active?"bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black":"bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
+                  style={active?{boxShadow:"2px 2px 0 rgba(0,0,0,1)"}:{}}>{f.name}</button>
+              );})}</div>
+            </div>
+
+            {(isFilmstrip&&images.length<2)&&<div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-3 text-center"><p className="font-body text-xs text-amber-700 font-bold">Film Strip butuh minimal 2 foto</p></div>}
           </div>
 
-          {(isFilmstrip&&images.length<2)&&<div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-3 text-center"><p className="font-body text-xs text-amber-700 font-bold">Film Strip butuh minimal 2 foto</p></div>}
-
-          {/* CANVAS PREVIEW */}
-          <div ref={canvasWrapRef} className="flex justify-center">
-            <div className="relative inline-block" style={{boxShadow:"6px 6px 0 rgba(0,0,0,1)",cursor:customOpts.selectedEmoji?"crosshair":"default"}}>
-              <canvas ref={canvasRef} onClick={handleCanvasClick} onTouchEnd={handleCanvasTouchEnd} className="w-full max-w-full h-auto border-2 border-black" style={{touchAction:customOpts.selectedEmoji?"none":"auto"}} />
+          {/* RIGHT — Canvas Preview */}
+          <div className="flex-1 min-w-0 space-y-5 lg:sticky lg:top-4 lg:self-start">
+            {/* CANVAS PREVIEW */}
+            <div ref={canvasWrapRef} className="flex justify-center">
+              <div className="relative inline-block" style={{boxShadow:"6px 6px 0 rgba(0,0,0,1)",cursor:customOpts.selectedEmoji?"crosshair":"default"}}>
+                <canvas ref={canvasRef} onClick={handleCanvasClick} onTouchEnd={handleCanvasTouchEnd} className="w-full max-w-full h-auto border-2 border-black" style={{touchAction:customOpts.selectedEmoji?"none":"auto"}} />
+              </div>
             </div>
-          </div>
 
-          <button onClick={downloadPng} className="comic-btn bg-gradient-to-r from-purple-600 to-pink-600 text-white w-full text-sm flex items-center justify-center gap-2 py-3 text-base font-bold tracking-wider" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}><Download className="w-5 h-5"/> DOWNLOAD PNG</button>
+            <button onClick={downloadPng} className="comic-btn bg-gradient-to-r from-purple-600 to-pink-600 text-white w-full text-sm flex items-center justify-center gap-2 py-3 text-base font-bold tracking-wider" style={{boxShadow:"4px 4px 0 rgba(0,0,0,1)"}}><Download className="w-5 h-5"/> DOWNLOAD PNG</button>
+          </div>
         </div>
       )}
 
