@@ -1,8 +1,8 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { ImagePlus, Download, X, Sparkles, ChevronLeft, ChevronRight, Palette, LayoutGrid } from "lucide-react";
-import ComicPanel from "./ComicPanel";
+import { ImagePlus, Download, X, Sparkles, ChevronLeft, ChevronRight, Palette, LayoutGrid, Frame } from "lucide-react";
 import { FILTERS } from "@/lib/photo-filters";
+import { FRAMES } from "@/lib/photo-frames";
 
 const GRID_LAYOUTS = [
   { id: "1x1", cols: 1, rows: 1, cells: 1, label: "1" },
@@ -32,10 +32,7 @@ function applyFilterToCanvas(canvas: HTMLCanvasElement, filterId: string) {
 }
 
 function drawFilmPerforations(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const holeW = 8;
-  const holeH = 6;
-  const gap = 20;
-  const margin = 6;
+  const holeW = 8, holeH = 6, gap = 20, margin = 6;
   ctx.fillStyle = "#1a1a1a";
   for (let y = margin; y < h - margin; y += gap) {
     ctx.fillRect(margin, y, holeW, holeH);
@@ -47,6 +44,7 @@ export default function Photobox() {
   const [images, setImages] = useState<string[]>([]);
   const [layout, setLayout] = useState("2x2");
   const [filter, setFilter] = useState("original");
+  const [frameId, setFrameId] = useState("comic-boom");
   const [filterTab, setFilterTab] = useState<"Trending" | "Classic">("Trending");
   const [ready, setReady] = useState(0);
   const [dragOver, setDragOver] = useState(false);
@@ -59,14 +57,14 @@ export default function Photobox() {
   const isFilmstrip = layout === "filmstrip";
   const isPhotostrip = layout === "photostrip";
   const isSpecial = isFilmstrip || isPhotostrip;
-
-  const gap = isSpecial ? 4 : 8;
-  const pad = isSpecial ? 14 : 16;
-  const maxLogicalW = isSpecial ? 360 : 540;
+  const frame = FRAMES.find((f) => f.id === frameId) || FRAMES[0];
   const maxCells = cur.cells;
   const visible = Math.min(images.length, maxCells);
   const cols = isSpecial ? 1 : cur.cols;
   const rows = isSpecial ? visible : cur.rows;
+  const gap = isSpecial ? 4 : 8;
+  const pad = isSpecial ? 14 : 16;
+  const maxLogicalW = isSpecial ? 360 : 540;
   const cellGapTotal = (cols - 1) * gap;
   const cellW = Math.floor((maxLogicalW - pad * 2 - cellGapTotal) / cols);
   const cellH = Math.floor(cellW * (isFilmstrip ? 0.85 : 0.75));
@@ -102,32 +100,21 @@ export default function Photobox() {
       ctx.fillRect(0, 0, totalW, totalH);
       drawFilmPerforations(ctx, totalW, totalH);
     } else if (isPhotostrip) {
-      const grad = ctx.createLinearGradient(0, 0, 0, totalH);
-      grad.addColorStop(0, "#fef9c3");
-      grad.addColorStop(0.5, "#fef3c7");
-      grad.addColorStop(1, "#fde68a");
-      ctx.fillStyle = grad;
+      const g = ctx.createLinearGradient(0, 0, 0, totalH);
+      g.addColorStop(0, "#fef9c3");
+      g.addColorStop(0.5, "#fef3c7");
+      g.addColorStop(1, "#fde68a");
+      ctx.fillStyle = g;
       ctx.fillRect(0, 0, totalW, totalH);
       ctx.strokeStyle = "#111";
       ctx.lineWidth = 4;
       ctx.strokeRect(4, 4, totalW - 8, totalH - 8);
     } else {
-      const grad = ctx.createLinearGradient(0, 0, totalW, totalH);
-      grad.addColorStop(0, "#fdf2f8");
-      grad.addColorStop(0.4, "#fff1f2");
-      grad.addColorStop(0.7, "#fef3c7");
-      grad.addColorStop(1, "#fce7f3");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, totalW, totalH);
-      ctx.strokeStyle = "#111";
-      ctx.lineWidth = 4;
-      ctx.strokeRect(4, 4, totalW - 8, totalH - 8);
-      ctx.shadowColor = "rgba(0,0,0,0.1)";
-      ctx.shadowBlur = 6;
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 2;
-      ctx.strokeRect(4, 4, totalW - 8, totalH - 8);
-      ctx.shadowColor = "transparent";
+      frame.render(ctx, totalW, totalH);
+      const bw = frame.borderWidth;
+      ctx.strokeStyle = frame.borderColor;
+      ctx.lineWidth = bw;
+      ctx.strokeRect(bw / 2, bw / 2, totalW - bw, totalH - bw);
     }
 
     for (let i = 0; i < visible; i++) {
@@ -135,36 +122,35 @@ export default function Photobox() {
       const row = isSpecial ? i : Math.floor(i / cur.cols);
       const x = pad + col * (cellW + gap);
       const y = pad + row * (cellH + gap);
-      const borderW = isFilmstrip ? 0 : 2;
 
       off.width = cellW;
       off.height = cellH;
       const octx = off.getContext("2d")!;
       octx.clearRect(0, 0, cellW, cellH);
-      octx.fillStyle = isPhotostrip ? "#fef9c3" : "#fff";
-      octx.fillRect(0, 0, cellW, cellH);
 
       const img = loadedImgs.current[i];
       const s = Math.min(img.naturalWidth, img.naturalHeight);
       const sx = (img.naturalWidth - s) / 2;
       const sy = (img.naturalHeight - s) / 2;
-      octx.drawImage(img, sx, sy, s, s, borderW, borderW, cellW - borderW * 2, cellH - borderW * 2);
+      const cbw = isSpecial ? (isFilmstrip ? 0 : 2) : frame.cellBorderWidth;
+      octx.drawImage(img, sx, sy, s, s, cbw, cbw, cellW - cbw * 2, cellH - cbw * 2);
       applyFilterToCanvas(off, filter);
       ctx.drawImage(off, x, y);
 
       if (!isFilmstrip) {
-        ctx.strokeStyle = "#111";
-        ctx.lineWidth = isPhotostrip ? 2 : 3;
+        ctx.strokeStyle = isPhotostrip ? "#111" : frame.cellBorderColor;
+        ctx.lineWidth = isPhotostrip ? 2 : frame.cellBorderWidth;
         ctx.strokeRect(x - 1, y - 1, cellW + 2, cellH + 2);
 
-        if (!isPhotostrip) {
-          ctx.fillStyle = "#000";
-          ctx.globalAlpha = 0.75;
+        if (frame.showNumbers && !isPhotostrip) {
+          ctx.fillStyle = "rgba(0,0,0,0.65)";
           ctx.font = 'bold 11px "Inter","Arial",sans-serif';
           ctx.textAlign = "left";
           ctx.textBaseline = "top";
-          ctx.fillText(`#${i + 1}`, x + 6, y + 6);
-          ctx.globalAlpha = 1;
+          const ns = 6;
+          ctx.fillRect(x + ns - 2, y + ns - 2, 18, 18);
+          ctx.fillStyle = "#fff";
+          ctx.fillText(`${i + 1}`, x + ns, y + ns);
         }
       }
     }
@@ -175,14 +161,14 @@ export default function Photobox() {
       ctx.strokeRect(2, 2, totalW - 4, totalH - 4);
     }
 
-    if (!isSpecial) {
-      ctx.fillStyle = "rgba(0,0,0,0.08)";
+    if (frame.watermark && !isSpecial) {
+      ctx.fillStyle = "rgba(0,0,0,0.06)";
       ctx.font = '8px "Inter","Arial",sans-serif';
       ctx.textAlign = "center";
       ctx.textBaseline = "bottom";
       ctx.fillText("photobox by socialtoolsbyza", totalW / 2, totalH - 5);
     }
-  }, [filter, totalW, totalH, cur, cellW, cellH, visible, isFilmstrip, isPhotostrip, isSpecial]);
+  }, [filter, frameId, totalW, totalH, cur, cellW, cellH, visible, isFilmstrip, isPhotostrip, isSpecial, frame]);
 
   useEffect(() => { if (images.length > 0) renderCanvas(); }, [renderCanvas, ready, images.length]);
 
@@ -222,7 +208,7 @@ export default function Photobox() {
     const c = canvasRef.current;
     if (!c) return;
     const l = document.createElement("a");
-    l.download = `photobox-${layout}-${filter}.png`;
+    l.download = `photobox-${layout}-${filter}-${frameId}.png`;
     l.href = c.toDataURL("image/png");
     l.click();
   };
@@ -239,7 +225,7 @@ export default function Photobox() {
           </div>
           <div className="min-w-0">
             <h2 className="font-display text-headline-md uppercase italic leading-tight">Photobox Studio</h2>
-            <p className="font-body text-xs text-gray-500">Bikin collage foto ala booth komik</p>
+            <p className="font-body text-xs text-gray-500">Bikin collage foto dengan berbagai tema</p>
           </div>
         </div>
       </div>
@@ -352,6 +338,27 @@ export default function Photobox() {
                       ))}
                     </div>
                     <p className={`font-body text-[9px] mt-1 font-bold uppercase ${active ? "text-pink-600" : "text-gray-400"}`}>{l.label}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="bg-white border-2 border-black rounded-2xl p-4 space-y-3" style={{ boxShadow: "4px 4px 0 rgba(0,0,0,1)" }}>
+            <div className="flex items-center gap-2">
+              <Frame className="w-4 h-4" />
+              <p className="font-display text-sm uppercase italic">Bingkai</p>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {FRAMES.map((f) => {
+                const active = frameId === f.id;
+                return (
+                  <button key={f.id} onClick={() => setFrameId(f.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 text-xs border-2 rounded-lg font-display font-bold transition-all ${active ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-black" : "bg-white text-black border-gray-300 hover:border-gray-400 hover:bg-gray-50"}`}
+                    style={active ? { boxShadow: "2px 2px 0 rgba(0,0,0,1)" } : {}}
+                  >
+                    <span className="text-sm">{f.emoji}</span>
+                    <span>{f.name}</span>
                   </button>
                 );
               })}
