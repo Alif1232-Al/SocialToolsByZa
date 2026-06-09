@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Sparkles, X } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
 const LS_KEY = "zabot-welcome-seen";
 
@@ -14,6 +16,8 @@ export default function ChatWelcomePopup() {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  const { lang } = useLang();
 
   const dismiss = () => {
     localStorage.setItem(LS_KEY, "1");
@@ -41,15 +45,15 @@ export default function ChatWelcomePopup() {
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div className="min-w-0">
-            <p className="font-display text-xs uppercase tracking-wider">Ada yang baru! 🎉</p>
+            <p className="font-display text-xs uppercase tracking-wider">{t("chatwelcome.title", lang)}</p>
             <p className="font-body text-xs mt-0.5 leading-relaxed">
-              ZA-BOT 🤖 sekarang siap bantu lo! Tanya apa aja tentang fitur, tugas, atau sekedar ngobrol.
+              {t("chatwelcome.desc", lang)}
             </p>
             <button
               onClick={openChat}
               className="mt-2 bg-pink-500 text-white border-2 border-black px-3 py-1 font-display uppercase text-[10px] tracking-wider shadow-[2px_2px_0_#000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-transform"
             >
-              Coba Sekarang
+              {t("chatwelcome.btn", lang)}
             </button>
           </div>
         </div>

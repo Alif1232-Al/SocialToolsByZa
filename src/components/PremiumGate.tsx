@@ -1,16 +1,16 @@
 "use client";
 import { ReactNode } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
-type PremiumGateProps = {
-  children: ReactNode;
-  title?: string;
-};
+type PremiumGateProps = { children: ReactNode; title?: string };
 
 const B3 = { borderWidth: 3, borderStyle: "solid" as const };
 const SH = { boxShadow: "3px 3px 0 rgba(0,0,0,1)" };
 
 function Locked({ title }: { title?: string }) {
+  const { lang } = useLang();
   return (
     <div className="relative comic-panel bg-white overflow-hidden">
       <div className="comic-badge -top-3 -right-3 rotate-12 bg-pink-500 text-white border-white text-[10px] px-2 py-1">PREMIUM!</div>
@@ -19,8 +19,8 @@ function Locked({ title }: { title?: string }) {
           <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
         </div>
 
-        <p className="font-display text-xl uppercase italic mb-1 text-gray-900">{title || "EXCLUSIVE"}</p>
-        <p className="font-body text-xs text-gray-500 max-w-[220px] mb-3">Chat buat dapetin akun!</p>
+        <p className="font-display text-xl uppercase italic mb-1 text-gray-900">{title || t("premium.exclusive", lang)}</p>
+        <p className="font-body text-xs text-gray-500 max-w-[220px] mb-3">{t("premium.desc", lang)}</p>
 
         <div className="flex flex-col gap-1.5 w-full max-w-[200px]">
           <a href="https://www.instagram.com/popify_dev/" target="_blank" rel="noopener noreferrer"
@@ -36,7 +36,7 @@ function Locked({ title }: { title?: string }) {
         </div>
 
         <p className="mt-3 font-body text-[10px] text-gray-400">
-          Udah punya akun? <a href="/login" className="text-cyan-600 font-bold">Login</a>
+          {t("premium.haveAccount", lang)} <a href="/login" className="text-cyan-600 font-bold">{t("premium.login", lang)}</a>
         </p>
       </div>
     </div>
@@ -54,9 +54,7 @@ export default function PremiumGate({ children, title }: PremiumGateProps) {
     );
   }
 
-  if (user) {
-    return <>{children}</>;
-  }
+  if (user) return <>{children}</>;
 
   return <Locked title={title} />;
 }

@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Users, Plus, Loader2, Trash2, AlertTriangle, Shield, LogOut } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { t } from "@/lib/translations";
 
 type User = { id: string; email: string; name: string; role: string; createdAt: string };
 
@@ -16,12 +18,13 @@ export default function AdminPage() {
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState("");
   const router = useRouter();
+  const { lang } = useLang();
 
   const fetchUsers = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/register");
       if (res.status === 401) { router.push("/login"); return; }
-      if (!res.ok) throw new Error("Gagal fetch users");
+      if (!res.ok) throw new Error(t("admin.error", lang));
       const data = await res.json();
       setUsers(data.users);
     } catch (err: any) {
@@ -44,7 +47,7 @@ export default function AdminPage() {
         body: JSON.stringify({ email, name, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Gagal");
+      if (!res.ok) throw new Error(data.error || "Error");
       setShowForm(false);
       setEmail("");
       setName("");
@@ -63,7 +66,7 @@ export default function AdminPage() {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Yakin mau hapus user "${name}"?`)) return;
+      if (!confirm(`${t("admin.deleteConfirm", lang)} "${name}"?`)) return;
     try {
       const res = await fetch("/api/auth/register", {
         method: "DELETE",
@@ -95,42 +98,42 @@ export default function AdminPage() {
           <div className="comic-badge -top-4 -right-4 rotate-12 bg-yellow-400 text-black">ADMIN!</div>
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <h1 className="font-display text-headline-md uppercase italic flex items-center gap-2">
-              <Shield className="w-6 h-6" />Admin Panel
+              <Shield className="w-6 h-6" />{t("admin.title", lang)}
             </h1>
             <button onClick={handleLogout}
               className="bg-red-500 text-white border-2 border-black px-4 py-2 font-body font-bold text-xs uppercase hover:bg-red-600 transition-colors flex items-center gap-1">
-              <LogOut className="w-4 h-4" /> Logout
+              <LogOut className="w-4 h-4" /> {t("admin.logout", lang)}
             </button>
           </div>
 
           <div className="flex items-center justify-between mb-3">
             <span className="font-body font-bold text-xs uppercase text-white/60">
-              Total Users: {users.length}
+              {t("admin.subtitle", lang)}: {users.length}
             </span>
             <button onClick={() => setShowForm(!showForm)}
               className="bg-green-600 text-white border-2 border-black px-3 py-1.5 font-body font-bold text-xs uppercase hover:bg-green-700 transition-colors flex items-center gap-1">
-              <Plus className="w-4 h-4" /> {showForm ? "Close" : "Add User"}
+              <Plus className="w-4 h-4" /> {showForm ? t("admin.cancel", lang) : t("admin.addBtn", lang)}
             </button>
           </div>
 
           {showForm && (
             <form onSubmit={handleCreate} className="bg-white border-4 border-black p-4 mb-4 space-y-3">
-              <h4 className="font-body font-bold text-sm uppercase text-gray-800">Buat Akun Baru</h4>
+              <h4 className="font-body font-bold text-sm uppercase text-gray-800">{t("admin.formTitle", lang)}</h4>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email" required
-                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-black" />
+                placeholder={t("admin.formEmail", lang)} required
+                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none" />
               <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                placeholder="Nama" required
-                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-black" />
+                placeholder={t("admin.formName", lang)} required
+                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none" />
               <input type="text" value={password} onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password" required
-                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-black" />
+                placeholder={t("admin.formPass", lang)} required
+                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none" />
               {createError && (
                 <div className="bg-red-100 border border-red-500 text-red-700 p-2 font-body font-bold text-xs">{createError}</div>
               )}
               <button type="submit" disabled={creating}
                 className="w-full bg-cyan-500 text-white border-2 border-black py-2 font-body font-bold text-xs uppercase hover:bg-cyan-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-1">
-                {creating ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</> : <><Plus className="w-4 h-4" /> Create User</>}
+                {creating ? <><Loader2 className="w-4 h-4 animate-spin" /> {t("admin.formCreating", lang)}</> : <><Plus className="w-4 h-4" /> {t("admin.formSubmit", lang)}</>}
               </button>
             </form>
           )}
@@ -157,15 +160,15 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className={`px-2 py-0.5 font-body font-bold text-[10px] uppercase border border-black ${u.role === "admin" ? "bg-yellow-200 text-black" : "bg-gray-100 text-gray-600"}`}>
-                      {u.role}
-                    </span>
-                    {u.role !== "admin" && (
-                      <button onClick={() => handleDelete(u.id, u.name)}
-                        className="p-1 text-red-500 hover:bg-red-100 rounded transition-colors" title="Hapus user">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
+              <span className={`px-2 py-0.5 font-body font-bold text-[10px] uppercase border border-black ${u.role === "admin" ? "bg-yellow-200 text-black" : "bg-gray-100 text-gray-600"}`}>
+                       {t("admin.role", lang)} {u.role}
+                     </span>
+                     {u.role !== "admin" && (
+                       <button onClick={() => handleDelete(u.id, u.name)}
+                         className="p-1 text-red-500 hover:bg-red-100 rounded transition-colors" title={t("admin.deleteBtn", lang)}>
+                         <Trash2 className="w-4 h-4" />
+                       </button>
+                     )}
                   </div>
                 </div>
               ))

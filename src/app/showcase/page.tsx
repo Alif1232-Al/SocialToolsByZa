@@ -1,196 +1,67 @@
-import type { Metadata } from "next";
+"use client";
 import {
-  Download, Sparkles, FileText, Scan, Search, Image, Music,
-  Braces, Terminal, Star, ArrowRight, ExternalLink, Link, Scissors
+  Download, Sparkles, FileText, Scan, Search, Image,
+  Braces, Terminal, ArrowRight, ExternalLink, Link, Scissors
 } from "lucide-react";
+import { useLang } from "@/lib/LangContext";
+import { t, tList } from "@/lib/translations";
 
-export const metadata: Metadata = {
-  title: "Showcase",
-  description: "Lihat demo cara pakai setiap tools di SocialToolsByZa. Ikuti langkah-langkahnya!",
-};
-
-const demos = [
-  {
-    icon: Image,
-    title: "Photobox Comic Studio",
-    badge: "BOOTH!",
-    badgeColor: "bg-purple-600 text-white",
-    bgColor: "bg-yellow-200",
-    desc: "Upload 1-6 foto, atur layout, pilih filter keren, download collage komik siap upload.",
-    steps: ["Upload 1-6 foto", "Pilih layout grid", "Pilih efek filter unik", "Download PNG"],
-  },
-  {
-    icon: Download,
-    title: "TikTok Downloader",
-    badge: "BOOM!",
-    badgeColor: "bg-cyan-500 text-white",
-    bgColor: "bg-yellow-400",
-    desc: "Paste link TikTok, klik GRAB, langsung dapet video tanpa watermark.",
-    steps: ["Copy TikTok video URL", "Paste di input field", "Klik GRAB VIDEO!", "Download hasilnya"],
-  },
-  {
-    icon: Sparkles,
-    title: "Remove BG",
-    badge: "ZAP!",
-    badgeColor: "bg-yellow-400 text-black",
-    bgColor: "bg-pink-500",
-    desc: "Upload gambar, AI langsung hapus background. Hasil PNG transparan siap download.",
-    steps: ["Upload gambar", "Klik REMOVE BG", "Preview hasil", "Download PNG"],
-  },
-  {
-    icon: FileText,
-    title: "PDF to Word",
-    badge: "CONVERT!",
-    badgeColor: "bg-yellow-400 text-black",
-    bgColor: "bg-cyan-500",
-    desc: "Upload PDF, convert ke Word dengan server-side processing. File .docx langsung terdownload.",
-    steps: ["Pilih file PDF", "Upload ke server", "Proses ekstraksi teks", "Download .docx"],
-  },
-  {
-    icon: Scan,
-    title: "OCR Text",
-    badge: "SCAN!",
-    badgeColor: "bg-black text-white",
-    bgColor: "bg-yellow-400",
-    desc: "Upload gambar berisi teks, Tesseract.js di browser bakal scan dan extract teksnya.",
-    steps: ["Upload gambar", "Klik SCAN!", "Tunggu OCR process", "Copy hasil teks"],
-  },
-  {
-    icon: Search,
-    title: "Jurnal Finder",
-    badge: "SEARCH!",
-    badgeColor: "bg-black text-white",
-    bgColor: "bg-gray-50",
-    desc: "Cari jurnal akademik dari Google Scholar. Hasil berupa kartu dengan link PDF.",
-    steps: ["Ketik kata kunci", "Klik Cari Jurnal", "Lihat hasil kartu", "Klik GO TO PDF"],
-  },
-  {
-    icon: Image,
-    title: "Picture to PDF",
-    badge: "ZIP!",
-    badgeColor: "bg-yellow-400 text-black",
-    bgColor: "bg-pink-500",
-    desc: "Pilih banyak gambar, atur urutannya, generate PDF A4. Semua di browser!",
-    steps: ["Pilih multi-file gambar", "Lihat preview grid", "Klik GENERATE PDF!", "File siap diunduh"],
-  },
-  {
-    icon: Search,
-    title: "Dorking OSINT",
-    badge: "DORK!",
-    badgeColor: "bg-red-500 text-white",
-    bgColor: "bg-gray-900",
-    desc: "Cari username di 35+ social media. Temukan jejak digital seseorang dengan cepat!",
-    steps: ["Masukkan username", "Klik DORK NOW!", "Scan 35+ platforms", "Lihat hasil found"],
-  },
-  {
-    icon: Braces,
-    title: "JSON Formatter",
-    badge: "CODE!",
-    badgeColor: "bg-black text-white",
-    bgColor: "bg-gray-100",
-    desc: "Tempel JSON berantakan, klik RAPIHKAN, langsung terformat rapi dengan indentasi.",
-    steps: ["Paste JSON", "Klik RAPIHKAN!", "Validasi otomatis", "Copy hasil"],
-  },
-  {
-    icon: Terminal,
-    title: "Markdown Previewer",
-    badge: "ZAP!",
-    badgeColor: "bg-pink-500 text-white",
-    bgColor: "bg-gray-50",
-    desc: "Tulis Markdown di kiri, lihat HTML preview real-time di kanan. Bisa print PDF juga!",
-    steps: ["Tulis Markdown", "Preview real-time", "Copy HTML", "Print PDF"],
-  },
-  {
-    icon: Sparkles,
-    title: "Quote Generator",
-    badge: "QUOTE!",
-    badgeColor: "bg-pink-500 text-white",
-    bgColor: "bg-white",
-    desc: "Bikin quote kocak anak gen z siap upload. Random quote langsung jadi gambar 1:1 buat story/feed IG!",
-    steps: ["Klik ACKAHIN! buat quote random", "Edit sendiri kalo mau", "Klik DOWNLOAD", "Upload ke story/feed"],
-  },
-  {
-    icon: Link,
-    title: "Linktree Generator",
-    badge: "TREE!",
-    badgeColor: "bg-green-500 text-white",
-    bgColor: "bg-white",
-    desc: "Bikin halaman linktree lo sendiri. Tambahin semua sosial media, generate link buat bio IG atau download PNG",
-    steps: ["Isi nama kamu", "Tambah link sosial media", "Klik GENERATE LINK", "Copy & paste di bio IG"],
-  },
-  {
-    icon: Scissors,
-    title: "Barber Kalkulator",
-    badge: "HITUNG!",
-    badgeColor: "bg-pink-500 text-white",
-    bgColor: "bg-cyan-400",
-    desc: "Hitung pendapatan harian barber dengan sistem bagi hasil 60:40. Bisa atur potongan uang makan karyawan!",
-    steps: ["Isi jumlah potong dewasa", "Isi jumlah potong anak", "Isi jumlah semir", "Atur uang makan, lihat hasil bersih"],
-  },
+const demoKeys = [
+  { icon: Image, title: "Photobox", badgeKey: "s.photobox.badge", badgeColor: "bg-purple-600 text-white", bgColor: "bg-yellow-200", descKey: "s.photobox.desc", stepsKey: "s.photobox.steps" },
+  { icon: Download, title: "TikTok Downloader", badgeKey: "s.tiktok.badge", badgeColor: "bg-cyan-500 text-white", bgColor: "bg-yellow-400", descKey: "s.tiktok.desc", stepsKey: "s.tiktok.steps" },
+  { icon: Sparkles, title: "Remove BG", badgeKey: "s.removebg.badge", badgeColor: "bg-yellow-400 text-black", bgColor: "bg-pink-500", descKey: "s.removebg.desc", stepsKey: "s.removebg.steps" },
+  { icon: FileText, title: "PDF to Word", badgeKey: "s.pdftoword.badge", badgeColor: "bg-yellow-400 text-black", bgColor: "bg-cyan-500", descKey: "s.pdftoword.desc", stepsKey: "s.pdftoword.steps" },
+  { icon: Scan, title: "OCR Text", badgeKey: "s.ocr.badge", badgeColor: "bg-black text-white", bgColor: "bg-yellow-400", descKey: "s.ocr.desc", stepsKey: "s.ocr.steps" },
+  { icon: Search, title: "Jurnal Finder", badgeKey: "s.jurnal.badge", badgeColor: "bg-black text-white", bgColor: "bg-gray-50", descKey: "s.jurnal.desc", stepsKey: "s.jurnal.steps" },
+  { icon: Image, title: "Picture to PDF", badgeKey: "s.pictopdf.badge", badgeColor: "bg-yellow-400 text-black", bgColor: "bg-pink-500", descKey: "s.pictopdf.desc", stepsKey: "s.pictopdf.steps" },
+  { icon: Search, title: "Dorking OSINT", badgeKey: "s.dorking.badge", badgeColor: "bg-red-500 text-white", bgColor: "bg-gray-900", descKey: "s.dorking.desc", stepsKey: "s.dorking.steps" },
+  { icon: Braces, title: "JSON Formatter", badgeKey: "s.json.badge", badgeColor: "bg-black text-white", bgColor: "bg-gray-100", descKey: "s.json.desc", stepsKey: "s.json.steps" },
+  { icon: Terminal, title: "Markdown Previewer", badgeKey: "s.markdown.badge", badgeColor: "bg-pink-500 text-white", bgColor: "bg-gray-50", descKey: "s.markdown.desc", stepsKey: "s.markdown.steps" },
+  { icon: Sparkles, title: "Quote Generator", badgeKey: "s.quote.badge", badgeColor: "bg-pink-500 text-white", bgColor: "bg-white", descKey: "s.quote.desc", stepsKey: "s.quote.steps" },
+  { icon: Link, title: "Linktree Generator", badgeKey: "s.linktree.badge", badgeColor: "bg-green-500 text-white", bgColor: "bg-white", descKey: "s.linktree.desc", stepsKey: "s.linktree.steps" },
+  { icon: Scissors, title: "Barber Kalkulator", badgeKey: "s.barber.badge", badgeColor: "bg-pink-500 text-white", bgColor: "bg-cyan-400", descKey: "s.barber.desc", stepsKey: "s.barber.steps" },
 ];
 
 export default function ShowcasePage() {
+  const { lang } = useLang();
   return (
     <>
       <section className="mb-16 flex flex-col items-center text-center pt-8">
         <div className="relative inline-block mb-6">
           <div className="bg-yellow-400 border-4 border-black p-8 md:p-10 comic-shadow rotate-2 transform-gpu">
-            <h1 className="font-display text-headline-lg-mobile md:text-display-xl text-black uppercase leading-none">
-              SHOWCASE!!
-            </h1>
+            <h1 className="font-display text-headline-lg-mobile md:text-display-xl text-black uppercase leading-none">{t("showcase.title", lang)}</h1>
           </div>
           <div className="absolute -bottom-5 left-12 w-10 h-10 bg-yellow-400 border-r-4 border-b-4 border-black rotate-45 z-[-1] comic-shadow"></div>
         </div>
-        <p className="max-w-2xl font-body text-body-lg text-gray-600 dark:text-gray-300">
-          Lihat gimana cara kerja setiap tools. Tinggal ikutin langkah-langkahnya!
-        </p>
+        <p className="max-w-2xl font-body text-body-lg text-gray-600 dark:text-gray-300">{t("showcase.subtitle", lang)}</p>
       </section>
 
       <div className="space-y-8">
-        {demos.map((demo, i) => (
-          <div
-            key={i}
-            className={`relative comic-panel ${demo.bgColor} ${i === 4 || i === 8 ? "md:col-span-2" : ""}`}
-          >
-            <div className={`comic-badge ${demo.badgeColor}`}>
-              {demo.badge}
-            </div>
-
+        {demoKeys.map((demo, i) => (
+          <div key={i} className={`relative comic-panel ${demo.bgColor} ${i === 4 || i === 8 ? "md:col-span-2" : ""}`}>
+            <div className={`comic-badge ${demo.badgeColor}`}>{t(demo.badgeKey, lang)}</div>
             <div className="flex flex-col md:flex-row gap-8">
               <div className="md:w-2/5">
                 <h3 className={`font-display text-headline-md uppercase italic mb-3 flex items-center gap-2 ${demo.bgColor === 'bg-gray-900' ? 'dark:text-white' : 'dark:text-gray-900'}`}>
-                  <demo.icon className="w-6 h-6 shrink-0" />
-                  {demo.title}
+                  <demo.icon className="w-6 h-6 shrink-0" />{demo.title}
                 </h3>
-                <p className="font-body text-body-md text-gray-700 dark:text-gray-300 mb-4">
-                  {demo.desc}
-                </p>
-
-                <a
-                  href="/"
-                  className="inline-flex items-center gap-2 bg-black dark:bg-gray-900 text-white border-4 border-black px-5 py-2 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
-                >
-                  COBAIN <ExternalLink className="w-4 h-4" />
+                <p className="font-body text-body-md text-gray-700 dark:text-gray-300 mb-4">{t(demo.descKey, lang)}</p>
+                <a href="/"
+                  className="inline-flex items-center gap-2 bg-black dark:bg-gray-900 text-white border-4 border-black px-5 py-2 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all">
+                  {t("showcase.cobain", lang)} <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
-
               <div className="md:w-3/5">
-                  <div className="bg-white dark:bg-gray-800 border-4 border-black p-4 comic-shadow-sm">
+                <div className="bg-white dark:bg-gray-800 border-4 border-black p-4 comic-shadow-sm">
                   <div className="flex items-center gap-1 mb-3">
-                    {[...Array(3)].map((_, j) => (
-                      <div key={j} className="w-3 h-3 border-2 border-black" />
-                    ))}
-                     <div className="ml-auto font-body font-bold text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                      Demo Steps
-                    </div>
+                    {[...Array(3)].map((_, j) => (<div key={j} className="w-3 h-3 border-2 border-black dark:border-gray-500" />))}
+                    <div className="ml-auto font-body font-bold text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">{t("showcase.demoSteps", lang)}</div>
                   </div>
                   <div className="space-y-2">
-                    {demo.steps.map((step, s) => (
+                    {tList(demo.stepsKey, lang).map((step, s) => (
                       <div key={s} className="flex items-center gap-3">
-                        <span className="bg-cyan-500 text-white w-6 h-6 border-2 border-black flex items-center justify-center font-display font-black text-xs shrink-0">
-                          {s + 1}
-                        </span>
-                         <span className="font-body font-bold text-sm dark:text-gray-200">{step}</span>
+                        <span className="bg-cyan-500 text-white w-6 h-6 border-2 border-black flex items-center justify-center font-display font-black text-xs shrink-0">{s + 1}</span>
+                        <span className="font-body font-bold text-sm dark:text-gray-200">{step}</span>
                       </div>
                     ))}
                   </div>
@@ -203,18 +74,12 @@ export default function ShowcasePage() {
 
       <section className="mt-24 bg-pink-500 border-4 border-black p-6 md:p-12 comic-shadow flex flex-col md:flex-row items-center justify-between gap-8 -rotate-1">
         <div className="md:w-1/2">
-          <h2 className="font-display text-headline-lg text-white uppercase leading-tight mb-4">
-            YOUR TURN NOW!
-          </h2>
-          <p className="text-pink-200 font-body text-body-lg">
-            Semua tools siap dipake. Langsung aja cobain!
-          </p>
+          <h2 className="font-display text-headline-lg text-white uppercase leading-tight mb-4">{t("showcase.ctaTitle", lang)}</h2>
+          <p className="text-pink-200 font-body text-body-lg">{t("showcase.ctaDesc", lang)}</p>
         </div>
-        <a
-          href="/"
-          className="bg-yellow-400 text-black border-4 border-black px-4 sm:px-10 py-3 sm:py-5 font-display font-black uppercase text-base sm:text-xl comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2"
-        >
-          MULAI SEKARANG <ArrowRight className="w-6 h-6" />
+        <a href="/"
+          className="bg-yellow-400 text-black border-4 border-black px-4 sm:px-10 py-3 sm:py-5 font-display font-black uppercase text-base sm:text-xl comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center gap-2">
+          {t("showcase.ctaBtn", lang)} <ArrowRight className="w-6 h-6" />
         </a>
       </section>
     </>
