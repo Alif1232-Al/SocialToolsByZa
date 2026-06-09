@@ -68,3 +68,36 @@
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #f3f4f6; border-left: 2px solid black; }
 ::-webkit-scrollbar-thumb { background: black; }
+
+/* === DARK MODE OVERRIDES === */
+.dark {
+  --comic-border-color: #4b5563;
+}
+.dark .comic-border { border-color: #4b5563; }
+.dark .dashed-border { border-color: #4b5563; }
+.dark ::-webkit-scrollbar-track { background: #1f2937; border-color: #4b5563; }
+.dark ::-webkit-scrollbar-thumb { background: #4b5563; }
+
+.dark .bg-white,
+.dark .bg-white\/90 { background-color: #1f2937 !important; }
+.dark .bg-gray-50 { background-color: #1a2332 !important; }
+.dark .bg-gray-100 { background-color: #111827 !important; }
+.dark .bg-gray-200 { background-color: #1f2937 !important; }
+
+.dark .text-black { color: #f3f4f6 !important; }
+.dark .text-gray-900 { color: #f3f4f6 !important; }
+.dark .text-gray-800 { color: #f3f4f6 !important; }
+.dark .text-gray-700 { color: #e5e7eb !important; }
+.dark .text-gray-600 { color: #d1d5db !important; }
+.dark .text-gray-500 { color: #9ca3af !important; }
+.dark .text-gray-400 { color: #9ca3af !important; }
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #374151 !important;
+  color: #f3f4f6 !important;
+  border-color: #4b5563 !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder { color: #6b7280 !important; }
