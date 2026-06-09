@@ -9,7 +9,7 @@ export default function HeroSection() {
         </div>
         <div className="absolute -bottom-5 left-1/4 w-10 h-10 bg-yellow-400 border-r-4 border-b-4 border-black rotate-45 z-[-1] comic-shadow"></div>
       </div>
-      <p className="max-w-2xl font-body text-body-lg text-gray-600">
+      <p className="max-w-2xl font-body text-body-lg text-gray-600 dark:text-gray-300">
         Alat tempur kuliah, ngoding, dan ngonten terlengkap buat bertahan hidup sampai lulus!
       </p>
       <div className="mt-6 flex gap-4 flex-wrap justify-center">

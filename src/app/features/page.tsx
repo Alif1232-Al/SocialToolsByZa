@@ -150,7 +150,7 @@ export default function FeaturesPage() {
           </div>
           <div className="absolute -bottom-5 left-12 w-10 h-10 bg-pink-500 border-r-4 border-b-4 border-black rotate-45 z-[-1] comic-shadow"></div>
         </div>
-        <p className="max-w-2xl font-body text-body-lg text-gray-600">
+        <p className="max-w-2xl font-body text-body-lg text-gray-600 dark:text-gray-300">
           13 alat sakti buat naklukin tugas kuliah, ngoding, dan ngonten. Satu web, semua beres!
         </p>
       </section>
@@ -169,7 +169,7 @@ export default function FeaturesPage() {
               <f.icon className="w-6 h-6 shrink-0" />
               <span className="min-w-0">{f.title}</span>
             </h3>
-            <p className="font-body text-body-md text-gray-700 mb-6 flex-grow break-words">
+            <p className="font-body text-body-md text-gray-700 dark:text-gray-300 mb-6 flex-grow break-words">
               {f.desc}
             </p>
 
@@ -177,7 +177,7 @@ export default function FeaturesPage() {
               {f.highlights.map((h) => (
                 <span
                   key={h}
-                  className="bg-white border-2 border-black px-3 py-1 font-body font-bold text-xs flex items-center gap-1"
+                  className="bg-white dark:bg-gray-700 border-2 border-black px-3 py-1 font-body font-bold text-xs flex items-center gap-1"
                 >
                   <Check className="w-3 h-3 text-green-600" />
                   {h}

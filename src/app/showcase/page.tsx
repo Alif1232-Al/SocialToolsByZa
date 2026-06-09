@@ -141,7 +141,7 @@ export default function ShowcasePage() {
           </div>
           <div className="absolute -bottom-5 left-12 w-10 h-10 bg-yellow-400 border-r-4 border-b-4 border-black rotate-45 z-[-1] comic-shadow"></div>
         </div>
-        <p className="max-w-2xl font-body text-body-lg text-gray-600">
+        <p className="max-w-2xl font-body text-body-lg text-gray-600 dark:text-gray-300">
           Lihat gimana cara kerja setiap tools. Tinggal ikutin langkah-langkahnya!
         </p>
       </section>
@@ -162,25 +162,25 @@ export default function ShowcasePage() {
                   <demo.icon className="w-6 h-6 shrink-0" />
                   {demo.title}
                 </h3>
-                <p className="font-body text-body-md text-gray-700 mb-4">
+                <p className="font-body text-body-md text-gray-700 dark:text-gray-300 mb-4">
                   {demo.desc}
                 </p>
 
                 <a
                   href="/"
-                  className="inline-flex items-center gap-2 bg-black text-white border-4 border-black px-5 py-2 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
+                  className="inline-flex items-center gap-2 bg-black dark:bg-gray-900 text-white border-4 border-black px-5 py-2 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
                 >
                   COBAIN <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
 
               <div className="md:w-3/5">
-                <div className="bg-white border-4 border-black p-4 comic-shadow-sm">
+                  <div className="bg-white dark:bg-gray-800 border-4 border-black p-4 comic-shadow-sm">
                   <div className="flex items-center gap-1 mb-3">
                     {[...Array(3)].map((_, j) => (
                       <div key={j} className="w-3 h-3 border-2 border-black" />
                     ))}
-                    <div className="ml-auto font-body font-bold text-[10px] uppercase tracking-wider text-gray-400">
+                     <div className="ml-auto font-body font-bold text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">
                       Demo Steps
                     </div>
                   </div>
@@ -190,7 +190,7 @@ export default function ShowcasePage() {
                         <span className="bg-cyan-500 text-white w-6 h-6 border-2 border-black flex items-center justify-center font-display font-black text-xs shrink-0">
                           {s + 1}
                         </span>
-                        <span className="font-body font-bold text-sm">{step}</span>
+                         <span className="font-body font-bold text-sm dark:text-gray-200">{step}</span>
                       </div>
                     ))}
                   </div>

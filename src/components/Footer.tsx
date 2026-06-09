@@ -19,13 +19,13 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gray-200 border-t-4 border-black mt-20">
+    <footer className="bg-gray-200 dark:bg-gray-900 border-t-4 border-black mt-20">
       <div className="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-12">
         <div className="text-center mb-10">
           <div className="inline-block bg-pink-500 text-white border-4 border-black px-6 py-2 -rotate-2 comic-shadow mb-4">
             <span className="font-display text-headline-md uppercase">THE CREW / CONTACT ME</span>
           </div>
-          <p className="font-body text-body-md text-gray-700 max-w-lg mx-auto">
+          <p className="font-body text-body-md text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
             Punya pertanyaan, kritik, atau pengen ngopi bareng? Temuin gue di sosmed bawah ini!
           </p>
         </div>
@@ -36,8 +36,8 @@ export default function Footer() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-16 h-16 border-4 border-black rounded-full flex items-center justify-center bg-white 
-                         shadow-comic ${link.color} hover:scale-110 hover:shadow-comic-lg transition-all duration-200`}
+               className={`w-16 h-16 border-4 border-black rounded-full flex items-center justify-center bg-white dark:bg-gray-700 
+                          shadow-comic ${link.color} hover:scale-110 hover:shadow-comic-lg transition-all duration-200 text-gray-700 dark:text-gray-200`}
               title={link.label}
             >
               <link.icon className="w-7 h-7" />
@@ -45,15 +45,15 @@ export default function Footer() {
           ))}
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t-2 border-black pt-6">
-          <div className="font-display text-headline-md uppercase italic text-black">
+          <div className="font-display text-headline-md uppercase italic text-black dark:text-gray-100">
             SOCIAL TOOLS BY ZA!!
           </div>
           <div className="flex gap-6">
-            <span className="font-body font-bold uppercase text-sm text-gray-500 cursor-default">Terms</span>
-            <span className="font-body font-bold uppercase text-sm text-gray-500 cursor-default">Privacy</span>
-            <a href="mailto:hello@socialtoolsbyza.com" className="font-body font-bold uppercase text-sm text-gray-600 hover:text-black transition-colors">Contact</a>
+            <span className="font-body font-bold uppercase text-sm text-gray-500 dark:text-gray-400 cursor-default">Terms</span>
+            <span className="font-body font-bold uppercase text-sm text-gray-500 dark:text-gray-400 cursor-default">Privacy</span>
+            <a href="mailto:hello@socialtoolsbyza.com" className="font-body font-bold uppercase text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">Contact</a>
           </div>
-          <div className="font-body font-bold text-sm text-center md:text-right text-gray-600">
+          <div className="font-body font-bold text-sm text-center md:text-right text-gray-600 dark:text-gray-400">
             LETTER TO THE EDITOR: &copy; 2026 ZA PRODUCTIONS
           </div>
         </div>

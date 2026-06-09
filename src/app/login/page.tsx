@@ -35,24 +35,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
       <div className="w-full max-w-md comic-panel bg-white">
         <div className="text-center mb-6">
           <div className="inline-block bg-pink-500 text-white border-4 border-black px-6 py-3 -rotate-2 comic-shadow mb-4">
             <h1 className="font-display text-headline-md uppercase">LOGIN</h1>
           </div>
-          <p className="font-body text-body-md text-gray-600">Masuk ke Social Tools By Za!!</p>
+          <p className="font-body text-body-md text-gray-600 dark:text-gray-300">Masuk ke Social Tools By Za!!</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="font-body font-bold text-xs uppercase tracking-wider text-gray-700">Email</label>
+            <label className="font-body font-bold text-xs uppercase tracking-wider text-gray-700 dark:text-gray-300">Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               className="w-full border-4 border-black p-3 font-body font-bold text-sm outline-none mt-1"
               placeholder="admin@za.com" required />
           </div>
           <div>
-            <label className="font-body font-bold text-xs uppercase tracking-wider text-gray-700">Password</label>
+            <label className="font-body font-bold text-xs uppercase tracking-wider text-gray-700 dark:text-gray-300">Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
               className="w-full border-4 border-black p-3 font-body font-bold text-sm outline-none mt-1"
               placeholder="••••••••" required />
@@ -70,7 +70,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="mt-4 text-center font-body text-xs text-gray-400">
+        <p className="mt-4 text-center font-body text-xs text-gray-400 dark:text-gray-500">
           Belum punya akun? Hubungi admin buat daftar.
         </p>
       </div>
