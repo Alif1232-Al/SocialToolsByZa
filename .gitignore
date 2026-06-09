@@ -6,3 +6,5 @@ node_modules/
 *.bak
 data/users.json
 tmp/
+*.html
+Cuplikan layar*
