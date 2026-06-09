@@ -272,17 +272,134 @@ export function pixelate(c: HTMLCanvasElement) {
   ctx.putImageData(d, 0, 0);
 }
 
+export function warmFilm(c: HTMLCanvasElement) {
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const r = p[i], g = p[i + 1], b = p[i + 2];
+      p[i] = clamp(r * 1.1 + 15);
+      p[i + 1] = clamp(g * 0.85 + 10);
+      p[i + 2] = clamp(b * 0.7 + 5);
+    }
+    for (let i = 0; i < p.length; i += 4) {
+      const noise = (Math.random() - 0.5) * 16;
+      p[i] = clamp(p[i] + noise);
+      p[i + 1] = clamp(p[i + 1] + noise);
+      p[i + 2] = clamp(p[i + 2] + noise);
+    }
+  });
+}
+
+export function cinematic(c: HTMLCanvasElement) {
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const r = p[i], g = p[i + 1], b = p[i + 2];
+      const lum = r * 0.3 + g * 0.59 + b * 0.11;
+      p[i] = clamp(lum + (r - lum) * 1.1 + 5);
+      p[i + 1] = clamp(lum + (g - lum) * 0.85 - 8);
+      p[i + 2] = clamp(lum + (b - lum) * 0.6 + 15);
+    }
+  });
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      p[i] = clamp(p[i] * 0.92);
+      p[i + 2] = clamp(p[i + 2] * 1.15);
+    }
+  });
+}
+
+export function softPastel(c: HTMLCanvasElement) {
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const r = p[i], g = p[i + 1], b = p[i + 2];
+      p[i] = clamp(r * 0.85 + 40);
+      p[i + 1] = clamp(g * 0.8 + 50);
+      p[i + 2] = clamp(b * 0.75 + 60);
+    }
+  });
+}
+
+export function y2kFlash(c: HTMLCanvasElement) {
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const g = p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11;
+      const boost = g < 180 ? 1.0 : 1.0 + (g - 180) / 180 * 0.5;
+      p[i] = clamp(p[i] * boost + 10);
+      p[i + 1] = clamp(p[i + 1] * boost + 8);
+      p[i + 2] = clamp(p[i + 2] * boost + 25);
+    }
+  });
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const g = p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11;
+      p[i] = g < 128 ? clamp(p[i] * 0.9) : p[i];
+      p[i + 1] = g < 128 ? clamp(p[i + 1] * 0.85) : p[i + 1];
+      p[i + 2] = g < 128 ? clamp(p[i + 2] * 0.8) : p[i + 2];
+    }
+  });
+}
+
+export function noirGrain(c: HTMLCanvasElement) {
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const g = p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11;
+      const v = g < 80 ? 0 : g > 180 ? 255 : clamp((g / 255) * 300);
+      p[i] = v;
+      p[i + 1] = v;
+      p[i + 2] = v;
+    }
+    for (let i = 0; i < p.length; i += 4) {
+      const noise = (Math.random() - 0.5) * 28;
+      p[i] = clamp(p[i] + noise);
+      p[i + 1] = clamp(p[i + 1] + noise);
+      p[i + 2] = clamp(p[i + 2] + noise);
+    }
+  });
+}
+
+export function grunge(c: HTMLCanvasElement) {
+  applyToCanvas(c, (d) => {
+    const p = d.data;
+    for (let i = 0; i < p.length; i += 4) {
+      const g = p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11;
+      const sat = 0.3;
+      p[i] = clamp(g + (p[i] - g) * sat);
+      p[i + 1] = clamp(g + (p[i + 1] - g) * sat);
+      p[i + 2] = clamp(g + (p[i + 2] - g) * sat);
+    }
+    for (let i = 0; i < p.length; i += 4) {
+      const g = p[i] * 0.3 + p[i + 1] * 0.59 + p[i + 2] * 0.11;
+      const v = g < 100 ? clamp(g * 0.7) : g > 200 ? clamp(g * 1.3) : g;
+      p[i] = clamp(v + (Math.random() - 0.5) * 20);
+      p[i + 1] = clamp(v + (Math.random() - 0.5) * 20);
+      p[i + 2] = clamp(v + (Math.random() - 0.5) * 20);
+    }
+  });
+}
+
 export const FILTERS = [
   { id: "original", name: "Original", fn: null },
+  { id: "warmfilm", name: "Warm Film", fn: warmFilm },
+  { id: "cinematic", name: "Cinematic", fn: cinematic },
+  { id: "softpastel", name: "Soft Pastel", fn: softPastel },
+  { id: "y2kflash", name: "Y2K Flash", fn: y2kFlash },
+  { id: "noirgrain", name: "Noir Grain", fn: noirGrain },
+  { id: "grunge", name: "Grunge", fn: grunge },
+  { id: "vintage", name: "Vintage", fn: vintage },
   { id: "popart", name: "Pop Art", fn: popArt },
   { id: "comic", name: "Comic", fn: comicEffect },
-  { id: "halftone", name: "Halftone", fn: halftone },
-  { id: "sketch", name: "Sketch", fn: sketch },
-  { id: "vintage", name: "Vintage", fn: vintage },
   { id: "neon", name: "Neon Glow", fn: neonGlow },
   { id: "cartoon", name: "Cartoon", fn: cartoon },
   { id: "lomo", name: "Lomo", fn: lomo },
-  { id: "bw-hc", name: "B&W High Contrast", fn: bwHighContrast },
+  { id: "halftone", name: "Halftone", fn: halftone },
+  { id: "sketch", name: "Sketch", fn: sketch },
+  { id: "bw-hc", name: "B&W HC", fn: bwHighContrast },
   { id: "rgbsplit", name: "RGB Split", fn: rgbSplit },
   { id: "pixelate", name: "Pixelate", fn: pixelate },
 ];
