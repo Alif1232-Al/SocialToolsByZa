@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import LinktreeGenerator from "@/components/LinktreeGenerator";
+import PremiumGate from "@/components/PremiumGate";
 
 export const metadata: Metadata = {
   title: "Linktree Generator",
@@ -14,7 +15,7 @@ export default function LinktreePage() {
         <Link href="/" className="comic-btn bg-black text-white text-xs !py-1.5 !px-3">← KEMBALI</Link>
         <h1 className="font-display text-headline-md uppercase italic">Linktree Generator</h1>
       </div>
-      <LinktreeGenerator />
+      <PremiumGate title="Linktree Generator"><LinktreeGenerator /></PremiumGate>
     </div>
   );
 }

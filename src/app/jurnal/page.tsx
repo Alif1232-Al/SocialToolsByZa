@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import JurnalFinder from "@/components/JurnalFinder";
+import PremiumGate from "@/components/PremiumGate";
 
 export const metadata: Metadata = {
   title: "Jurnal Finder",
@@ -16,7 +17,7 @@ export default function JurnalPage() {
         </Link>
         <h1 className="font-display text-headline-md uppercase italic">Jurnal Finder</h1>
       </div>
-      <JurnalFinder />
+      <PremiumGate title="Jurnal Finder"><JurnalFinder /></PremiumGate>
     </div>
   );
 }

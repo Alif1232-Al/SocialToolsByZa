@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifySession } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
+  const session = await verifySession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const { url } = await req.json();
     if (!url) {

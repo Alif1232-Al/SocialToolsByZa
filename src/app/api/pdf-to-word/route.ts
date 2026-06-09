@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Document, Packer, Paragraph, TextRun, Header as DocHeader, Footer as DocFooter } from "docx";
+import { verifySession } from "@/lib/auth";
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
 const ALLOWED_TYPES = ["application/pdf"];
@@ -30,6 +31,8 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await verifySession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;

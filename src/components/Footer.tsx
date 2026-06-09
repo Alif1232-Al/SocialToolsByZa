@@ -54,7 +54,7 @@ export default function Footer() {
             <a href="mailto:hello@socialtoolsbyza.com" className="font-body font-bold uppercase text-sm text-gray-600 hover:text-black transition-colors">Contact</a>
           </div>
           <div className="font-body font-bold text-sm text-center md:text-right text-gray-600">
-            LETTER TO THE EDITOR: &copy; 2024 ZA PRODUCTIONS
+            LETTER TO THE EDITOR: &copy; 2026 ZA PRODUCTIONS
           </div>
         </div>
       </div>

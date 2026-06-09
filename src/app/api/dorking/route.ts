@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifySession } from "@/lib/auth";
 
 const PLATFORMS = [
   {
@@ -292,6 +293,8 @@ async function googleDork(query: string, apiKey: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await verifySession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const { q, type } = await req.json();
     if (!q || typeof q !== "string" || !q.trim()) {

@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifySession } from "@/lib/auth";
 
 const storeMap = globalThis as unknown as { __linkStore?: Map<string, unknown> };
 if (!storeMap.__linkStore) storeMap.__linkStore = new Map();
 
 export async function POST(req: NextRequest) {
+  const session = await verifySession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const data = await req.json();
     const store = storeMap.__linkStore!;
