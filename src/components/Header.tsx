@@ -34,9 +34,10 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 w-full z-50 bg-white dark:bg-gray-800 border-b-4 border-black dark:border-gray-600 shadow-comic">
-      <nav className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-3 max-w-7xl mx-auto">
-        <Link href="/" className="font-display text-lg sm:text-headline-md uppercase italic bg-yellow-400 text-black px-3 sm:px-4 py-2 border-4 border-black shadow-comic -rotate-2 leading-none shrink-0 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
-          SOCIAL TOOLS BY ZA!!
+      <nav className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-2 sm:py-3 max-w-7xl mx-auto">
+        <Link href="/" className="font-display text-xs sm:text-headline-md uppercase italic bg-yellow-400 text-black px-2 sm:px-4 py-1.5 sm:py-2 border-4 border-black shadow-comic -rotate-2 leading-none shrink-0 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+          <span className="sm:hidden">STBZ!!</span>
+          <span className="hidden sm:inline">SOCIAL TOOLS BY ZA!!</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-gutter">
@@ -48,9 +49,11 @@ export default function Header() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <LangToggle />
-          <ThemeToggle />
+        <div className="flex items-center gap-1 sm:gap-3">
+          <div className="hidden xs:flex sm:flex items-center gap-1 sm:gap-2">
+            <LangToggle />
+            <ThemeToggle />
+          </div>
           {user ? (
             <>
               {user.role === "admin" && (
@@ -76,7 +79,7 @@ export default function Header() {
           )}
 
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-1 border-2 border-black" aria-label="Menu">
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {menuOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
           </button>
         </div>
       </nav>
