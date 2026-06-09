@@ -46,6 +46,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@800;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          try { var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark"); } catch(e) {}
+        ` }} />
       </head>
       <body className="font-body min-h-screen">
         <ThemeProvider>
