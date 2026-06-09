@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
 import ChatWelcomePopup from "@/components/ChatWelcomePopup";
 import { AuthProvider } from "@/lib/AuthContext";
+import ThemeProvider from "@/lib/ThemeProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -46,7 +47,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@800;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-gray-100 text-black font-body min-h-screen">
+      <body className="font-body min-h-screen">
+        <ThemeProvider>
         <AuthProvider>
           <Header />
           <main className="pt-28 md:pt-24 pb-16 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
@@ -56,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ChatWelcomePopup />
           <ChatBot />
         </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

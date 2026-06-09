@@ -9,6 +9,9 @@
     --comic-border-color: #000;
   }
   html { -webkit-tap-highlight-color: transparent; }
+  :root { --color-surface: #fff; --color-surface-alt: #f3f4f6; --color-text: #000; --color-text-secondary: #6b7280; }
+  .dark { --color-surface: #1f2937; --color-surface-alt: #111827; --color-text: #f3f4f6; --color-text-secondary: #9ca3af; }
+  body { background-color: var(--color-surface-alt); color: var(--color-text); transition: background-color .2s, color .2s; }
 }
 
 @layer components {
@@ -41,6 +44,7 @@
   }
   .comic-panel {
     @apply comic-border p-3 sm:p-4 md:p-5 comic-shadow flex flex-col;
+    background-color: var(--color-surface);
   }
   .comic-badge {
     @apply absolute -top-3 px-3 py-1 comic-border comic-shadow font-display font-black uppercase text-[11px] sm:text-sm;

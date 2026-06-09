@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Shield, LogIn, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Tools" },
@@ -28,7 +29,7 @@ export default function Header() {
     path === p ? "border-b-4 border-pink-500" : "";
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white border-b-4 border-black shadow-comic">
+    <header className="fixed top-0 w-full z-50 bg-white dark:bg-gray-800 border-b-4 border-black dark:border-gray-600 shadow-comic">
       <nav className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-3 max-w-7xl mx-auto">
         <Link href="/" className="font-display text-lg sm:text-headline-md uppercase italic bg-yellow-400 text-black px-3 sm:px-4 py-2 border-4 border-black shadow-comic -rotate-2 leading-none shrink-0 hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
           SOCIAL TOOLS BY ZA!!
@@ -37,13 +38,14 @@ export default function Header() {
         <div className="hidden md:flex items-center gap-gutter">
           {NAV_LINKS.map((l) => (
             <Link key={l.href} href={l.href}
-              className={`text-black font-body font-bold uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all ${isActive(l.href)}`}>
+              className={`text-black dark:text-gray-200 font-body font-bold uppercase tracking-widest hover:translate-x-[2px] hover:translate-y-[2px] transition-all ${isActive(l.href)}`}>
               {l.label}
             </Link>
           ))}
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           {user ? (
             <>
               {user.role === "admin" && (
@@ -75,7 +77,7 @@ export default function Header() {
       </nav>
 
       {menuOpen && (
-        <div className="md:hidden bg-white border-t-4 border-black comic-shadow">
+        <div className="md:hidden bg-white dark:bg-gray-800 border-t-4 border-black dark:border-gray-600 comic-shadow">
           <div className="px-margin-mobile py-4 space-y-3">
             {NAV_LINKS.map((l) => (
               <Link key={l.href} href={l.href}

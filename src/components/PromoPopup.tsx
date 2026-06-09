@@ -75,7 +75,6 @@ export default function PromoPopup() {
             </button>
           </div>
 
-          <p className="font-body text-[8px] text-white/50">*cuma muncul sekali doang bro</p>
         </div>
       </div>
     </div>
