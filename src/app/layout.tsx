@@ -8,6 +8,7 @@ import { AuthProvider } from "@/lib/AuthContext";
 import ThemeProvider from "@/lib/ThemeProvider";
 import LangProvider from "@/lib/LangContext";
 import { Toaster } from "react-hot-toast";
+import { inter, anybody } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -45,19 +46,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id">
+    <html lang="id" className={`${inter.variable} ${anybody.variable}`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Anybody:wght@800;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
         <script dangerouslySetInnerHTML={{ __html: `
           try { var t=localStorage.getItem("theme");if(t==="dark")document.documentElement.classList.add("dark"); } catch(e) {}
         ` }} />
       </head>
-      <body className="font-body min-h-screen">
+      <body className="min-h-screen">
         <ThemeProvider>
         <LangProvider>
         <AuthProvider>

@@ -16,8 +16,8 @@ const config: Config = {
         "comic-bg": "#F3F4F6",
       },
       fontFamily: {
-        display: ["Anybody", "Impact", "Arial Black", "sans-serif"],
-        body: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Arial", "sans-serif"],
+        display: ["var(--font-display)", "Impact", "Arial Black", "sans-serif"],
+        body: ["var(--font-body)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Arial", "sans-serif"],
       },
       fontSize: {
         "display-xl": ["64px", { lineHeight: "1.1", letterSpacing: "-0.04em", fontWeight: "900" }],
