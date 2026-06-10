@@ -6,6 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PremiumGate from "@/components/PremiumGate";
 import PromoPopup from "@/components/PromoPopup";
+import LazyLoadWrapper from "@/components/LazyLoadWrapper";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
 import toast from "react-hot-toast";
@@ -49,31 +50,31 @@ export default function Home() {
 
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.tiktok.title", lang)}><TikTokDownloader key={`tiktok-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.tiktok.title", lang)}><TikTokDownloader key={`tiktok-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.removebg.title", lang)}><RemoveBackground key={`removebg-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.removebg.title", lang)}><RemoveBackground key={`removebg-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.pdftoword.title", lang)}><PdfToWord key={`pdftoword-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.pdftoword.title", lang)}><PdfToWord key={`pdftoword-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.ocr.title", lang)}><OcrPictureToText key={`ocr-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.ocr.title", lang)}><OcrPictureToText key={`ocr-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.pictopdf.title", lang)}><PictureToPdf key={`pictopdf-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.pictopdf.title", lang)}><PictureToPdf key={`pictopdf-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.dorking.title", lang)}><Dorking key={`dorking-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.dorking.title", lang)}><Dorking key={`dorking-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.json.title", lang)}><JsonFormatter key={`json-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.json.title", lang)}><JsonFormatter key={`json-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.quote.title", lang)}><QuoteGenerator key={`quote-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.quote.title", lang)}><QuoteGenerator key={`quote-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
         <div className="break-inside-avoid mb-6">
-          <ErrorBoundary><PremiumGate title={t("f.barber.title", lang)}><BarberCalculator key={`barber-${resetCount}`} /></PremiumGate></ErrorBoundary>
+          <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.barber.title", lang)}><BarberCalculator key={`barber-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
       </div>
 
