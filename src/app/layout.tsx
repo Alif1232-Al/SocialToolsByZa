@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ChatBot from "@/components/ChatBot";
-import ChatWelcomePopup from "@/components/ChatWelcomePopup";
 import { AuthProvider } from "@/lib/AuthContext";
 import ThemeProvider from "@/lib/ThemeProvider";
 import LangProvider from "@/lib/LangContext";
 import { Toaster } from "react-hot-toast";
 import { inter, anybody } from "@/lib/fonts";
+
+const ChatBot = dynamic(() => import("@/components/ChatBot"), { ssr: false });
+const ChatWelcomePopup = dynamic(() => import("@/components/ChatWelcomePopup"), { ssr: false });
 
 export const metadata: Metadata = {
   title: {
