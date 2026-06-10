@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  metadataBase: new URL("https://social-tools-by-za.vercel.app"),
   verification: {
     google: "YOUR_GOOGLE_VERIFICATION_CODE",
   },
