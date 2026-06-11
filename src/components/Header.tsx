@@ -132,7 +132,7 @@ export default function Header() {
                   <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.admin", lang)}</span>
                 </Link>
               )}
-              <Link href="/profile" className="font-body font-bold text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[80px] truncate hover:text-cyan-600 transition-colors" title="Profile">{user.name}</Link>
+              <span className="font-body font-bold text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[80px] truncate">{user.name}</span>
               {user && (
                 <span className={`hidden sm:inline-flex items-center gap-0.5 text-[8px] font-body font-bold uppercase px-1 py-0.5 border border-black ${isPremium() ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"}`}>
                   {isPremium() ? <><Crown className="w-2.5 h-2.5" /> Unlimited</> : <span>5/hari</span>}
@@ -204,6 +204,7 @@ export default function Header() {
               {user ? (
                 <>
                   <p className="font-body font-bold text-xs text-gray-500 dark:text-gray-400">{t("nav.loggedInAs", lang)} <span className="text-black dark:text-gray-100">{user.name}</span></p>
+                  <Link href="/profile" className="block font-body font-bold text-xs uppercase text-cyan-600 dark:text-cyan-400">{t("nav.profile", lang)}</Link>
                   {user.role === "admin" && <Link href="/admin" className="block font-body font-bold text-xs uppercase text-yellow-600 dark:text-yellow-400">{t("nav.admin", lang)}</Link>}
                   <button onClick={handleLogout} className="block font-body font-bold text-xs uppercase text-red-500 dark:text-red-400">{t("nav.logout", lang)}</button>
                 </>
