@@ -69,7 +69,7 @@ export default function PictureToPdf() {
         <div className="grid grid-cols-3 gap-2 min-h-[80px]">
           {images.map((img) => (
             <div key={img.id} className="aspect-square bg-gray-100 border-2 border-black overflow-hidden relative group">
-              <img src={img.url} alt={`Preview ${img.id}`} loading="lazy" className="w-full h-full object-cover" />
+              <img src={img.url} alt={`Preview ${img.id}`} className="w-full h-full object-cover" />
               <button
                 onClick={() => removeImage(img.id)}
                 className="absolute top-0.5 right-0.5 bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-white"

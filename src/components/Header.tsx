@@ -39,19 +39,11 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const { user, logout } = useAuth();
   const { lang } = useLang();
   const { query, setQuery } = useSearch();
   const searchPanelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => setQuery(inputValue), 200);
-    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [inputValue, setQuery]);
 
   useEffect(() => { setMenuOpen(false); setSearchOpen(false); }, [path]);
 
@@ -88,16 +80,15 @@ export default function Header() {
     return () => document.removeEventListener("keydown", handler);
   }, [searchOpen]);
 
-  const filteredTools = inputValue.trim()
+  const filteredTools = query.trim()
     ? ALL_TOOLS.filter(t =>
-        t.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-        t.tag.toLowerCase().includes(inputValue.toLowerCase())
+        t.name.toLowerCase().includes(query.toLowerCase()) ||
+        t.tag.toLowerCase().includes(query.toLowerCase())
       ).slice(0, 8)
     : [];
 
   const handleSearchSelect = (tool: typeof ALL_TOOLS[number]) => {
     setQuery("");
-    setInputValue("");
     setSearchFocus(false);
     setSearchOpen(false);
     if (tool.href === "/") {
@@ -184,19 +175,19 @@ export default function Header() {
               <input
                 ref={searchInputRef}
                 type="text"
-                value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
+                value={query}
+                onChange={e => setQuery(e.target.value)}
                 placeholder="Cari tools... (Ctrl+K)"
                 className="flex-1 px-3 md:px-4 py-2.5 md:py-3 font-body font-bold text-sm md:text-base outline-none bg-white dark:bg-gray-700 text-black dark:text-white min-w-0"
               />
-              {inputValue && (
-                <button onClick={() => { setInputValue(""); setQuery(""); }} className="px-2 md:px-3 text-gray-400 hover:text-black dark:hover:text-white text-lg md:text-xl font-bold">&times;</button>
+              {query && (
+                <button onClick={() => setQuery("")} className="px-2 md:px-3 text-gray-400 hover:text-black dark:hover:text-white text-lg md:text-xl font-bold">&times;</button>
               )}
               <span className="hidden sm:flex px-2 md:px-3 text-[10px] text-gray-300 dark:text-gray-500 font-body items-center gap-0.5 whitespace-nowrap">
                 <Command className="w-3 h-3" />K
               </span>
             </div>
-            {inputValue.trim() && (
+            {query.trim() && (
               <div className="mt-1 bg-white dark:bg-gray-700 border-4 border-black max-h-[300px] overflow-y-auto divide-y-2 divide-gray-100 dark:divide-gray-600">
                 {filteredTools.length > 0 ? filteredTools.map(tool => (
                   <button key={tool.id} onClick={() => handleSearchSelect(tool)}
@@ -224,13 +215,13 @@ export default function Header() {
                   <span className="flex items-center px-2 bg-gray-100 dark:bg-gray-600 border-r-4 border-black shrink-0">
                     <Search className="w-4 h-4 text-gray-500" />
                   </span>
-                  <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)}
+                  <input type="text" value={query} onChange={e => setQuery(e.target.value)}
                     placeholder="Cari tools..."
                     className="flex-1 px-2 py-2 font-body font-bold text-xs outline-none bg-white dark:bg-gray-700 text-black dark:text-white min-w-0"
                   />
-                  {inputValue && <button onClick={() => { setInputValue(""); setQuery(""); }} className="px-1 text-gray-400 text-sm font-bold">&times;</button>}
+                  {query && <button onClick={() => setQuery("")} className="px-1 text-gray-400 text-sm font-bold">&times;</button>}
                 </div>
-                {inputValue.trim() && (
+                {query.trim() && (
                   <div className="mt-1 max-h-[200px] overflow-y-auto">
                     {filteredTools.length > 0 ? filteredTools.map(tool => (
                       <button key={tool.id} onClick={() => handleSearchSelect(tool)}
