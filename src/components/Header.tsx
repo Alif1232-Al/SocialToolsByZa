@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Shield, LogIn, LogOut, Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { Shield, LogIn, LogOut, Menu, X, Search, Command } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import LangToggle from "@/components/LangToggle";
 import { useLang } from "@/lib/LangContext";
+import { useSearch } from "@/lib/SearchContext";
 import { t } from "@/lib/translations";
 
 const NAV_KEYS = [
@@ -16,13 +17,51 @@ const NAV_KEYS = [
   { href: "/showcase", key: "nav.showcase" },
 ];
 
+const ALL_TOOLS = [
+  { name: "TikTok Downloader", href: "/", tag: "tiktok, video, download, mp4", id: "tiktok" },
+  { name: "Remove Background", href: "/", tag: "background, remove, image, photo, bg", id: "removebg" },
+  { name: "PDF to Word", href: "/", tag: "pdf, word, convert, document, docx", id: "pdftoword" },
+  { name: "OCR Picture to Text", href: "/", tag: "ocr, text, scan, image, extract", id: "ocr" },
+  { name: "Picture to PDF", href: "/", tag: "picture, pdf, convert, image, jpg", id: "pictopdf" },
+  { name: "Dorking OSINT", href: "/", tag: "osint, dork, search, username, social media", id: "dorking" },
+  { name: "JSON Formatter", href: "/", tag: "json, format, validate, code, dev", id: "json" },
+  { name: "Quote Generator", href: "/", tag: "quote, story, ig, gen z, comic", id: "quote" },
+  { name: "Barber Kalkulator", href: "/", tag: "barber, kalkulator, potong, rambut, hitung", id: "barber" },
+  { name: "Photobox Studio", href: "/photobox", tag: "photo, collage, filter, comic, layout", id: "photobox" },
+  { name: "Jurnal Finder", href: "/jurnal", tag: "jurnal, scholar, akademik, paper, research", id: "jurnal" },
+  { name: "Markdown Previewer", href: "/markdown", tag: "markdown, preview, html, code, dev", id: "markdown" },
+  { name: "Linktree Generator", href: "/linktree", tag: "linktree, bio, social, link, ig", id: "linktree" },
+];
+
 export default function Header() {
   const path = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchFocus, setSearchFocus] = useState(false);
   const { user, logout } = useAuth();
   const { lang } = useLang();
+  const { query, setQuery } = useSearch();
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setMenuOpen(false); }, [path]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchFocus(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filteredTools = query.trim()
+    ? ALL_TOOLS.filter(t =>
+        t.name.toLowerCase().includes(query.toLowerCase()) ||
+        t.tag.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 8)
+    : [];
 
   const handleLogout = async () => {
     await logout();
@@ -47,6 +86,53 @@ export default function Header() {
             </Link>
           ))}
         </div>
+
+        {path === "/" && (
+          <div ref={searchRef} className="relative hidden lg:block">
+            <div className="flex items-center border-4 border-black bg-white min-w-[200px]">
+              <span className="flex items-center px-2 bg-gray-100 border-r-4 border-black shrink-0">
+                <Search className="w-4 h-4 text-gray-500" />
+              </span>
+              <input
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onFocus={() => setSearchFocus(true)}
+                placeholder="Cari tools..."
+                className="flex-1 px-2 py-1.5 font-body font-bold text-xs outline-none bg-white text-black min-w-0"
+              />
+              {query && (
+                <button onClick={() => setQuery("")} className="px-1.5 text-gray-400 hover:text-black text-sm font-bold">&times;</button>
+              )}
+              <span className="px-1.5 text-[10px] text-gray-300 font-body flex items-center gap-0.5">
+                <Command className="w-3 h-3" />K
+              </span>
+            </div>
+            {searchFocus && filteredTools.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-4 border-black shadow-comic z-50 max-h-[300px] overflow-y-auto">
+                {filteredTools.map(tool => (
+                  <button
+                    key={tool.id}
+                    onClick={() => {
+                      setQuery("");
+                      setSearchFocus(false);
+                      if (tool.href === "/") {
+                        document.getElementById(tool.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
+                      } else {
+                        router.push(tool.href);
+                      }
+                    }}
+                    className="w-full text-left px-3 py-2 font-body font-bold text-xs border-b-2 border-gray-100 hover:bg-yellow-100 transition-colors flex items-center gap-2"
+                  >
+                    <Search className="w-3 h-3 text-gray-400 shrink-0" />
+                    {tool.name}
+                    <span className="text-[8px] text-gray-400 uppercase ml-auto">{tool.tag.split(",")[0]}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex items-center gap-1 sm:gap-3">
           <div className="hidden md:flex items-center gap-1 sm:gap-2">

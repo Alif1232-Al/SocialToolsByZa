@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/AuthContext";
 import ThemeProvider from "@/lib/ThemeProvider";
 import LangProvider from "@/lib/LangContext";
+import { SearchProvider } from "@/lib/SearchContext";
 import { Toaster } from "react-hot-toast";
 import { inter, anybody } from "@/lib/fonts";
 
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen">
         <ThemeProvider>
         <LangProvider>
+        <SearchProvider>
         <AuthProvider>
           <Header />
           <main className="pt-28 md:pt-24 pb-16 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
@@ -68,6 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ChatWelcomePopup />
           <ChatBot />
         </AuthProvider>
+        </SearchProvider>
         </LangProvider>
         </ThemeProvider>
         <Toaster position="top-right" toastOptions={{duration:3000,style:{background:"#111",color:"#fff",border:"2px solid #000",borderRadius:8,fontSize:13,fontWeight:600},success:{iconTheme:{primary:"#22c55e",secondary:"#fff"}},error:{iconTheme:{primary:"#ef4444",secondary:"#fff"}}}} />
