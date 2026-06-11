@@ -12,6 +12,7 @@ const tr: Record<string, Entry> = {
   "nav.logout": { id: "Logout", en: "Logout" },
   "nav.getStarted": { id: "GET STARTED", en: "GET STARTED" },
   "nav.loggedInAs": { id: "Logged in as", en: "Logged in as" },
+  "nav.pricing": { id: "Premium", en: "Premium" },
 
   // === HERO ===
   "hero.title": { id: "SOCIAL TOOLS BY ZA!!", en: "SOCIAL TOOLS BY ZA!!" },

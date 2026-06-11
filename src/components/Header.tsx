@@ -15,6 +15,7 @@ const NAV_KEYS = [
   { href: "/", key: "nav.tools" },
   { href: "/features", key: "nav.features" },
   { href: "/showcase", key: "nav.showcase" },
+  { href: "/pricing", key: "nav.pricing" },
 ];
 
 const ALL_TOOLS = [
