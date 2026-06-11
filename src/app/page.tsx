@@ -119,17 +119,17 @@ export default function Home() {
       <PromoPopup />
       <HeroSection />
 
-      {/*** CATEGORY FILTER ***/}
-      <div className="mb-4 overflow-x-auto -mx-margin-mobile md:-mx-0">
-        <div className="flex gap-2 px-margin-mobile md:px-0 pb-2 min-w-max md:flex-wrap md:min-w-0">
+      {/*** CATEGORY PILLS ***/}
+      <div className="mb-3 overflow-x-auto -mx-margin-mobile md:-mx-0 scrollbar-hide">
+        <div className="flex gap-1.5 px-margin-mobile md:px-0 pb-1.5 min-w-max md:flex-wrap md:min-w-0">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setCategory(cat.id)}
-              className={`font-body font-bold text-[10px] sm:text-xs uppercase tracking-wider px-3 py-1.5 border-4 border-black transition-all shrink-0 ${
+              className={`font-body font-bold text-[10px] uppercase tracking-wider px-2 py-0.5 border-2 border-black transition-all shrink-0 ${
                 category === cat.id
-                  ? `${cat.color} shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`
-                  : "bg-white text-black hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px]"
+                  ? `${cat.color}`
+                  : "bg-white text-black/60 hover:text-black hover:bg-gray-100"
               }`}
             >
               {cat.id === "all" ? "All" : t(cat.labelId, lang)}
@@ -138,17 +138,21 @@ export default function Home() {
         </div>
       </div>
 
-      {/*** FILTER INFO BAR ***/}
+      {/*** FILTER INFO (minimal) ***/}
       {(q || category !== "all") && (
-        <div className="mb-4 bg-cyan-500 border-4 border-black px-4 py-2 flex items-center gap-2 flex-wrap">
-          <Search className="w-4 h-4 text-white shrink-0" />
-          <span className="font-body font-bold text-xs uppercase text-white">
-            {q ? `"${q}"` : activeCat ? t(activeCat.labelId, lang) : ""}
-            {q && category !== "all" ? ` + ${activeCat ? t(activeCat.labelId, lang) : ""}` : ""}
-            {" — "}{filteredCount} tool{filteredCount !== 1 ? "s" : ""}
+        <div className="mb-3 flex items-center gap-2 text-[10px] font-body font-bold text-gray-500 uppercase">
+          <Search className="w-3 h-3" />
+          <span>
+            {q ? `"${q}"` : t(activeCat!.labelId, lang)}
+            {q && category !== "all" ? ` + ${t(activeCat!.labelId, lang)}` : ""}
           </span>
+          <span className="text-gray-300 mx-0.5">·</span>
+          <span>{filteredCount} tool{filteredCount !== 1 ? "s" : ""}</span>
           {q && (
-            <span className="font-body text-[10px] text-white/60 ml-auto">Tekan ESC untuk reset</span>
+            <>
+              <span className="text-gray-300 mx-0.5">·</span>
+              <span className="text-gray-400">ESC reset</span>
+            </>
           )}
         </div>
       )}

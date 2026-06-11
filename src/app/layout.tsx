@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import dynamic from "next/dynamic";
-import BackToTop from "@/components/BackToTop";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/lib/AuthContext";
@@ -67,7 +66,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="pt-28 md:pt-24 pb-16 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
             {children}
           </main>
-          <BackToTop />
           <Footer />
           <ChatWelcomePopup />
           <ChatBot />
