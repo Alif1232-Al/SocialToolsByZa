@@ -32,6 +32,14 @@ export function isLoggedIn(): boolean {
 export function activatePremium(): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(PREMIUM_KEY, "true");
+  const expiry = new Date();
+  expiry.setDate(expiry.getDate() + 30);
+  try { localStorage.setItem("stbz_premium_expiry", expiry.toISOString()); } catch {}
+}
+
+export function getPremiumExpiry(): string | null {
+  if (typeof window === "undefined") return null;
+  try { return localStorage.getItem("stbz_premium_expiry"); } catch { return null; }
 }
 
 function readCredits(): Record<string, CreditEntry> {

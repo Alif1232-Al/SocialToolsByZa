@@ -38,8 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (user) {
       try { localStorage.setItem("stbz_auth", JSON.stringify(user)); } catch {}
-    } else {
-      try { localStorage.removeItem("stbz_auth"); } catch {}
     }
   }, [user]);
 
