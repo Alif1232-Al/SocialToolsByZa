@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Shield, LogIn, LogOut, Menu, X, Search, Command, UserPlus } from "lucide-react";
+import { Shield, LogIn, LogOut, Menu, X, Search, Command, UserPlus, Crown } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
+import { isPremium, isLoggedIn } from "@/lib/credits";
 import ThemeToggle from "@/components/ThemeToggle";
 import LangToggle from "@/components/LangToggle";
 import { useLang } from "@/lib/LangContext";
@@ -132,6 +133,11 @@ export default function Header() {
                 </Link>
               )}
               <span className="font-body font-bold text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[80px] truncate">{user.name}</span>
+              {user && (
+                <span className={`hidden sm:inline-flex items-center gap-0.5 text-[8px] font-body font-bold uppercase px-1 py-0.5 border border-black ${isPremium() ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"}`}>
+                  {isPremium() ? <><Crown className="w-2.5 h-2.5" /> Unlimited</> : <span>5/hari</span>}
+                </span>
+              )}
               <button onClick={handleLogout} className="p-1.5 sm:p-0 sm:bg-transparent border-2 border-black sm:border-0 hover:bg-gray-100 sm:hover:bg-transparent transition-colors" aria-label="Logout">
                 <LogOut className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-red-500" />
               </button>
