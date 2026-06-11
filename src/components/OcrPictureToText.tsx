@@ -2,6 +2,8 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Scan, Upload, Copy, Loader2, Languages, FileText, FileDown, FileJson, ImageIcon, Type, Sparkles } from "lucide-react";
 import ComicPanel from "./ComicPanel";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
 import toast from "react-hot-toast";
 
 const LANGUAGES = [
@@ -69,6 +71,7 @@ function confidenceColor(conf: number): string {
 }
 
 export default function OcrPictureToText() {
+  const [limitHit, setLimitHit] = useState(isLimitReached("ocr"));
   const [ocrText, setOcrText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -156,6 +159,8 @@ export default function OcrPictureToText() {
         }
       }
       setWords(detected);
+      incrementUsage("ocr");
+      if (isLimitReached("ocr")) setLimitHit(true);
       toast.success(`Teks berhasil di-extract! (${data.text.length} karakter)`);
       await worker.terminate();
     } catch {
@@ -190,6 +195,10 @@ export default function OcrPictureToText() {
   const imgWidth = imgRef.current?.clientWidth ?? 300;
   const scaleX = imgWidth / (imageDims.w || 1);
   const scaleY = (imgRef.current?.clientHeight ?? 200) / (imageDims.h || 1);
+
+  if (limitHit) {
+    return <CreditGate toolId="ocr" toolName="OCR Picture to Text" limitReached={true}><div /></CreditGate>;
+  }
 
   return (
     <ComicPanel bgColor="bg-yellow-400" badge="SCAN!" badgeColor="bg-black text-white">

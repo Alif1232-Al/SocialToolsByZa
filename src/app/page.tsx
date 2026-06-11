@@ -7,6 +7,8 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import PremiumGate from "@/components/PremiumGate";
 import PromoPopup from "@/components/PromoPopup";
 import LazyLoadWrapper from "@/components/LazyLoadWrapper";
+import AdBanner from "@/components/AdBanner";
+import AdWidget from "@/components/AdWidget";
 import { useLang } from "@/lib/LangContext";
 import { useSearch } from "@/lib/SearchContext";
 import { t } from "@/lib/translations";
@@ -157,6 +159,8 @@ export default function Home() {
         </div>
       )}
 
+      <AdBanner />
+
       <div className="flex items-center justify-end mb-4">
         <button onClick={handleResetAll} className="comic-btn bg-gray-200 text-black border-2 border-black text-xs flex items-center gap-1.5 !py-1.5 !px-3 hover:bg-gray-300 transition-all">
           <RotateCcw className="w-3.5 h-3.5" /> Reset Semua Tool
@@ -180,6 +184,9 @@ export default function Home() {
         <div id="pictopdf" className={`break-inside-avoid mb-6 ${showTool("pictopdf") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.pictopdf.title", lang)}><PictureToPdf key={`pictopdf-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
+        <div className={`break-inside-avoid mb-6 ${showTool("pictopdf") || showTool("dorking") ? "" : "hidden"}`}>
+          <AdWidget />
+        </div>
         <div id="dorking" className={`break-inside-avoid mb-6 ${showTool("dorking") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.dorking.title", lang)}><Dorking key={`dorking-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
@@ -188,6 +195,9 @@ export default function Home() {
         </div>
         <div id="quote" className={`break-inside-avoid mb-6 ${showTool("quote") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.quote.title", lang)}><QuoteGenerator key={`quote-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
+        </div>
+        <div className={`break-inside-avoid mb-6 ${showTool("quote") || showTool("barber") ? "" : "hidden"}`}>
+          <AdWidget />
         </div>
         <div id="barber" className={`break-inside-avoid mb-6 ${showTool("barber") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.barber.title", lang)}><BarberCalculator key={`barber-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>

@@ -12,11 +12,14 @@ function saveBlob(blob: Blob, filename: string) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 import ComicPanel from "./ComicPanel";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
 import toast from "react-hot-toast";
 
 export default function TikTokDownloader() {
+  const [limitHit, setLimitHit] = useState(isLimitReached("tiktok"));
   const { lang } = useLang();
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
@@ -76,6 +79,8 @@ export default function TikTokDownloader() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setVideoUrl(data.videoUrl);
+      incrementUsage("tiktok");
+      if (isLimitReached("tiktok")) setLimitHit(true);
       toast.success("Video siap di download!");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mengambil video");
@@ -95,6 +100,10 @@ export default function TikTokDownloader() {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [loading, url, handleGrab]);
+
+  if (limitHit) {
+    return <CreditGate toolId="tiktok" toolName="TikTok Downloader" limitReached={true}><div /></CreditGate>;
+  }
 
   return (
     <ComicPanel bgColor="bg-yellow-400" badge="BOOM!" badgeColor="bg-cyan-500 text-white">

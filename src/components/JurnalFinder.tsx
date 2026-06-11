@@ -4,6 +4,8 @@ import { Search, ExternalLink, Loader2 } from "lucide-react";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
 import toast from "react-hot-toast";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
 
 interface JurnalItem {
   title: string;
@@ -14,6 +16,7 @@ interface JurnalItem {
 }
 
 export default function JurnalFinder() {
+  const [limitHit, setLimitHit] = useState(isLimitReached("jurnal"));
   const { lang } = useLang();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<JurnalItem[]>([]);
@@ -35,6 +38,8 @@ export default function JurnalFinder() {
       if (!res.ok) throw new Error(data.error);
       setResults(data.results || []);
       toast.success("Jurnal ditemukan!");
+      incrementUsage("jurnal");
+      if (isLimitReached("jurnal")) setLimitHit(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mencari jurnal");
       toast.error(err instanceof Error ? err.message : "Gagal");
@@ -54,6 +59,9 @@ export default function JurnalFinder() {
     return () => document.removeEventListener("keydown", handler);
   }, [loading, query, handleSearch]);
 
+  if (limitHit) {
+    return <CreditGate toolId="jurnal" toolName="Jurnal Finder" limitReached={true}><div /></CreditGate>;
+  }
   return (
     <div className="relative md:col-span-2 bg-gray-50 border-4 border-black p-6 comic-shadow flex flex-col">
       <div className="absolute -top-4 -left-4 bg-black text-white px-4 py-1.5 border-4 border-black comic-shadow -rotate-6 font-display font-black uppercase text-sm">SEARCH!</div>

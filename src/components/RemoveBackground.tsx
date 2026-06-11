@@ -2,11 +2,14 @@
 import { useCallback, useRef, useState } from "react";
 import { Upload, Sparkles, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
 import toast from "react-hot-toast";
 
 export default function RemoveBackground() {
+  const [limitHit, setLimitHit] = useState(isLimitReached("removebg"));
   const { lang } = useLang();
   const fileRef = useRef<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -44,6 +47,8 @@ export default function RemoveBackground() {
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
       toast.success("Background berhasil dihapus!");
+      incrementUsage("removebg");
+      if (isLimitReached("removebg")) setLimitHit(true);
     } catch (e) {
       console.error("RemoveBG error:", e);
       const msg = e instanceof Error ? e.message : "Coba gambar lain atau refresh";
@@ -54,6 +59,9 @@ export default function RemoveBackground() {
     }
   }, []);
 
+  if (limitHit) {
+    return <CreditGate toolId="removebg" toolName="Remove Background" limitReached={true}><div /></CreditGate>;
+  }
   return (
     <ComicPanel bgColor="bg-pink-500" badge="ZAP!" badgeColor="bg-yellow-400 text-black">
       <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 text-white"><Sparkles className="w-6 h-6" />{t("removebg.title", lang)}</h3>

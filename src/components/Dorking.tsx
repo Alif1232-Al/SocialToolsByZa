@@ -7,6 +7,8 @@ import {
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
 import toast from "react-hot-toast";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
 
 const SOCIAL_ICONS: Record<string, string> = {
   Instagram: "Ig",
@@ -75,6 +77,7 @@ type Result = { name: string; url: string; category: string; status: string };
 type DorkItem = { title: string; link: string; snippet: string };
 
 export default function Dorking() {
+  const [limitHit, setLimitHit] = useState(isLimitReached("dorking"));
   const { lang } = useLang();
   const [query, setQuery] = useState("");
   const [mode, setMode] = useState<"user" | "dork">("user");
@@ -99,6 +102,8 @@ export default function Dorking() {
       if (!res.ok) throw new Error(d.error || "Request failed");
       setData(d);
       toast.success("Hasil OSINT ditemukan!");
+      incrementUsage("dorking");
+      if (isLimitReached("dorking")) setLimitHit(true);
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
     } catch (err: any) {
       setError(err.message || "Gagal mencari");
@@ -138,6 +143,9 @@ export default function Dorking() {
 
   const s = data?.stats;
 
+  if (limitHit) {
+    return <CreditGate toolId="dorking" toolName="Dorking OSINT" limitReached={true}><div /></CreditGate>;
+  }
   return (
     <div className="flex flex-col gap-3 min-w-0">
       {/************* SEARCH BOX *************/}

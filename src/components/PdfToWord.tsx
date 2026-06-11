@@ -2,6 +2,8 @@
 import { useState, useCallback } from "react";
 import { FileText, Upload, Loader2, FileWarning } from "lucide-react";
 import ComicPanel from "./ComicPanel";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
 import toast from "react-hot-toast";
@@ -9,6 +11,7 @@ import toast from "react-hot-toast";
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 
 export default function PdfToWord() {
+  const [limitHit, setLimitHit] = useState(isLimitReached("pdftoword"));
   const { lang } = useLang();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -70,6 +73,8 @@ export default function PdfToWord() {
       a.click();
       document.body.removeChild(a);
       toast.success("PDF berhasil di-convert!");
+      incrementUsage("pdftoword");
+      if (isLimitReached("pdftoword")) setLimitHit(true);
       setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat konversi");
@@ -81,6 +86,9 @@ export default function PdfToWord() {
     }
   }, [file]);
 
+  if (limitHit) {
+    return <CreditGate toolId="pdftoword" toolName="PDF to Word Converter" limitReached={true}><div /></CreditGate>;
+  }
   return (
     <ComicPanel bgColor="bg-cyan-500" badge="CONVERT!" badgeColor="bg-yellow-400 text-black">
       <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 text-white"><FileText className="w-6 h-6" />{t("pdftoword.title", lang)}</h3>
