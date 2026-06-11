@@ -22,6 +22,13 @@ export function isPremium(): boolean {
   } catch { return false; }
 }
 
+export function isLoggedIn(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return !!localStorage.getItem("stbz_auth");
+  } catch { return false; }
+}
+
 export function activatePremium(): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(PREMIUM_KEY, "true");
@@ -47,17 +54,26 @@ export function incrementUsage(toolId: ToolId): number {
   } catch { return 0; }
 }
 
+function getMaxFree(toolId: ToolId): number {
+  if (isPremium()) return Infinity;
+  const base = MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
+  if (isLoggedIn() && base < 999) return Math.max(base, 5);
+  return base;
+}
+
 export function getRemaining(toolId: ToolId): number {
-  const limit = MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
+  const limit = getMaxFree(toolId);
+  if (!isFinite(limit)) return Infinity;
   return Math.max(0, limit - getUsage(toolId));
 }
 
 export function getLimit(toolId: ToolId): number {
-  return MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
+  return getMaxFree(toolId);
 }
 
 export function isLimitReached(toolId: ToolId): boolean {
   if (isPremium()) return false;
-  const limit = MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
+  const limit = getMaxFree(toolId);
+  if (!isFinite(limit)) return false;
   return getUsage(toolId) >= limit;
 }

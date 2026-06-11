@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Shield, LogIn, LogOut, Menu, X, Search, Command } from "lucide-react";
+import { Shield, LogIn, LogOut, Menu, X, Search, Command, UserPlus } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import LangToggle from "@/components/LangToggle";
@@ -131,22 +131,24 @@ export default function Header() {
           {user ? (
             <>
               {user.role === "admin" && (
-                <Link href="/admin" className="font-body font-bold text-[10px] sm:text-xs uppercase text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-300 transition-colors flex items-center gap-1">
+                <Link href="/admin" className="font-body font-bold text-[10px] uppercase text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-300 transition-colors hidden sm:flex items-center gap-1">
                   <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.admin", lang)}</span>
                 </Link>
               )}
-              <span className="font-body font-bold text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[100px] truncate">{user.name}</span>
-              <button onClick={handleLogout} className="font-body font-bold text-[10px] sm:text-xs uppercase text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors flex items-center gap-1">
-                <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.logout", lang)}</span>
+              <span className="font-body font-bold text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[80px] truncate">{user.name}</span>
+              <button onClick={handleLogout} className="p-1.5 sm:p-0 sm:bg-transparent border-2 border-black sm:border-0 hover:bg-gray-100 sm:hover:bg-transparent transition-colors" aria-label="Logout">
+                <LogOut className="w-4 h-4 sm:w-3.5 sm:h-3.5 text-red-500" />
               </button>
             </>
           ) : (
             <>
-              <Link href="/register" className="font-body font-bold text-[10px] sm:text-xs uppercase text-black dark:text-gray-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                {t("nav.register", lang)}
+              <Link href="/register" className="p-1.5 sm:p-0 border-2 border-black sm:border-0 hover:bg-gray-100 sm:hover:bg-transparent transition-colors" aria-label="Daftar">
+                <span className="hidden sm:inline font-body font-bold text-[10px] sm:text-xs uppercase text-black dark:text-gray-200 hover:text-cyan-600">{t("nav.register", lang)}</span>
+                <UserPlus className="w-4 h-4 sm:hidden text-black dark:text-gray-200" />
               </Link>
-              <Link href="/login" className="font-body font-bold text-[10px] sm:text-xs uppercase text-black dark:text-gray-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors flex items-center gap-1">
-                <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.login", lang)}</span>
+              <Link href="/login" className="p-1.5 sm:p-0 border-2 border-black sm:border-0 hover:bg-gray-100 sm:hover:bg-transparent transition-colors" aria-label="Login">
+                <LogIn className="w-4 h-4 text-black dark:text-gray-200" />
+                <span className="hidden sm:inline font-body font-bold text-[10px] sm:text-xs uppercase text-black dark:text-gray-200 hover:text-cyan-600 ml-1">{t("nav.login", lang)}</span>
               </Link>
             </>
           )}
@@ -154,11 +156,11 @@ export default function Header() {
           {path === "/" && !menuOpen && (
             <button onClick={() => { setSearchOpen(p => !p); if (!searchOpen) setTimeout(() => searchInputRef.current?.focus(), 150); }}
               className="p-1.5 border-2 border-black hover:bg-gray-100 transition-colors" aria-label="Search" title="Cari tools (Ctrl+K)">
-              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Search className="w-4 h-4" />
             </button>
           )}
 
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-1 border-2 border-black" aria-label="Menu">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-1.5 border-2 border-black" aria-label="Menu">
             {menuOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
           </button>
         </div>

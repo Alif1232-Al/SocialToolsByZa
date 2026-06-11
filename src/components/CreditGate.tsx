@@ -1,8 +1,8 @@
 "use client";
 import { ReactNode } from "react";
 import Link from "next/link";
-import { Lock, MessageCircle, CreditCard } from "lucide-react";
-import { getRemaining, ToolId } from "@/lib/credits";
+import { Lock, MessageCircle, CreditCard, Crown, Zap } from "lucide-react";
+import { getRemaining, getLimit, isPremium, ToolId } from "@/lib/credits";
 
 interface Props {
   toolId: ToolId;
@@ -13,15 +13,27 @@ interface Props {
 
 export default function CreditGate({ toolId, toolName, limitReached, children }: Props) {
   const remaining = getRemaining(toolId);
+  const limit = getLimit(toolId);
+  const premium = isPremium();
 
   if (!limitReached) {
     return (
       <div className="relative">
-        {remaining <= 1 && (
-          <div className="absolute -top-1 left-1/2 -translate-x-1/2 z-10 bg-red-500 text-white border-2 border-black px-2 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider whitespace-nowrap">
-            Sisa {remaining} gratis
-          </div>
-        )}
+        <div className="absolute -top-2 right-2 z-10">
+          {premium && limit === Infinity ? (
+            <span className="bg-green-500 text-white border-2 border-black px-2 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider flex items-center gap-1">
+              <Crown className="w-3 h-3" /> Unlimited
+            </span>
+          ) : remaining <= 1 ? (
+            <span className="bg-red-500 text-white border-2 border-black px-2 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider whitespace-nowrap">
+              Sisa {remaining} gratis
+            </span>
+          ) : remaining <= 3 ? (
+            <span className="bg-yellow-400 text-black border-2 border-black px-2 py-0.5 text-[9px] font-body font-bold uppercase tracking-wider whitespace-nowrap">
+              Sisa {remaining}
+            </span>
+          ) : null}
+        </div>
         {children}
       </div>
     );
