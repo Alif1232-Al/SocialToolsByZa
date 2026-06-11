@@ -23,13 +23,13 @@ function PaymentContent() {
   const [status, setStatus] = useState<"checking" | "success" | "failed">("checking");
 
   useEffect(() => {
-    const ref = searchParams.get("ref") || searchParams.get("reference");
+    const ref = searchParams.get("order_id") || searchParams.get("ref");
     if (!ref) { setStatus("failed"); return; }
 
-    fetch(`/api/tripay/check?ref=${ref}`)
+    fetch(`/api/midtrans/check?order_id=${ref}`)
       .then(r => r.json())
       .then(data => {
-        if (data.status === "PAID") {
+        if (data.status === "settlement" || data.status === "capture") {
           activatePremium();
           setStatus("success");
         } else {

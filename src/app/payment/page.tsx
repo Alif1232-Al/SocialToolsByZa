@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import { Loader2, Smartphone, Building } from "lucide-react";
+import { Loader2, Smartphone, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function PaymentPage() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [qrUrl, setQrUrl] = useState<string | null>(null);
-  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 
   const handleBayar = async () => {
     if (!name.trim()) {
@@ -16,15 +16,16 @@ export default function PaymentPage() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/tripay/create", {
+      const res = await fetch("/api/midtrans/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: name.trim() }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Gagal");
-      setQrUrl(data.qrUrl);
-      setCheckoutUrl(data.checkoutUrl);
+      setRedirectUrl(data.redirectUrl);
+      setDone(true);
+      window.open(data.redirectUrl, "_blank");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gagal buat pembayaran");
     } finally {
@@ -46,7 +47,7 @@ export default function PaymentPage() {
 
       <div className="comic-panel bg-white dark:bg-gray-800 space-y-4">
         <h2 className="font-display text-headline-md uppercase italic">Aktifkan Premium</h2>
-        <p className="font-body text-sm text-gray-500">Masukin nama lo, klik bayar, transfer via QRIS, auto aktif.</p>
+        <p className="font-body text-sm text-gray-500">Pilih metode pembayaran (QRIS, GoPay, OVO, Bank Transfer, dll).</p>
 
         <input
           type="text"
@@ -54,29 +55,34 @@ export default function PaymentPage() {
           onChange={e => setName(e.target.value)}
           placeholder="Nama lo..."
           className="w-full p-3 border-4 border-black bg-white dark:bg-gray-800 font-body font-bold text-sm outline-none"
+          disabled={done}
         />
 
-        <button
-          onClick={handleBayar}
-          disabled={loading || !!checkoutUrl}
-          className="w-full bg-green-500 text-white border-4 border-black px-6 py-3 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> MEMPROSES...</> : <><Smartphone className="w-5 h-5" /> BAYAR 15RB SEKARANG</>}
-        </button>
-
-        {qrUrl && (
-          <div className="text-center border-4 border-black bg-gray-50 dark:bg-gray-900 p-4">
-            <p className="font-body font-bold text-xs uppercase mb-3">Scan QRIS buat bayar</p>
-            <img src={qrUrl} alt="QRIS" className="w-48 h-48 mx-auto" />
-            <p className="text-[10px] text-gray-400 mt-2">Atau <a href={checkoutUrl!} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">klik di sini</a> buat metode lain</p>
-          </div>
-        )}
-
-        {checkoutUrl && (
-          <div className="bg-blue-50 dark:bg-gray-900 border-4 border-blue-500 p-3 text-center">
-            <Building className="w-6 h-6 mx-auto mb-1 text-blue-500" />
-            <p className="font-body font-bold text-xs">Pembayaran dibuat!</p>
-            <p className="text-[10px] text-gray-400 mt-1">Setelah bayar, lo bakal diarahkan balik otomatis.</p>
+        {!done ? (
+          <button
+            onClick={handleBayar}
+            disabled={loading}
+            className="w-full bg-green-500 text-white border-4 border-black px-6 py-3 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading ? <><Loader2 className="w-5 h-5 animate-spin" /> MEMPROSES...</> : <><Smartphone className="w-5 h-5" /> BAYAR 15RB SEKARANG</>}
+          </button>
+        ) : (
+          <div className="space-y-3">
+            <div className="bg-blue-50 dark:bg-gray-900 border-4 border-blue-500 p-4 text-center">
+              <p className="font-body font-bold text-sm">Pembayaran dibuat!</p>
+              <p className="text-xs text-gray-500 mt-1">Klik tombol di bawah buat milih metode bayar.</p>
+            </div>
+            <a
+              href={redirectUrl!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-yellow-400 text-black border-4 border-black px-6 py-3 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center justify-center gap-2"
+            >
+              <ExternalLink className="w-5 h-5" /> PILIH METODE BAYAR
+            </a>
+            <p className="text-[10px] text-gray-400 text-center">
+              Setelah bayar, lo bakal diarahkan balik otomatis & premium langsung aktif.
+            </p>
           </div>
         )}
       </div>
