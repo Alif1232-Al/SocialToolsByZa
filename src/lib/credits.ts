@@ -1,11 +1,11 @@
-const CREDITS_KEY = "stbz_credits";
+const CREDITS_KEY = "stbz_credits_v2";
 const PREMIUM_KEY = "stbz_premium";
-const MAX_FREE_DEFAULT = 3;
 
-const MAX_FREE: Partial<Record<ToolId, number>> = {
-  json: 999,
-  quote: 999,
-};
+type CreditEntry = { c: number; d: string };
+
+function today(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 export type ToolId = "tiktok" | "removebg" | "pdftoword" | "ocr" | "pictopdf" | "dorking" | "jurnal" | "json" | "quote" | "barber" | "linktree" | "markdown" | "photobox";
 
@@ -34,31 +34,45 @@ export function activatePremium(): void {
   localStorage.setItem(PREMIUM_KEY, "true");
 }
 
+function readCredits(): Record<string, CreditEntry> {
+  try {
+    const raw = localStorage.getItem(CREDITS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function writeCredits(data: Record<string, CreditEntry>) {
+  try { localStorage.setItem(CREDITS_KEY, JSON.stringify(data)); } catch {}
+}
+
 export function getUsage(toolId: ToolId): number {
   if (typeof window === "undefined") return 0;
   try {
-    const raw = localStorage.getItem(CREDITS_KEY);
-    const data: Record<string, number> = raw ? JSON.parse(raw) : {};
-    return data[toolId] || 0;
+    const data = readCredits();
+    const entry = data[toolId];
+    if (!entry) return 0;
+    if (entry.d !== today()) return 0;
+    return entry.c;
   } catch { return 0; }
 }
 
 export function incrementUsage(toolId: ToolId): number {
   if (typeof window === "undefined") return 0;
   try {
-    const raw = localStorage.getItem(CREDITS_KEY);
-    const data: Record<string, number> = raw ? JSON.parse(raw) : {};
-    data[toolId] = (data[toolId] || 0) + 1;
-    localStorage.setItem(CREDITS_KEY, JSON.stringify(data));
-    return data[toolId];
+    const data = readCredits();
+    const prev = data[toolId];
+    const count = (prev && prev.d === today() ? prev.c : 0) + 1;
+    data[toolId] = { c: count, d: today() };
+    writeCredits(data);
+    return count;
   } catch { return 0; }
 }
 
 function getMaxFree(toolId: ToolId): number {
   if (isPremium()) return Infinity;
-  const base = MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
-  if (isLoggedIn() && base < 999) return Math.max(base, 5);
-  return base;
+  if (toolId === "json" || toolId === "quote") return Infinity;
+  if (isLoggedIn()) return 5;
+  return 2;
 }
 
 export function getRemaining(toolId: ToolId): number {
