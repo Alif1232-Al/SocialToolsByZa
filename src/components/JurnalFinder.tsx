@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Search, ExternalLink, Loader2 } from "lucide-react";
 import { useLang } from "@/lib/LangContext";
 import { t } from "@/lib/translations";
@@ -43,6 +43,17 @@ export default function JurnalFinder() {
     }
   }, [query]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.key === "Enter" || e.key === "NumpadEnter") && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        if (!loading && query.trim()) handleSearch();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [loading, query, handleSearch]);
+
   return (
     <div className="relative md:col-span-2 bg-gray-50 border-4 border-black p-6 comic-shadow flex flex-col">
       <div className="absolute -top-4 -left-4 bg-black text-white px-4 py-1.5 border-4 border-black comic-shadow -rotate-6 font-display font-black uppercase text-sm">SEARCH!</div>
@@ -55,7 +66,7 @@ export default function JurnalFinder() {
         </div>
         <button onClick={handleSearch} disabled={loading}
                 className="bg-yellow-400 text-black border-4 border-black px-8 py-4 font-display font-black uppercase comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50 whitespace-nowrap">
-          {loading ? <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" />SEARCHING...</span> : "Cari Jurnal"}
+          {loading ? <span className="flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin" />SEARCHING...</span> : <span>Cari Jurnal <span className="text-[8px] text-black/50 font-normal hidden sm:inline">(Ctrl+Enter)</span></span>}
         </button>
       </div>
       {error && <p className="bg-red-100 border-2 border-red-500 text-red-700 p-2 font-body font-bold text-xs mb-4">{error}</p>}

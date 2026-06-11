@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Download, Link as LinkIcon, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import { useLang } from "@/lib/LangContext";
@@ -64,6 +64,17 @@ export default function TikTokDownloader() {
     }
   }, [url]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.key === "Enter" || e.key === "NumpadEnter") && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        if (!loading && url.trim()) handleGrab();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [loading, url, handleGrab]);
+
   return (
     <ComicPanel bgColor="bg-yellow-400" badge="BOOM!" badgeColor="bg-cyan-500 text-white">
       <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2">
@@ -82,7 +93,7 @@ export default function TikTokDownloader() {
           </button>
         )}
         <button onClick={handleGrab} disabled={loading} className="comic-btn bg-black text-white w-full text-center disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-comic">
-          {loading ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-5 h-5 animate-spin" />PROCESSING...</span> : t("tiktok.grab", lang)}
+          {loading ? <span className="flex items-center justify-center gap-2"><Loader2 className="w-5 h-5 animate-spin" />PROCESSING...</span> : <span>{t("tiktok.grab", lang)} <span className="text-[8px] text-white/50 font-normal hidden sm:inline">(Ctrl+Enter)</span></span>}
         </button>
       </div>
     </ComicPanel>

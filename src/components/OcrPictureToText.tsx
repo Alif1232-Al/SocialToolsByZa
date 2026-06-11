@@ -166,6 +166,17 @@ export default function OcrPictureToText() {
     }
   }, [lang]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.key === "Enter" || e.key === "NumpadEnter") && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        if (!loading && previewUrl) handleOcr();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [loading, previewUrl, handleOcr]);
+
   const copyText = useCallback(() => {
     navigator.clipboard.writeText(ocrText)
       .then(() => toast.success("Teks dicopy!"))
@@ -246,15 +257,15 @@ export default function OcrPictureToText() {
               </>
             )}
           </label>
-          <button onClick={handleOcr} disabled={loading || !previewUrl}
-            className="comic-btn bg-black text-white w-full text-center disabled:opacity-50">
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="w-5 h-5 animate-spin" />SCANNING...
-              </span>
+        <button onClick={handleOcr} disabled={loading || !previewUrl}
+          className="comic-btn bg-black text-white w-full text-center disabled:opacity-50">
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="w-5 h-5 animate-spin" />SCANNING...
+            </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
-                <Sparkles className="w-4 h-4" /> SCAN!
+                <Sparkles className="w-4 h-4" /> SCAN! <span className="text-[8px] text-white/50 font-normal hidden sm:inline">(Ctrl+Enter)</span>
               </span>
             )}
           </button>

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import {
   Search, Globe, Loader2, ExternalLink, UserCheck, XCircle, Ban, AlertTriangle,
   Download, Copy, Check, Sparkles
@@ -125,6 +125,17 @@ export default function Dorking() {
 
   const json = useCallback(() => data ? JSON.stringify(data, null, 2) : "{}", [data]);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.key === "Enter" || e.key === "NumpadEnter") && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        if (!loading && query.trim()) doSearch();
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [loading, query, doSearch]);
+
   const s = data?.stats;
 
   return (
@@ -182,7 +193,7 @@ export default function Dorking() {
           className="comic-btn bg-red-500 text-white w-full mt-3 text-center disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-comic">
           {loading ? (
             <span className="flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" />SEARCHING {mode === "user" ? "20 PLATFORMS..." : "GOOGLE..."}</span>
-          ) : mode === "user" ? "DORK NOW!" : "GOOGLE DORK!"}
+          ) : <span>{mode === "user" ? "DORK NOW!" : "GOOGLE DORK!"} <span className="text-[8px] text-white/50 font-normal hidden sm:inline">(Ctrl+Enter)</span></span>}
         </button>
       </div>
 

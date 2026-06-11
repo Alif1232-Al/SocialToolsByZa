@@ -56,6 +56,18 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        const input = searchRef.current?.querySelector("input");
+        if (input) { input.focus(); setSearchFocus(true); }
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
   const filteredTools = query.trim()
     ? ALL_TOOLS.filter(t =>
         t.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -98,7 +110,7 @@ export default function Header() {
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 onFocus={() => setSearchFocus(true)}
-                placeholder="Cari tools..."
+                placeholder="Cari tools... (Ctrl+K)"
                 className="flex-1 px-2 py-1.5 font-body font-bold text-xs outline-none bg-white text-black min-w-0"
               />
               {query && (
