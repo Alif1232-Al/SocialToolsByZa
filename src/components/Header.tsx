@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Shield, LogIn, LogOut, Menu, X, Search, Command, UserPlus, Crown } from "lucide-react";
+import { Shield, LogIn, LogOut, Menu, X, Search, Command, UserPlus, Crown, User } from "lucide-react";
 import { useAuth } from "@/lib/AuthContext";
 import { isPremium, isLoggedIn } from "@/lib/credits";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -132,7 +132,10 @@ export default function Header() {
                   <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.admin", lang)}</span>
                 </Link>
               )}
-              <span className="font-body font-bold text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[80px] truncate">{user.name}</span>
+              <Link href="/profile" className="hidden sm:flex p-1 border-2 border-black hover:bg-gray-100 transition-colors" aria-label="Profile">
+                <User className="w-4 h-4" />
+              </Link>
+              <span className="font-body font-bold text-[10px] text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[60px] truncate">{user.name}</span>
               {user && (
                 <span className={`hidden sm:inline-flex items-center gap-0.5 text-[8px] font-body font-bold uppercase px-1 py-0.5 border border-black ${isPremium() ? "bg-green-500 text-white" : "bg-gray-200 text-gray-700"}`}>
                   {isPremium() ? <><Crown className="w-2.5 h-2.5" /> Unlimited</> : <span>5/hari</span>}
