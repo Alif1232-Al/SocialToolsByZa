@@ -40,46 +40,42 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const { user, logout } = useAuth();
   const { lang } = useLang();
   const { query, setQuery } = useSearch();
   const searchPanelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => { setMenuOpen(false); setSearchOpen(false); }, [path]);
 
   useEffect(() => { if (menuOpen) setSearchOpen(false); }, [menuOpen]);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (searchPanelRef.current && !searchPanelRef.current.contains(e.target as Node)) {
-        if (searchOpen) setSearchOpen(false);
-        setSearchFocus(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [searchOpen]);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => setQuery(inputValue), 200);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [inputValue, setQuery]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        if (!searchOpen) {
-          setSearchOpen(true);
-          setTimeout(() => searchInputRef.current?.focus(), 100);
-        } else {
-          searchInputRef.current?.focus();
-        }
+        setMenuOpen(true);
+        setTimeout(() => {
+          const input = document.querySelector<HTMLInputElement>(".mobile-search-input");
+          input?.focus();
+        }, 200);
       }
       if (e.key === "Escape") {
+        setMenuOpen(false);
         setSearchOpen(false);
-        setSearchFocus(false);
       }
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [searchOpen]);
+  }, []);
 
   const filteredTools = query.trim()
     ? ALL_TOOLS.filter(t =>
@@ -153,60 +149,11 @@ export default function Header() {
             </>
           )}
 
-          {path === "/" && !menuOpen && (
-            <button onClick={() => { setSearchOpen(p => !p); if (!searchOpen) setTimeout(() => searchInputRef.current?.focus(), 150); }}
-              className="p-1.5 border-2 border-black hover:bg-gray-100 transition-colors" aria-label="Search" title="Cari tools (Ctrl+K)">
-              <Search className="w-4 h-4" />
-            </button>
-          )}
-
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-1.5 border-2 border-black" aria-label="Menu">
             {menuOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
           </button>
         </div>
       </nav>
-
-      {/*** SEARCH PANEL (all screens) ***/}
-      {path === "/" && searchOpen && (
-        <div ref={searchPanelRef} className="border-t-4 border-black bg-white dark:bg-gray-800 comic-shadow">
-          <div className="px-margin-mobile md:px-margin-desktop py-3 md:py-4 max-w-3xl md:mx-auto">
-            <div className="flex items-center border-4 border-black bg-white dark:bg-gray-700">
-              <span className="flex items-center px-3 md:px-4 bg-gray-100 dark:bg-gray-600 border-r-4 border-black shrink-0">
-                <Search className="w-5 h-5 text-gray-500 dark:text-gray-300" />
-              </span>
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                placeholder="Cari tools... (Ctrl+K)"
-                className="flex-1 px-3 md:px-4 py-2.5 md:py-3 font-body font-bold text-sm md:text-base outline-none bg-white dark:bg-gray-700 text-black dark:text-white min-w-0"
-              />
-              {query && (
-                <button onClick={() => setQuery("")} className="px-2 md:px-3 text-gray-400 hover:text-black dark:hover:text-white text-lg md:text-xl font-bold">&times;</button>
-              )}
-              <span className="hidden sm:flex px-2 md:px-3 text-[10px] text-gray-300 dark:text-gray-500 font-body items-center gap-0.5 whitespace-nowrap">
-                <Command className="w-3 h-3" />K
-              </span>
-            </div>
-            {query.trim() && (
-              <div className="mt-1 bg-white dark:bg-gray-700 border-4 border-black max-h-[300px] overflow-y-auto divide-y-2 divide-gray-100 dark:divide-gray-600">
-                {filteredTools.length > 0 ? filteredTools.map(tool => (
-                  <button key={tool.id} onClick={() => handleSearchSelect(tool)}
-                    className="w-full text-left px-3 md:px-4 py-2.5 md:py-3 font-body font-bold text-sm md:text-base hover:bg-yellow-100 dark:hover:bg-yellow-900 transition-colors flex items-center gap-2"
-                  >
-                    <Search className="w-4 h-4 text-gray-400 shrink-0" />
-                    <span className="text-black dark:text-white">{tool.name}</span>
-                    <span className="text-[10px] md:text-xs text-gray-400 uppercase ml-auto">{tool.tag.split(",")[0]}</span>
-                  </button>
-                )) : (
-                  <p className="px-3 md:px-4 py-3 font-body font-bold text-xs md:text-sm text-gray-400">Tidak ada tool yang cocok</p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {menuOpen && (
         <div className="md:hidden bg-white dark:bg-gray-800 border-t-4 border-black dark:border-gray-600 comic-shadow">
@@ -217,9 +164,9 @@ export default function Header() {
                   <span className="flex items-center px-2 bg-gray-100 dark:bg-gray-600 border-r-4 border-black shrink-0">
                     <Search className="w-4 h-4 text-gray-500" />
                   </span>
-                  <input type="text" value={query} onChange={e => setQuery(e.target.value)}
-                    placeholder="Cari tools..."
-                    className="flex-1 px-2 py-2 font-body font-bold text-xs outline-none bg-white dark:bg-gray-700 text-black dark:text-white min-w-0"
+                  <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)}
+                    placeholder="Cari tools... (Ctrl+K)"
+                    className="mobile-search-input flex-1 px-2 py-2 font-body font-bold text-xs outline-none bg-white dark:bg-gray-700 text-black dark:text-white min-w-0"
                   />
                   {query && <button onClick={() => setQuery("")} className="px-1 text-gray-400 text-sm font-bold">&times;</button>}
                 </div>

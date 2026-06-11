@@ -54,7 +54,7 @@ export default function LoginPage() {
             <label className="font-body font-bold text-xs uppercase tracking-wider text-gray-700 dark:text-gray-300">{t("login.email", lang)}</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
               className="w-full border-4 border-black p-3 font-body font-bold text-sm outline-none mt-1"
-              placeholder="admin@za.com" required />
+              placeholder="nama@email.com" required />
           </div>
           <div>
             <label className="font-body font-bold text-xs uppercase tracking-wider text-gray-700 dark:text-gray-300">{t("login.password", lang)}</label>

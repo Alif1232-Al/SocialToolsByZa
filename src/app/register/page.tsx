@@ -46,19 +46,19 @@ export default function RegisterPage() {
           <UserPlus className="w-6 h-6" /> Daftar Akun
         </h1>
         <p className="font-body text-sm text-gray-500 mb-4">
-          Biar kalo bayar premium, akun lo ke-upgrade & gak ilang meskipun ganti HP.
+          Buat akun untuk menyimpan status premium Anda. Dengan akun, akses premium tetap aktif meskipun berganti perangkat atau browser.
         </p>
 
         {!done ? (
           <form onSubmit={handleRegister} className="space-y-3">
             <input type="text" value={name} onChange={e => setName(e.target.value)}
-              placeholder="Nama lo..."
+              placeholder="Nama lengkap"
               className="w-full p-3 border-4 border-black bg-white dark:bg-gray-800 font-body font-bold text-sm outline-none" />
             <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              placeholder="Email..."
+              placeholder="Email"
               className="w-full p-3 border-4 border-black bg-white dark:bg-gray-800 font-body font-bold text-sm outline-none" />
             <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-              placeholder="Password (min 6 karakter)..."
+              placeholder="Password (min. 6 karakter)"
               className="w-full p-3 border-4 border-black bg-white dark:bg-gray-800 font-body font-bold text-sm outline-none" />
             <button type="submit" disabled={loading}
               className="w-full bg-cyan-500 text-white border-4 border-black px-6 py-3 font-body font-bold uppercase text-sm comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
