@@ -128,10 +128,27 @@ export default function Header() {
             <LangToggle />
             <ThemeToggle />
           </div>
-          {user?.role === "admin" && (
-            <Link href="/admin" className="font-body font-bold text-[10px] sm:text-xs uppercase text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-300 transition-colors flex items-center gap-1">
-              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.admin", lang)}</span>
-            </Link>
+          {user ? (
+            <>
+              {user.role === "admin" && (
+                <Link href="/admin" className="font-body font-bold text-[10px] sm:text-xs uppercase text-yellow-600 dark:text-yellow-400 hover:text-yellow-800 dark:hover:text-yellow-300 transition-colors flex items-center gap-1">
+                  <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.admin", lang)}</span>
+                </Link>
+              )}
+              <span className="font-body font-bold text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 hidden sm:inline max-w-[100px] truncate">{user.name}</span>
+              <button onClick={handleLogout} className="font-body font-bold text-[10px] sm:text-xs uppercase text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors flex items-center gap-1">
+                <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.logout", lang)}</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/register" className="font-body font-bold text-[10px] sm:text-xs uppercase text-black dark:text-gray-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                {t("nav.register", lang)}
+              </Link>
+              <Link href="/login" className="font-body font-bold text-[10px] sm:text-xs uppercase text-black dark:text-gray-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors flex items-center gap-1">
+                <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" /><span className="hidden sm:inline">{t("nav.login", lang)}</span>
+              </Link>
+            </>
           )}
 
           {path === "/" && !menuOpen && (
@@ -228,12 +245,20 @@ export default function Header() {
                 {t(l.key, lang)}
               </Link>
             ))}
-            {user?.role === "admin" && (
-              <div className="border-t-2 border-black dark:border-gray-600 pt-3 mt-3 space-y-2">
-                <Link href="/admin" className="block font-body font-bold text-xs uppercase text-yellow-600 dark:text-yellow-400">{t("nav.admin", lang)}</Link>
-                <button onClick={handleLogout} className="block font-body font-bold text-xs uppercase text-red-500 dark:text-red-400">{t("nav.logout", lang)}</button>
-              </div>
-            )}
+            <div className="border-t-2 border-black dark:border-gray-600 pt-3 mt-3 space-y-2">
+              {user ? (
+                <>
+                  <p className="font-body font-bold text-xs text-gray-500 dark:text-gray-400">{t("nav.loggedInAs", lang)} <span className="text-black dark:text-gray-100">{user.name}</span></p>
+                  {user.role === "admin" && <Link href="/admin" className="block font-body font-bold text-xs uppercase text-yellow-600 dark:text-yellow-400">{t("nav.admin", lang)}</Link>}
+                  <button onClick={handleLogout} className="block font-body font-bold text-xs uppercase text-red-500 dark:text-red-400">{t("nav.logout", lang)}</button>
+                </>
+              ) : (
+                <>
+                  <Link href="/register" className="block font-body font-bold text-xs uppercase text-cyan-600">{t("nav.register", lang)}</Link>
+                  <Link href="/login" className="block font-body font-bold text-xs uppercase text-cyan-600">{t("nav.login", lang)}</Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

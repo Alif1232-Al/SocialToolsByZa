@@ -13,6 +13,7 @@ const tr: Record<string, Entry> = {
   "nav.getStarted": { id: "GET STARTED", en: "GET STARTED" },
   "nav.loggedInAs": { id: "Logged in as", en: "Logged in as" },
   "nav.pricing": { id: "Premium", en: "Premium" },
+  "nav.register": { id: "Daftar", en: "Register" },
 
   // === HERO ===
   "hero.title": { id: "SOCIAL TOOLS BY ZA!!", en: "SOCIAL TOOLS BY ZA!!" },

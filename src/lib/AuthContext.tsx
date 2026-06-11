@@ -35,9 +35,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refresh = () => setKey((k) => k + 1);
 
+  useEffect(() => {
+    if (user) {
+      try { localStorage.setItem("stbz_auth", JSON.stringify(user)); } catch {}
+    } else {
+      try { localStorage.removeItem("stbz_auth"); } catch {}
+    }
+  }, [user]);
+
   const logout = async () => {
     await fetch("/api/auth/me", { method: "DELETE" });
     setUser(null);
+    try { localStorage.removeItem("stbz_auth"); } catch {}
   };
 
   return (

@@ -31,6 +31,7 @@ function PaymentContent() {
       .then(data => {
         if (data.status === "settlement" || data.status === "capture") {
           activatePremium();
+          fetch("/api/auth/upgrade", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) }).catch(() => {});
           setStatus("success");
         } else {
           setStatus("failed");
