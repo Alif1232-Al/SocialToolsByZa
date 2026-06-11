@@ -284,6 +284,16 @@ const tr: Record<string, Entry> = {
   "ocr.title": { id: "OCR Picture to Text", en: "OCR Picture to Text" },
   "ocr.desc": { id: "Ekstrak teks dari gambar pake teknologi OCR!", en: "Extract text from images using OCR technology!" },
 
+  // === CATEGORIES ===
+  "category.all": { id: "All", en: "All" },
+  "category.social": { id: "Sosial Media", en: "Social Media" },
+  "category.image": { id: "Gambar & Foto", en: "Image Tools" },
+  "category.document": { id: "Dokumen", en: "Documents" },
+  "category.dev": { id: "Developer", en: "Developer" },
+  "category.osint": { id: "OSINT", en: "OSINT" },
+  "category.academic": { id: "Akademik", en: "Academic" },
+  "category.fun": { id: "Fun & Utility", en: "Fun & Utility" },
+
   // === CHATBOT ===
   "chat.placeholder": { id: "Tanya sesuatu...", en: "Ask something..." },
   "chat.about": { id: "Tentang SocialTools", en: "About SocialTools" },

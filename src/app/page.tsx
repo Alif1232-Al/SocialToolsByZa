@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
-import { RotateCcw, Search, X } from "lucide-react";
+import { RotateCcw, Search } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PremiumGate from "@/components/PremiumGate";
@@ -22,14 +22,47 @@ const JsonFormatter = dynamic(() => import("@/components/JsonFormatter"), { ssr:
 const QuoteGenerator = dynamic(() => import("@/components/QuoteGenerator"), { ssr: false });
 const BarberCalculator = dynamic(() => import("@/components/BarberCalculator"), { ssr: false });
 
-const subTools = [
-  { href: "/photobox", icon: "🎨", titleKey: "subtools.photobox", descKey: "subtools.photoboxDesc", bg: "from-purple-400 via-pink-300 to-yellow-200" },
-  { href: "/jurnal", icon: "🔍", titleKey: "subtools.jurnal", descKey: "subtools.jurnalDesc", bg: "from-blue-400 via-cyan-300 to-teal-200" },
-  { href: "/markdown", icon: "📝", titleKey: "subtools.markdown", descKey: "subtools.markdownDesc", bg: "from-yellow-300 via-orange-200 to-red-200" },
-  { href: "/linktree", icon: "🔗", titleKey: "subtools.linktree", descKey: "subtools.linktreeDesc", bg: "from-green-300 via-emerald-200 to-teal-200" },
+type Category = {
+  id: string;
+  labelId: string;
+  color: string;
+};
+
+const CATEGORIES: Category[] = [
+  { id: "all", labelId: "category.all", color: "bg-black text-white" },
+  { id: "social", labelId: "category.social", color: "bg-cyan-500 text-white" },
+  { id: "image", labelId: "category.image", color: "bg-pink-500 text-white" },
+  { id: "document", labelId: "category.document", color: "bg-yellow-400 text-black" },
+  { id: "dev", labelId: "category.dev", color: "bg-gray-800 text-white" },
+  { id: "osint", labelId: "category.osint", color: "bg-red-500 text-white" },
+  { id: "academic", labelId: "category.academic", color: "bg-blue-500 text-white" },
+  { id: "fun", labelId: "category.fun", color: "bg-green-500 text-white" },
 ];
 
-const TOOL_FILTER_MAP: Record<string, string> = {
+const TOOL_CATEGORIES: Record<string, string> = {
+  tiktok: "social",
+  removebg: "image",
+  pdftoword: "document",
+  ocr: "document",
+  pictopdf: "image",
+  dorking: "osint",
+  json: "dev",
+  quote: "fun",
+  barber: "fun",
+  photobox: "image",
+  jurnal: "academic",
+  markdown: "dev",
+  linktree: "social",
+};
+
+const subTools = [
+  { id: "photobox", href: "/photobox", icon: "🎨", titleKey: "subtools.photobox", descKey: "subtools.photoboxDesc", bg: "from-purple-400 via-pink-300 to-yellow-200" },
+  { id: "jurnal", href: "/jurnal", icon: "🔍", titleKey: "subtools.jurnal", descKey: "subtools.jurnalDesc", bg: "from-blue-400 via-cyan-300 to-teal-200" },
+  { id: "markdown", href: "/markdown", icon: "📝", titleKey: "subtools.markdown", descKey: "subtools.markdownDesc", bg: "from-yellow-300 via-orange-200 to-red-200" },
+  { id: "linktree", href: "/linktree", icon: "🔗", titleKey: "subtools.linktree", descKey: "subtools.linktreeDesc", bg: "from-green-300 via-emerald-200 to-teal-200" },
+];
+
+const TOOL_KEYWORDS: Record<string, string> = {
   tiktok: "tiktok video downloader",
   removebg: "remove background image bg hapus",
   pdftoword: "pdf word convert document docx",
@@ -45,6 +78,7 @@ export default function Home() {
   const { lang } = useLang();
   const { query } = useSearch();
   const [resetCount, setResetCount] = useState(0);
+  const [category, setCategory] = useState("all");
 
   const q = query.toLowerCase().trim();
 
@@ -53,22 +87,69 @@ export default function Home() {
     toast.success("Semua tool sudah direset!");
   };
 
-  const showTool = (id: string, keywords: string) => {
+  const showTool = (id: string) => {
+    const catMatch = category === "all" || TOOL_CATEGORIES[id] === category;
+    if (!catMatch) return false;
     if (!q) return true;
+    const keywords = TOOL_KEYWORDS[id] || "";
     return id.includes(q) || keywords.includes(q) || t(`f.${id}.title`, lang).toLowerCase().includes(q);
   };
+
+  const showSubTool = (id: string) => {
+    const catMatch = category === "all" || TOOL_CATEGORIES[id] === category;
+    if (!catMatch) return false;
+    if (!q) return true;
+    const st = subTools.find(s => s.id === id);
+    if (!st) return false;
+    return t(st.titleKey, lang).toLowerCase().includes(q) || t(st.descKey, lang).toLowerCase().includes(q);
+  };
+
+  const filteredCount = useMemo(() => {
+    let count = 0;
+    const allIds = ["tiktok", "removebg", "pdftoword", "ocr", "pictopdf", "dorking", "json", "quote", "barber"];
+    for (const id of allIds) { if (showTool(id)) count++; }
+    for (const st of subTools) { if (showSubTool(st.id)) count++; }
+    return count;
+  }, [category, q, lang]);
+
+  const activeCat = CATEGORIES.find(c => c.id === category);
 
   return (
     <>
       <PromoPopup />
       <HeroSection />
 
-      {q && (
-        <div className="mb-4 bg-cyan-500 border-4 border-black px-4 py-2 flex items-center gap-2">
+      {/*** CATEGORY FILTER ***/}
+      <div className="mb-4 overflow-x-auto -mx-margin-mobile md:-mx-0">
+        <div className="flex gap-2 px-margin-mobile md:px-0 pb-2 min-w-max md:flex-wrap md:min-w-0">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setCategory(cat.id)}
+              className={`font-body font-bold text-[10px] sm:text-xs uppercase tracking-wider px-3 py-1.5 border-4 border-black transition-all shrink-0 ${
+                category === cat.id
+                  ? `${cat.color} shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`
+                  : "bg-white text-black hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px]"
+              }`}
+            >
+              {cat.id === "all" ? "All" : t(cat.labelId, lang)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/*** FILTER INFO BAR ***/}
+      {(q || category !== "all") && (
+        <div className="mb-4 bg-cyan-500 border-4 border-black px-4 py-2 flex items-center gap-2 flex-wrap">
           <Search className="w-4 h-4 text-white shrink-0" />
           <span className="font-body font-bold text-xs uppercase text-white">
-            Filter: &quot;{q}&quot;
+            {q ? `"${q}"` : activeCat ? t(activeCat.labelId, lang) : ""}
+            {q && category !== "all" ? ` + ${activeCat ? t(activeCat.labelId, lang) : ""}` : ""}
+            {" — "}{filteredCount} tool{filteredCount !== 1 ? "s" : ""}
           </span>
+          {q && (
+            <span className="font-body text-[10px] text-white/60 ml-auto">Tekan ESC untuk reset</span>
+          )}
         </div>
       )}
 
@@ -78,39 +159,41 @@ export default function Home() {
         </button>
       </div>
 
+      {/*** MAIN TOOLS ***/}
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
-        <div id="tiktok" className={`break-inside-avoid mb-6 ${showTool("tiktok", TOOL_FILTER_MAP.tiktok) ? "" : "hidden"}`}>
+        <div id="tiktok" className={`break-inside-avoid mb-6 ${showTool("tiktok") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.tiktok.title", lang)}><TikTokDownloader key={`tiktok-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="removebg" className={`break-inside-avoid mb-6 ${showTool("removebg", TOOL_FILTER_MAP.removebg) ? "" : "hidden"}`}>
+        <div id="removebg" className={`break-inside-avoid mb-6 ${showTool("removebg") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.removebg.title", lang)}><RemoveBackground key={`removebg-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="pdftoword" className={`break-inside-avoid mb-6 ${showTool("pdftoword", TOOL_FILTER_MAP.pdftoword) ? "" : "hidden"}`}>
+        <div id="pdftoword" className={`break-inside-avoid mb-6 ${showTool("pdftoword") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.pdftoword.title", lang)}><PdfToWord key={`pdftoword-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="ocr" className={`break-inside-avoid mb-6 ${showTool("ocr", TOOL_FILTER_MAP.ocr) ? "" : "hidden"}`}>
+        <div id="ocr" className={`break-inside-avoid mb-6 ${showTool("ocr") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.ocr.title", lang)}><OcrPictureToText key={`ocr-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="pictopdf" className={`break-inside-avoid mb-6 ${showTool("pictopdf", TOOL_FILTER_MAP.pictopdf) ? "" : "hidden"}`}>
+        <div id="pictopdf" className={`break-inside-avoid mb-6 ${showTool("pictopdf") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.pictopdf.title", lang)}><PictureToPdf key={`pictopdf-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="dorking" className={`break-inside-avoid mb-6 ${showTool("dorking", TOOL_FILTER_MAP.dorking) ? "" : "hidden"}`}>
+        <div id="dorking" className={`break-inside-avoid mb-6 ${showTool("dorking") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.dorking.title", lang)}><Dorking key={`dorking-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="json" className={`break-inside-avoid mb-6 ${showTool("json", TOOL_FILTER_MAP.json) ? "" : "hidden"}`}>
+        <div id="json" className={`break-inside-avoid mb-6 ${showTool("json") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.json.title", lang)}><JsonFormatter key={`json-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="quote" className={`break-inside-avoid mb-6 ${showTool("quote", TOOL_FILTER_MAP.quote) ? "" : "hidden"}`}>
+        <div id="quote" className={`break-inside-avoid mb-6 ${showTool("quote") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.quote.title", lang)}><QuoteGenerator key={`quote-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
-        <div id="barber" className={`break-inside-avoid mb-6 ${showTool("barber", TOOL_FILTER_MAP.barber) ? "" : "hidden"}`}>
+        <div id="barber" className={`break-inside-avoid mb-6 ${showTool("barber") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.barber.title", lang)}><BarberCalculator key={`barber-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
       </div>
 
+      {/*** SUB TOOLS (separate pages) ***/}
       <div className="columns-1 md:columns-2 lg:columns-3 gap-6 mt-2">
         {subTools.map((st) => (
-          <div key={st.href} className={`break-inside-avoid mb-6 ${!q || t(st.titleKey, lang).toLowerCase().includes(q) || t(st.descKey, lang).toLowerCase().includes(q) ? "" : "hidden"}`}>
+          <div key={st.href} className={`break-inside-avoid mb-6 ${showSubTool(st.id) ? "" : "hidden"}`}>
             <a href={st.href} className={`block comic-panel bg-gradient-to-br ${st.bg} cursor-pointer group`}>
               <div className="comic-badge -top-3 -right-3 rotate-12 bg-black text-white">{t("home.subtools", lang)}</div>
               <div className="flex flex-col items-center justify-center text-center py-8 px-4">
