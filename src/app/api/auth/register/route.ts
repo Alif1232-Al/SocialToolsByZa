@@ -18,12 +18,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { email, name, password } = await req.json();
+    const { email, name, password, role } = await req.json();
     if (!email || !name || !password) {
       return NextResponse.json({ error: "Email, name, dan password diperlukan" }, { status: 400 });
     }
 
-    const user = await createUser(email, name, password, "user");
+    const userRole = ["admin", "premium", "user"].includes(role) ? role : "user";
+    const user = await createUser(email, name, password, userRole);
     return NextResponse.json({
       success: true,
       user: { id: user.id, email: user.email, name: user.name, role: user.role },

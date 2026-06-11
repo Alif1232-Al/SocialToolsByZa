@@ -16,6 +16,7 @@ export default function AdminPage() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [newRole, setNewRole] = useState("user");
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState("");
   const router = useRouter();
@@ -45,7 +46,7 @@ export default function AdminPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, password }),
+        body: JSON.stringify({ email, name, password, role: newRole }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
@@ -131,6 +132,11 @@ export default function AdminPage() {
               <input type="text" value={password} onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("admin.formPass", lang)} required
                 className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-gray-900 placeholder-gray-400" />
+              <select value={newRole} onChange={(e) => setNewRole(e.target.value)}
+                className="w-full border-2 border-black p-2 font-body font-bold text-sm outline-none text-gray-900 bg-white">
+                <option value="user">User</option>
+                <option value="premium">Premium</option>
+              </select>
               {createError && (
                 <div className="bg-red-100 border border-red-500 text-red-700 p-2 font-body font-bold text-xs">{createError}</div>
               )}
@@ -154,7 +160,7 @@ export default function AdminPage() {
               users.map((u) => (
                 <div key={u.id} className="flex items-center justify-between px-4 py-3">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className={`w-8 h-8 rounded-full ${u.role === "admin" ? "bg-yellow-400" : "bg-cyan-500"} flex items-center justify-center text-black font-display font-black text-sm`}>
+                    <div className={`w-8 h-8 rounded-full ${u.role === "admin" ? "bg-yellow-400" : u.role === "premium" ? "bg-green-400" : "bg-cyan-500"} flex items-center justify-center text-black font-display font-black text-sm`}>
                       {u.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
@@ -163,7 +169,7 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-              <span className={`px-2 py-0.5 font-body font-bold text-[10px] uppercase border border-black ${u.role === "admin" ? "bg-yellow-200 text-black" : "bg-gray-100 text-gray-600"}`}>
+              <span className={`px-2 py-0.5 font-body font-bold text-[10px] uppercase border border-black ${u.role === "admin" ? "bg-yellow-200 text-black" : u.role === "premium" ? "bg-green-200 text-green-900" : "bg-gray-100 text-gray-600"}`}>
                        {t("admin.role", lang)} {u.role}
                      </span>
                      {u.role !== "admin" && (
