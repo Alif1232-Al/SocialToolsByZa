@@ -79,8 +79,10 @@ export default function PictureToPdf() {
             </div>
           ))}
           {images.length === 0 && (
-            <div className="col-span-3 flex items-center justify-center py-4 text-gray-400 font-body font-bold text-xs uppercase">
-              No images selected yet
+            <div className="col-span-3 flex flex-col items-center justify-center py-6 text-gray-400 dark:text-gray-500 font-body gap-1">
+              <FileImage className="w-8 h-8 mb-1 opacity-40" />
+              <span className="font-bold text-xs uppercase tracking-wider">Belum ada gambar</span>
+              <span className="text-[10px] opacity-60">Klik di atas atau drag & drop file JPG / PNG</span>
             </div>
           )}
         </div>

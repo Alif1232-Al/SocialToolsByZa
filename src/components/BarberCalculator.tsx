@@ -326,7 +326,7 @@ export default function BarberCalculator() {
 
       <div className="flex flex-col gap-2.5">
         <input value={date} onChange={(e) => setDate(e.target.value)}
-          className="w-full p-2.5 border-4 border-black bg-white font-body font-bold text-sm outline-none text-center" />
+          className="w-full p-2.5 border-4 border-black bg-white dark:bg-gray-800 font-body font-bold text-sm outline-none text-center" />
 
         {([ 
           { label: "Potong Dewasa", price: "25k", icon: User, color: "text-pink-600", val: dewasa, set: setDewasa, total: totalDewasa },

@@ -58,10 +58,13 @@ export default function RemoveBackground() {
     <ComicPanel bgColor="bg-pink-500" badge="ZAP!" badgeColor="bg-yellow-400 text-black">
       <h3 className="font-display text-headline-md uppercase italic mb-4 flex items-center gap-2 text-white"><Sparkles className="w-6 h-6" />{t("removebg.title", lang)}</h3>
       <p className="font-body text-body-md text-white/80 mb-4 flex-grow">{t("removebg.desc", lang)}</p>
-      <label className="dashed-border bg-white/90 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white transition-colors min-h-[160px]">
+      <label className="dashed-border bg-white/90 dark:bg-gray-800/90 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-white dark:hover:bg-gray-700 transition-colors min-h-[160px]">
         <input type="file" accept="image/*" className="hidden" onChange={handleUpload} />
         <Upload className="w-10 h-10 mb-2 text-pink-500" />
         <span className="font-body font-bold uppercase text-sm">Drop Image Here or Click</span>
+        {!previewUrl && (
+          <span className="font-body text-[10px] text-gray-400 dark:text-gray-500 mt-1">JPG, PNG, WebP — Maks 10MB</span>
+        )}
       </label>
       {previewUrl && (
         <div className="mt-3 border-4 border-black bg-white p-2">

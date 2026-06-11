@@ -82,10 +82,13 @@ export default function TikTokDownloader() {
       </h3>
       <p className="font-body text-body-md text-gray-700 mb-4 flex-grow">{t("tiktok.desc", lang)}</p>
       <div className="flex flex-col gap-3">
-        <div className="flex border-4 border-black bg-white">
-          <span className="flex items-center px-3 bg-gray-100 border-r-4 border-black"><LinkIcon className="w-5 h-5" /></span>
-          <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t("tiktok.placeholder", lang)} className="flex-1 p-3 font-body font-bold text-sm outline-none bg-white" disabled={loading} />
+        <div className="flex border-4 border-black bg-white dark:bg-gray-800">
+          <span className="flex items-center px-3 bg-gray-100 dark:bg-gray-700 border-r-4 border-black"><LinkIcon className="w-5 h-5" /></span>
+          <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t("tiktok.placeholder", lang)} className="flex-1 p-3 font-body font-bold text-sm outline-none bg-white dark:bg-gray-800" disabled={loading} />
         </div>
+        {!url && !videoUrl && (
+          <p className="text-[10px] font-body text-gray-400 dark:text-gray-500 text-center -mt-1">Contoh: https://vm.tiktok.com/... atau https://tiktok.com/@user/video/...</p>
+        )}
         {error && <p className="bg-red-100 border-2 border-red-500 text-red-700 p-2 font-body font-bold text-xs">{error}</p>}
         {videoUrl && (
           <button onClick={handleDownload} disabled={downloading} className="bg-green-500 text-white border-4 border-black px-4 py-2 font-body font-bold uppercase text-center comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-comic">

@@ -33,12 +33,21 @@ export default function JsonFormatter() {
         Data berantakan? Rapihin JSON biar enak dibaca pas debugging!
       </p>
       <div className="flex flex-col gap-3">
-        <textarea
-          value={state.input}
-          onChange={onInputChange}
-          placeholder='{"status": "stres_semester_6", "tugas": "banyak"}'
-          className="w-full min-h-[120px] p-3 border-4 border-black bg-white font-mono text-sm outline-none resize-none"
-        />
+        <div className="relative">
+          <textarea
+            value={state.input}
+            onChange={onInputChange}
+            placeholder='{ "status": "stres_semester_6", "tugas": "banyak" }'
+            className="w-full min-h-[120px] p-3 border-4 border-black bg-white dark:bg-gray-800 font-mono text-sm outline-none resize-none"
+          />
+          {!state.input && (
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div className="text-center">
+                <span className="text-[10px] font-body font-bold text-gray-300 dark:text-gray-600 uppercase tracking-wider">Tempel JSON atau mulai ngetik</span>
+              </div>
+            </div>
+          )}
+        </div>
         {formattedOutput.error && (
           <p className="bg-red-100 border-2 border-red-500 text-red-700 p-2 font-body font-bold text-xs">
             {formattedOutput.error}
