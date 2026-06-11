@@ -68,12 +68,12 @@ export default function RemoveBackground() {
       </label>
       {previewUrl && (
         <div className="mt-3 border-4 border-black bg-white p-2">
-          <img src={previewUrl} alt="Preview" className="w-full h-32 object-contain" />
-        </div>
-      )}
-      {resultUrl && (
-        <div className="mt-3 border-4 border-black bg-white p-2">
-          <img src={resultUrl} alt="Result" className="w-full h-32 object-contain" />
+            <img src={previewUrl} alt="Preview" loading="lazy" className="w-full h-32 object-contain" />
+          </div>
+        )}
+        {resultUrl && (
+          <div className="mt-3 border-4 border-black bg-white p-2">
+            <img src={resultUrl} alt="Result" loading="lazy" className="w-full h-32 object-contain" />
           <a href={resultUrl} download="removed-bg.png" className="block mt-2 bg-green-500 text-white border-4 border-black px-4 py-1 font-body font-bold uppercase text-xs text-center comic-shadow hover:translate-x-[2px] hover:translate-y-[2px] transition-all">DOWNLOAD PNG</a>
         </div>
       )}

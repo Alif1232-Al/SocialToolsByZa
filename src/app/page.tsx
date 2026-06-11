@@ -164,7 +164,7 @@ export default function Home() {
       </div>
 
       {/*** MAIN TOOLS ***/}
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-6" style={{ contentVisibility: "auto", containIntrinsicSize: "400px" }}>
         <div id="tiktok" className={`break-inside-avoid mb-6 ${showTool("tiktok") ? "" : "hidden"}`}>
           <LazyLoadWrapper><ErrorBoundary><PremiumGate title={t("f.tiktok.title", lang)}><TikTokDownloader key={`tiktok-${resetCount}`} /></PremiumGate></ErrorBoundary></LazyLoadWrapper>
         </div>
@@ -195,7 +195,7 @@ export default function Home() {
       </div>
 
       {/*** SUB TOOLS (separate pages) ***/}
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 mt-2">
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 mt-2" style={{ contentVisibility: "auto", containIntrinsicSize: "300px" }}>
         {subTools.map((st) => (
           <div key={st.href} className={`break-inside-avoid mb-6 ${showSubTool(st.id) ? "" : "hidden"}`}>
             <a href={st.href} className={`block comic-panel bg-gradient-to-br ${st.bg} cursor-pointer group`}>

@@ -223,7 +223,7 @@ export default function OcrPictureToText() {
             <input type="file" accept="image/*" className="hidden" onChange={onInputChange} />
             {previewUrl ? (
               <div className="relative w-full">
-                <img ref={imgRef} src={previewUrl} alt="Preview" className="w-full max-h-40 object-contain" />
+                <img ref={imgRef} src={previewUrl} alt="Preview" loading="lazy" className="w-full max-h-40 object-contain" />
                 {showHighlight && words.length > 0 && (
                   <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox={`0 0 ${imageDims.w || 1} ${imageDims.h || 1}`}>
                     {words.map((w, i) => (
