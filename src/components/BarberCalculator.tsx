@@ -3,6 +3,9 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { Scissors, User, Baby, Palette, RefreshCw, Utensils, Download, ImageIcon } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import jsPDF from "jspdf";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
+import toast from "react-hot-toast";
 
 const PRICES = { dewasa: 25, anak: 20, semir: 40 };
 const OWNER_SHARE = 0.6;
@@ -22,6 +25,7 @@ export default function BarberCalculator() {
   const [anak, setAnak] = useState(0);
   const [semir, setSemir] = useState(0);
   const [uangMakan, setUangMakan] = useState(25);
+  const [limitHit, setLimitHit] = useState(isLimitReached("barber"));
 
   const totalDewasa = dewasa * PRICES.dewasa;
   const totalAnak = anak * PRICES.anak;
@@ -204,6 +208,9 @@ export default function BarberCalculator() {
     const link = document.createElement("a");
     link.download = "deka-barber-preview.png";
     link.href = cvs.toDataURL("image/png");
+    incrementUsage("barber");
+    if (isLimitReached("barber")) setLimitHit(true);
+    toast.success("PNG berhasil di download!");
     link.click();
   };
 
@@ -311,8 +318,15 @@ export default function BarberCalculator() {
     doc.setTextColor(180);
     doc.text("socialtoolsbyza", pw / 2, y, { align: "center" });
 
+    incrementUsage("barber");
+    if (isLimitReached("barber")) setLimitHit(true);
+    toast.success("PDF berhasil di download!");
     doc.save(`deka-barber-${new Date().toISOString().slice(0, 10)}.pdf`);
   };
+
+  if (limitHit) {
+    return <CreditGate toolId="barber" toolName="Barber Kalkulator" limitReached={true}><div /></CreditGate>;
+  }
 
   return (
     <ComicPanel bgColor="bg-cyan-400" badge="HITUNG!" badgeColor="bg-pink-500 text-white">

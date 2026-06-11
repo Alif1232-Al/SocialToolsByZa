@@ -2,6 +2,9 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Link, Plus, Trash2, Download, Camera, Copy, ChevronUp, ChevronDown } from "lucide-react";
 import ComicPanel from "./ComicPanel";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
+import toast from "react-hot-toast";
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   ctx.beginPath();
@@ -103,6 +106,7 @@ export default function LinktreeGenerator() {
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoReady, setPhotoReady] = useState(0);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [limitHit, setLimitHit] = useState(isLimitReached("linktree"));
   const dragIdx = useRef<number | null>(null);
 
   const updateLink = (id: string, field: "label" | "url", value: string) =>
@@ -321,6 +325,9 @@ export default function LinktreeGenerator() {
     const link = document.createElement("a");
     link.download = "linktree.png";
     link.href = canvas.toDataURL("image/png");
+    incrementUsage("linktree");
+    if (isLimitReached("linktree")) setLimitHit(true);
+    toast.success("PNG berhasil di download!");
     link.click();
   };
 
@@ -335,8 +342,15 @@ export default function LinktreeGenerator() {
     const url = `${window.location.origin}/link?d=${encoded}`;
     navigator.clipboard.writeText(url);
     setLinkCopied(true);
+    incrementUsage("linktree");
+    if (isLimitReached("linktree")) setLimitHit(true);
+    toast.success("Link berhasil di generate!");
     setTimeout(() => setLinkCopied(false), 2000);
   };
+
+  if (limitHit) {
+    return <CreditGate toolId="linktree" toolName="Linktree Generator" limitReached={true}><div /></CreditGate>;
+  }
 
   return (
     <ComicPanel bgColor={currentTheme.bg[0]} badge="TREE!" badgeColor={`${currentTheme.badge} text-white`}>

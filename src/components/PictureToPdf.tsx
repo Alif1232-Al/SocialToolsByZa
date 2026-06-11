@@ -4,9 +4,12 @@ import { Image, FileImage, Loader2 } from "lucide-react";
 import ComicPanel from "./ComicPanel";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import toast from "react-hot-toast";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
 
 export default function PictureToPdf() {
   const { images, addImages, removeImage } = useImageUpload();
+  const [limitHit, setLimitHit] = useState(isLimitReached("pictopdf"));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -44,6 +47,8 @@ export default function PictureToPdf() {
       }
       pdf.save("converted.pdf");
       toast.success("PDF berhasil dibuat!");
+      incrementUsage("pictopdf");
+      if (isLimitReached("pictopdf")) setLimitHit(true);
     } catch {
       setError("Gagal membuat PDF. Coba dengan gambar lebih kecil.");
       toast.error("Gagal membuat PDF");
@@ -51,6 +56,10 @@ export default function PictureToPdf() {
       setLoading(false);
     }
   }, [images]);
+
+  if (limitHit) {
+    return <CreditGate toolId="pictopdf" toolName="Picture to PDF" limitReached={true}><div /></CreditGate>;
+  }
 
   return (
     <ComicPanel bgColor="bg-pink-500" badge="ZIP!" badgeColor="bg-yellow-400 text-black">

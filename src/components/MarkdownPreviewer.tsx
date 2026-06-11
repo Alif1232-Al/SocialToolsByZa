@@ -1,7 +1,10 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Terminal, Eye, Copy, Trash2, Printer } from "lucide-react";
 import { useMarkdownPreview } from "@/hooks/useMarkdownPreview";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
+import toast from "react-hot-toast";
 
 const defaultMarkdown = `# Hello IT Squad! 🚀
 
@@ -24,6 +27,8 @@ while(alive) {
 \`\`\``;
 
 export default function MarkdownPreviewer() {
+  const [limitHit, setLimitHit] = useState(isLimitReached("markdown"));
+
   const {
     markdown,
     html,
@@ -41,6 +46,13 @@ export default function MarkdownPreviewer() {
     },
     [handleChange]
   );
+
+  const handleCopyHtml = useCallback(async () => {
+    await copyHtml();
+    incrementUsage("markdown");
+    if (isLimitReached("markdown")) setLimitHit(true);
+    toast.success("HTML dicopy!");
+  }, [copyHtml]);
 
   const handlePrint = useCallback(() => {
     const win = window.open("", "_blank");
@@ -60,8 +72,17 @@ export default function MarkdownPreviewer() {
     );
     win.document.close();
     win.focus();
-    setTimeout(() => win.print(), 500);
+    toast.success("Membuka print...");
+    setTimeout(() => {
+      win.print();
+      incrementUsage("markdown");
+      if (isLimitReached("markdown")) setLimitHit(true);
+    }, 500);
   }, [html]);
+
+  if (limitHit) {
+    return <CreditGate toolId="markdown" toolName="Markdown Previewer" limitReached={true}><div /></CreditGate>;
+  }
 
   return (
     <div className="relative md:col-span-2 bg-gray-50 border-4 border-black p-6 comic-shadow flex flex-col">
@@ -118,7 +139,7 @@ export default function MarkdownPreviewer() {
           <Trash2 className="w-4 h-4" /> CLEAR ALL
         </button>
         <button
-          onClick={copyHtml}
+          onClick={handleCopyHtml}
           className="flex items-center gap-1 font-body font-bold uppercase bg-cyan-500 text-white border-4 border-black px-4 py-2 text-xs hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
         >
           <Copy className="w-4 h-4" /> COPY HTML

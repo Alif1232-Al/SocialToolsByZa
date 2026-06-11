@@ -4,6 +4,9 @@ import { ImagePlus, Download, X, Sparkles, ChevronLeft, ChevronRight, Palette, L
 import { FILTERS } from "@/lib/photo-filters";
 import { FRAMES, DEFAULT_CUSTOM, renderCustomBackground, drawTextBadge, drawEmojis, EMOJI_CATEGORIES } from "@/lib/photo-frames";
 import type { CustomFrameOptions, TextPosition, FontStyle, BadgeShape, PlacedEmoji } from "@/lib/photo-frames";
+import CreditGate from "./CreditGate";
+import { isLimitReached, incrementUsage } from "@/lib/credits";
+import toast from "react-hot-toast";
 
 const GRID_LAYOUTS = [
   { id:"1x1", cols:1, rows:1, cells:1, label:"1" }, { id:"2x1", cols:2, rows:1, cells:2, label:"2" },
@@ -88,6 +91,7 @@ export default function Photobox() {
   const [ready,setReady]=useState(0);
   const [dragOver,setDragOver]=useState(false);
   const [showTrendy,setShowTrendy]=useState(false);
+  const [limitHit, setLimitHit] = useState(isLimitReached("photobox"));
   const canvasRef=useRef<HTMLCanvasElement>(null);
   const offRef=useRef<HTMLCanvasElement>(null);
   const fileRef=useRef<HTMLInputElement>(null);
@@ -141,7 +145,7 @@ export default function Photobox() {
   const handleDrop=(e:React.DragEvent)=>{e.preventDefault();setDragOver(false);if(e.dataTransfer.files)handleUpload(e.dataTransfer.files);};
   const removeImage=(idx:number)=>setImages((prev)=>prev.filter((_,i)=>i!==idx));
   const moveImage=(idx:number,dir:-1|1)=>{const to=idx+dir;if(to<0||to>=images.length)return;setImages((prev)=>{const next=[...prev];[next[idx],next[to]]=[next[to],next[idx]];return next;});};
-  const downloadPng=()=>{const c=canvasRef.current;if(!c)return;const l=document.createElement("a");l.download=`photobox-${layout}-${filter}-${frameId}.png`;l.href=c.toDataURL("image/png");l.click();};
+  const downloadPng=()=>{const c=canvasRef.current;if(!c)return;incrementUsage("photobox");if(isLimitReached("photobox"))setLimitHit(true);const l=document.createElement("a");l.download=`photobox-${layout}-${filter}-${frameId}.png`;l.href=c.toDataURL("image/png");l.click();toast.success("Gambar berhasil di download!");};
   const updateCustom=<K extends keyof CustomFrameOptions>(key:K,value:CustomFrameOptions[K])=>{setCustomOpts((prev)=>({...prev,[key]:value}));};
 
   const handleCanvasClick=(e:React.MouseEvent<HTMLCanvasElement>)=>{
@@ -177,6 +181,10 @@ export default function Photobox() {
 
   const currentFilters=FILTER_CATEGORIES.find((c)=>c.name===filterTab)?.ids||[];
   const isFull=images.length>=6;
+
+  if (limitHit) {
+    return <CreditGate toolId="photobox" toolName="Photobox Comic Studio" limitReached={true}><div /></CreditGate>;
+  }
 
   return (
     <div className="space-y-6">

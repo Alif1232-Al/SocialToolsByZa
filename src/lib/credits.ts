@@ -1,6 +1,11 @@
 const CREDITS_KEY = "stbz_credits";
 const PREMIUM_KEY = "stbz_premium";
-const MAX_FREE = 3;
+const MAX_FREE_DEFAULT = 3;
+
+const MAX_FREE: Partial<Record<ToolId, number>> = {
+  json: 999,
+  quote: 999,
+};
 
 export type ToolId = "tiktok" | "removebg" | "pdftoword" | "ocr" | "pictopdf" | "dorking" | "jurnal" | "json" | "quote" | "barber" | "linktree" | "markdown" | "photobox";
 
@@ -43,10 +48,16 @@ export function incrementUsage(toolId: ToolId): number {
 }
 
 export function getRemaining(toolId: ToolId): number {
-  return Math.max(0, MAX_FREE - getUsage(toolId));
+  const limit = MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
+  return Math.max(0, limit - getUsage(toolId));
+}
+
+export function getLimit(toolId: ToolId): number {
+  return MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
 }
 
 export function isLimitReached(toolId: ToolId): boolean {
   if (isPremium()) return false;
-  return getUsage(toolId) >= MAX_FREE;
+  const limit = MAX_FREE[toolId] ?? MAX_FREE_DEFAULT;
+  return getUsage(toolId) >= limit;
 }
