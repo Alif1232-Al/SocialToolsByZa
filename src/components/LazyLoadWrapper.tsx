@@ -1,16 +1,16 @@
 "use client";
 import { useRef, useState, useEffect, ReactNode } from "react";
+import SkeletonShimmer from "./SkeletonShimmer";
 
 interface Props {
   children: ReactNode;
   className?: string;
   once?: boolean;
-  placeholder?: ReactNode;
 }
 
-export default function LazyLoadWrapper({ children, className = "", once = true, placeholder }: Props) {
+export default function LazyLoadWrapper({ children, className = "", once = true }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -18,10 +18,8 @@ export default function LazyLoadWrapper({ children, className = "", once = true,
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setInView(true);
+          setLoaded(true);
           if (once) observer.unobserve(el);
-        } else if (!once) {
-          setInView(false);
         }
       },
       { rootMargin: "200px" }
@@ -32,7 +30,7 @@ export default function LazyLoadWrapper({ children, className = "", once = true,
 
   return (
     <div ref={ref} className={className}>
-      {inView ? children : (placeholder ?? <div className="min-h-[200px]" />)}
+      {loaded ? children : <SkeletonShimmer />}
     </div>
   );
 }
