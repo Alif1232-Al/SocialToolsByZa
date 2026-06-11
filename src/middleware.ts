@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedRoutes = ["/admin", "/photobox", "/jurnal", "/markdown", "/linktree"];
-const authRoutes = ["/login"];
-
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -13,14 +10,12 @@ export async function middleware(req: NextRequest) {
 
   const token = req.cookies.get("session")?.value;
 
-  if (authRoutes.includes(pathname) && token) {
+  if (pathname.startsWith("/login") && token) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (protectedRoutes.some((p) => pathname.startsWith(p))) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
+  if (pathname.startsWith("/admin") && !token) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();

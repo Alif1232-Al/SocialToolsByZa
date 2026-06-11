@@ -7,7 +7,13 @@ export type ToolId = "tiktok" | "removebg" | "pdftoword" | "ocr" | "pictopdf" | 
 export function isPremium(): boolean {
   if (typeof window === "undefined") return false;
   try {
-    return localStorage.getItem(PREMIUM_KEY) === "true";
+    if (localStorage.getItem(PREMIUM_KEY) === "true") return true;
+    const authRaw = localStorage.getItem("stbz_auth");
+    if (authRaw) {
+      const auth = JSON.parse(authRaw);
+      if (auth?.role === "premium" || auth?.role === "admin") return true;
+    }
+    return false;
   } catch { return false; }
 }
 

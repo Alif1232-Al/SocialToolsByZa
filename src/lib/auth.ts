@@ -8,7 +8,7 @@ export type SessionUser = {
   id: string;
   email: string;
   name: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "premium";
 };
 
 export async function createSession(user: SessionUser): Promise<string> {
