@@ -42,10 +42,8 @@ export default function Header() {
   const { user, logout } = useAuth();
   const { lang } = useLang();
   const { query, setQuery } = useSearch();
-  const searchRef = useRef<HTMLDivElement>(null);
+  const searchPanelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const mobileSearchRef = useRef<HTMLDivElement>(null);
-  const mobileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { setMenuOpen(false); setSearchOpen(false); }, [path]);
 
@@ -53,11 +51,9 @@ export default function Header() {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setSearchFocus(false);
-      }
-      if (mobileSearchRef.current && !mobileSearchRef.current.contains(e.target as Node)) {
+      if (searchPanelRef.current && !searchPanelRef.current.contains(e.target as Node)) {
         if (searchOpen) setSearchOpen(false);
+        setSearchFocus(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -68,10 +64,12 @@ export default function Header() {
     const handler = (e: KeyboardEvent) => {
       if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        const desktop = searchRef.current?.querySelector("input");
-        if (desktop && window.innerWidth >= 1024) { desktop.focus(); setSearchFocus(true); return; }
-        setSearchOpen(true);
-        setTimeout(() => mobileInputRef.current?.focus(), 100);
+        if (!searchOpen) {
+          setSearchOpen(true);
+          setTimeout(() => searchInputRef.current?.focus(), 100);
+        } else {
+          searchInputRef.current?.focus();
+        }
       }
       if (e.key === "Escape") {
         setSearchOpen(false);
@@ -80,7 +78,7 @@ export default function Header() {
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, []);
+  }, [searchOpen]);
 
   const filteredTools = query.trim()
     ? ALL_TOOLS.filter(t =>
@@ -124,45 +122,6 @@ export default function Header() {
           ))}
         </div>
 
-        {/*** DESKTOP SEARCH (lg+) ***/}
-        {path === "/" && (
-          <div ref={searchRef} className="relative hidden lg:block">
-            <div className="flex items-center border-4 border-black bg-white min-w-[200px]">
-              <span className="flex items-center px-2 bg-gray-100 border-r-4 border-black shrink-0">
-                <Search className="w-4 h-4 text-gray-500" />
-              </span>
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                onFocus={() => setSearchFocus(true)}
-                placeholder="Cari tools..."
-                className="flex-1 px-2 py-1.5 font-body font-bold text-xs outline-none bg-white text-black min-w-0"
-              />
-              {query && (
-                <button onClick={() => setQuery("")} className="px-1.5 text-gray-400 hover:text-black text-sm font-bold">&times;</button>
-              )}
-              <span className="px-1.5 text-[10px] text-gray-300 font-body flex items-center gap-0.5 whitespace-nowrap">
-                <Command className="w-3 h-3" />K
-              </span>
-            </div>
-            {searchFocus && filteredTools.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-4 border-black shadow-comic z-50 max-h-[300px] overflow-y-auto">
-                {filteredTools.map(tool => (
-                  <button key={tool.id} onClick={() => handleSearchSelect(tool)}
-                    className="w-full text-left px-3 py-2 font-body font-bold text-xs border-b-2 border-gray-100 hover:bg-yellow-100 transition-colors flex items-center gap-2"
-                  >
-                    <Search className="w-3 h-3 text-gray-400 shrink-0" />
-                    {tool.name}
-                    <span className="text-[8px] text-gray-400 uppercase ml-auto">{tool.tag.split(",")[0]}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
         <div className="flex items-center gap-1 sm:gap-3">
           <div className="hidden md:flex items-center gap-1 sm:gap-2">
             <LangToggle />
@@ -193,9 +152,9 @@ export default function Header() {
           )}
 
           {path === "/" && !menuOpen && (
-            <button onClick={() => { setSearchOpen(p => !p); if (!searchOpen) setTimeout(() => mobileInputRef.current?.focus(), 150); }}
-              className="lg:hidden p-1.5 border-2 border-black hover:bg-gray-100 transition-colors" aria-label="Search">
-              {searchOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Search className="w-4 h-4 sm:w-5 sm:h-5" />}
+            <button onClick={() => { setSearchOpen(p => !p); if (!searchOpen) setTimeout(() => searchInputRef.current?.focus(), 150); }}
+              className="p-1.5 border-2 border-black hover:bg-gray-100 transition-colors" aria-label="Search" title="Cari tools (Ctrl+K)">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           )}
 
@@ -205,41 +164,43 @@ export default function Header() {
         </div>
       </nav>
 
-      {/*** MOBILE SEARCH PANEL (< lg) ***/}
+      {/*** SEARCH PANEL (all screens) ***/}
       {path === "/" && searchOpen && (
-        <div ref={mobileSearchRef} className="lg:hidden border-t-4 border-black bg-white dark:bg-gray-800 comic-shadow">
-          <div className="px-margin-mobile py-3">
+        <div ref={searchPanelRef} className="border-t-4 border-black bg-white dark:bg-gray-800 comic-shadow">
+          <div className="px-margin-mobile md:px-margin-desktop py-3 md:py-4 max-w-3xl md:mx-auto">
             <div className="flex items-center border-4 border-black bg-white dark:bg-gray-700">
-              <span className="flex items-center px-3 bg-gray-100 dark:bg-gray-600 border-r-4 border-black shrink-0">
+              <span className="flex items-center px-3 md:px-4 bg-gray-100 dark:bg-gray-600 border-r-4 border-black shrink-0">
                 <Search className="w-5 h-5 text-gray-500 dark:text-gray-300" />
               </span>
               <input
-                ref={mobileInputRef}
+                ref={searchInputRef}
                 type="text"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                placeholder="Cari tools..."
-                className="flex-1 px-3 py-2.5 font-body font-bold text-sm outline-none bg-white dark:bg-gray-700 text-black dark:text-white min-w-0"
+                placeholder="Cari tools... (Ctrl+K)"
+                className="flex-1 px-3 md:px-4 py-2.5 md:py-3 font-body font-bold text-sm md:text-base outline-none bg-white dark:bg-gray-700 text-black dark:text-white min-w-0"
               />
               {query && (
-                <button onClick={() => setQuery("")} className="px-2 text-gray-400 hover:text-black dark:hover:text-white text-lg font-bold">&times;</button>
+                <button onClick={() => setQuery("")} className="px-2 md:px-3 text-gray-400 hover:text-black dark:hover:text-white text-lg md:text-xl font-bold">&times;</button>
               )}
+              <span className="hidden sm:flex px-2 md:px-3 text-[10px] text-gray-300 dark:text-gray-500 font-body items-center gap-0.5 whitespace-nowrap">
+                <Command className="w-3 h-3" />K
+              </span>
             </div>
-            {query.trim() && filteredTools.length > 0 && (
-              <div className="mt-1 bg-white dark:bg-gray-700 border-4 border-black max-h-[280px] overflow-y-auto divide-y-2 divide-gray-100 dark:divide-gray-600">
-                {filteredTools.map(tool => (
+            {query.trim() && (
+              <div className="mt-1 bg-white dark:bg-gray-700 border-4 border-black max-h-[300px] overflow-y-auto divide-y-2 divide-gray-100 dark:divide-gray-600">
+                {filteredTools.length > 0 ? filteredTools.map(tool => (
                   <button key={tool.id} onClick={() => handleSearchSelect(tool)}
-                    className="w-full text-left px-3 py-2.5 font-body font-bold text-sm hover:bg-yellow-100 dark:hover:bg-yellow-900 transition-colors flex items-center gap-2"
+                    className="w-full text-left px-3 md:px-4 py-2.5 md:py-3 font-body font-bold text-sm md:text-base hover:bg-yellow-100 dark:hover:bg-yellow-900 transition-colors flex items-center gap-2"
                   >
                     <Search className="w-4 h-4 text-gray-400 shrink-0" />
                     <span className="text-black dark:text-white">{tool.name}</span>
-                    <span className="text-[10px] text-gray-400 uppercase ml-auto">{tool.tag.split(",")[0]}</span>
+                    <span className="text-[10px] md:text-xs text-gray-400 uppercase ml-auto">{tool.tag.split(",")[0]}</span>
                   </button>
-                ))}
+                )) : (
+                  <p className="px-3 md:px-4 py-3 font-body font-bold text-xs md:text-sm text-gray-400">Tidak ada tool yang cocok</p>
+                )}
               </div>
-            )}
-            {query.trim() && filteredTools.length === 0 && (
-              <p className="mt-2 font-body font-bold text-xs text-gray-400 px-1">Tidak ada tool yang cocok</p>
             )}
           </div>
         </div>
